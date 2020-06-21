@@ -1,0 +1,5 @@
+/tmp/cache/*
+/tmp/sockets/puma.sock
+/log
+/vendor/bundle
+/.docker-sync

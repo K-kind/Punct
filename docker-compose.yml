@@ -1,0 +1,64 @@
+version: '3'
+services:
+  # front:
+  #   image: punct_front:latest
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - ./frontend:/myapp:cached
+  #     - node-data:/myapp/node_modules
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:5.0.9-alpine
+    command: redis-server
+    volumes:
+      - redis-data:/data
+    ports:
+      - 6379
+    logging:
+      driver: none
+
+  app:
+    image: punct_app:latest
+    # command: bundle exec rails new -TCG -d mysql
+    command: tail -f /dev/null
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./backend:/myapp:cached
+      # - sync-volume:/myapp
+      - bundle-data:/myapp/vendor/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      REDIS_URL: redis
+
+  # web:
+  #   build:
+  #     context: nginx
+  #   volumes:
+  #     - sync-volume:/myapp
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - app
+
+volumes:
+  db-data:
+  node-data:
+  bundle-data:
+  redis-data:
+  # sync-volume:
+  #   external: true
