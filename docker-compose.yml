@@ -1,12 +1,12 @@
 version: '3'
 services:
-  # front:
-  #   image: punct_front:latest
-  #   ports:
-  #     - 8080:8080
-  #   volumes:
-  #     - ./frontend:/myapp:cached
-  #     - node-data:/myapp/node_modules
+  front:
+    image: punct_front:latest
+    ports:
+      - 8080:8080
+    volumes:
+      - ./frontend:/myapp:cached
+      - node-data:/myapp/node_modules
 
   db:
     image: mysql:5.7
@@ -29,7 +29,6 @@ services:
 
   app:
     image: punct_app:latest
-    # command: bundle exec rails new -TCG -d mysql
     command: tail -f /dev/null
     tty: true
     stdin_open: true
