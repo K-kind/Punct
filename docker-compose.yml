@@ -29,13 +29,13 @@ services:
 
   app:
     image: punct_app:latest
-    command: tail -f /dev/null
     tty: true
     stdin_open: true
     volumes:
       - ./backend:/myapp:cached
       # - sync-volume:/myapp
       - bundle-data:/myapp/vendor/bundle
+      - socket-data:/myapp/tmp/sockets
     ports:
       - "3000:3000"
     depends_on:
@@ -44,20 +44,20 @@ services:
     environment:
       REDIS_URL: redis
 
-  # web:
-  #   build:
-  #     context: nginx
-  #   volumes:
-  #     - sync-volume:/myapp
-  #   ports:
-  #     - 80:80
-  #   depends_on:
-  #     - app
+  web:
+    image: punct_web:latest
+    volumes:
+      - socket-data:/myapp/tmp/sockets
+    ports:
+      - 80:80
+    depends_on:
+      - app
 
 volumes:
   db-data:
+  redis-data:
   node-data:
   bundle-data:
-  redis-data:
+  socket-data:
   # sync-volume:
   #   external: true
