@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
-  resources :auth, only: [:create, :destroy]
-  resources :tasks, only: [:index]
+  scope :api, defaults: { format: :json } do
+    resources :auth, only: [:create, :destroy]
+    resources :tasks, only: [:index]
+  end
 end
