@@ -3,7 +3,7 @@ class AuthController < ApplicationController
 
   def create
     user = User.find_by(email: params[:email])
-    if user && user.authenticate(params[:password])
+    if user&.authenticate(params[:password])
       session[:user_id] = user.id
       status = :created
       message = 'Login succeeded'
@@ -15,6 +15,6 @@ class AuthController < ApplicationController
   end
 
   def destroy
-
+    session.delete(:user_id)
   end
 end
