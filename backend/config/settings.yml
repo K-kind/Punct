@@ -1,0 +1,3 @@
+session:
+  url: redis://<%= ENV.fetch("REDIS_URL") %>:6379
+  timeout: 7200
