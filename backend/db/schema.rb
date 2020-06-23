@@ -10,7 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_23_015142) do
+ActiveRecord::Schema.define(version: 2020_06_23_093236) do
+
+  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "content", null: false
+    t.integer "expected_time", default: 0, null: false
+    t.integer "elapsed_time", default: 0, null: false
+    t.integer "order"
+    t.integer "started_time"
+    t.integer "stopped_time"
+    t.date "date"
+    t.boolean "on_progress", default: false, null: false
+    t.boolean "is_current", default: false, null: false
+    t.boolean "is_completed", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
