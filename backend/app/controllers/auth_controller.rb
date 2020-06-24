@@ -6,7 +6,7 @@ class AuthController < ApplicationController
     if user&.authenticate(params[:password])
       session[:user_id] = user.id
       status = :created
-      message = 'Login succeeded'
+      message = 'ログインしました。'
     else
       status = :unauthorized
       message = 'メールアドレスまたはパスワードが正しくありません。'

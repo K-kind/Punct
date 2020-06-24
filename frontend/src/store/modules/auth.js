@@ -1,3 +1,5 @@
+import router from '@/router/index.js'
+
 import {
   CREATE,
   DESTROY,
@@ -11,30 +13,29 @@ export default {
     // tenant: '',
     // userId: '',
     // token: ''
-    isLoggedIn: false
+    // isLoggedIn: false
   },
   mutations: {
-    [CREATE](state) {
+    // [CREATE](state) {
       // state.tenant = ''
       // state.token = data.token
       // state.userId = data.user_id
-      state.isLoggedIn = true
-    },
-    [DESTROY](state) {
+      // state.isLoggedIn = true
+    // },
+    // [DESTROY](state) {
       // state.tenant = ''
       // state.userId = ''
       // state.token = ''
-      state.isLoggedIn = false
-    }
+      // state.isLoggedIn = false
+    // }
   },
   actions: {
-    [CREATE]({ commit, dispatch }, data) {
+    [CREATE]({ dispatch }, data) {
       dispatch(
         'http/' + POST,
         { url: 'auth', data },
-        // { url: '/auth', data, error: 'メールアドレスまたはパスワードが正しくありません。' },
         { root: true }
-      ).then(() => commit(CREATE))
+      ).then( () => { router.push('/') })
        .catch(err => err)
     },
     [DESTROY]({ commit, dispatch }, data) {

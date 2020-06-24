@@ -86,16 +86,8 @@ export default {
   },
   created() {
     this.$store.dispatch(`message/${DESTROY}`)
-    if (this.$store.state.auth.isLoggedIn) {
-      // this.$router.push('/')
-      console.log('ログイン済みです')
-    }
+    //     this.$router.push('/')
   },
-  // watch: {
-  //   token (newToken) {
-  //     this.$router.push('/')
-  //   }
-  // }
 }
 </script>
 

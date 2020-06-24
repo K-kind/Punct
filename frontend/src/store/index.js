@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
+// import createPersistedState from 'vuex-persistedstate'
 import DailyTasks from './modules/DailyTasks'
 import WeeklyTasks from './modules/WeeklyTasks'
 import MonthlyTasks from './modules/MonthlyTasks'
@@ -19,8 +19,8 @@ export default new Vuex.Store({
     http,
     message
   },
-  plugins: [createPersistedState({
-    key: 'todo',
-    storage: localStorage
-  })]
+  // plugins: [createPersistedState({
+  //   key: 'todo',
+  //   storage: localStorage
+  // })]
 })
