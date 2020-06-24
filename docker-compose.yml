@@ -17,15 +17,15 @@ services:
     ports:
       - "3306:3306"
 
-  redis:
-    image: redis:5.0.9-alpine
-    command: redis-server
-    volumes:
-      - redis-data:/data
-    ports:
-      - 6379
-    logging:
-      driver: none
+  # redis:
+  #   image: redis:5.0.9-alpine
+  #   command: redis-server
+  #   volumes:
+  #     - redis-data:/data
+  #   ports:
+  #     - 6379
+  #   logging:
+  #     driver: none
 
   app:
     image: punct_app:latest
@@ -40,9 +40,9 @@ services:
       - "3000:3000"
     depends_on:
       - db
-      - redis
-    environment:
-      REDIS_URL: redis
+    #   - redis
+    # environment:
+    #   REDIS_URL: redis
 
   web:
     image: punct_web:latest
@@ -55,7 +55,7 @@ services:
 
 volumes:
   db-data:
-  redis-data:
+  # redis-data:
   node-data:
   bundle-data:
   socket-data:

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-// import Store from '@/store/index.js'
+import Store from '@/store/index.js'
 
 Vue.use(VueRouter)
 
@@ -32,14 +32,15 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  // if (to.matched.some(page => page.meta.isPublic) || Store.state.auth.token) {
-  // if (to.meta.isPublic || Store.state.auth.token) {
-  //   next()
-  // } else {
-  //   next('/login')
-  // }
-  next()
+router.beforeResolve((to, from, next) => {
+  let userName = Store.state.auth.userName
+  if (to.name === 'Login' && userName) {
+    next('/') // ログイン済み
+  } else if (to.meta.isPublic || userName) {
+    next()
+  } else {
+    next('/login')
+  }
 })
 
 export default router
