@@ -16,6 +16,7 @@ class AuthController < ApplicationController
 
   def destroy
     session.delete(:user_id)
+    render json: { message: 'ログアウトしました。' }
   end
 
   def name

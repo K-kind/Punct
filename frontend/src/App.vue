@@ -17,6 +17,7 @@ export default {
   name: 'App',
   created() {
     this.$store.dispatch(`auth/${SET_NAME}`)
+    console.log('Set name します')
   },
 }
 </script>
