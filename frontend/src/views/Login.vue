@@ -85,8 +85,10 @@ export default {
     }
   },
   created() {
+    if (this.$store.state.auth.userName) {
+      this.$router.push('/')
+    }
     this.$store.dispatch(`message/${DESTROY}`)
-    //     this.$router.push('/')
   },
 }
 </script>

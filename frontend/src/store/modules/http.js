@@ -1,5 +1,6 @@
 import {
   REQUEST,
+  GET,
   POST,
   DELETE,
   CREATE
@@ -12,7 +13,7 @@ export default {
     async [REQUEST] ({ dispatch }, { method, url, data }) {
     // async [REQUEST] ({ dispatch, rootState }, { method, url, data, error }) {
       const headers = {}
-      headers['Content-Type'] = 'application/json'
+      // headers['Content-Type'] = 'application/json'
       // headers['Access-Control-Allow-Origin'] = '*' // 開発のみ
       // headers['Access-Control-Allow-Origin'] = 'localhost:3000' // 開発のみ
       // if (rootState.auth.token) {
@@ -31,7 +32,6 @@ export default {
       }
 
       return axios(options)
-        // .then(res => { console.log(res) })
         .then(res => res)
         .catch(err => {
           dispatch(
@@ -40,6 +40,10 @@ export default {
             { root: true }
           )
         })
+    },
+    async [GET] ({ dispatch }, requests) {
+      requests.method = 'get'
+      return dispatch(REQUEST, requests)
     },
     async [POST] ({ dispatch }, requests) {
       requests.method = 'post'

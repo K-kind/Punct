@@ -3,25 +3,21 @@ import router from '@/router/index.js'
 import {
   CREATE,
   DESTROY,
+  SET_NAME,
+  GET,
   POST,
-  DELETE
+  DELETE,
 } from '../mutation-types'
 
 export default {
   namespaced: true,
   state: {
-    // tenant: '',
-    // userId: '',
-    // token: ''
-    // isLoggedIn: false
+    userName: '',
   },
   mutations: {
-    // [CREATE](state) {
-      // state.tenant = ''
-      // state.token = data.token
-      // state.userId = data.user_id
-      // state.isLoggedIn = true
-    // },
+    [SET_NAME](state, userName) {
+      state.userName = userName
+    },
     // [DESTROY](state) {
       // state.tenant = ''
       // state.userId = ''
@@ -32,21 +28,32 @@ export default {
   actions: {
     [CREATE]({ dispatch }, data) {
       dispatch(
-        'http/' + POST,
+        `http/${POST}`,
         { url: 'auth', data },
         { root: true }
       ).then( () => { router.push('/') })
-       .catch(err => err)
+       .catch(err => err) // コンソールログでもいいかも
     },
     [DESTROY]({ commit, dispatch }, data) {
       dispatch(
-        'http/' + DELETE,
+        `http/${DELETE}`,
         { url: 'auth', data },
         { root: true }
       ).then(res => commit(CREATE, res.data))
        .catch(err => err)
         // logout anyway ...
       //  .finally(res => commit(DESTROY))
-    }
+    },
+    [SET_NAME]({ commit, dispatch }) {
+      dispatch(
+        `http/${GET}`,
+        { url: 'auth/name' },
+        { root: true }
+      ).then(res => {
+        let userName = res.data.name
+        if (userName) { commit(SET_NAME, userName) }
+      })
+       .catch(err => err)
+    },
   }
 }

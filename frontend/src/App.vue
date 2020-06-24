@@ -11,9 +11,13 @@
 
 <script>
 import 'normalize.css'
+import { SET_NAME } from '@/store/mutation-types'
 
 export default {
-  name: 'App'
+  name: 'App',
+  created() {
+    this.$store.dispatch(`auth/${SET_NAME}`)
+  },
 }
 </script>
 
