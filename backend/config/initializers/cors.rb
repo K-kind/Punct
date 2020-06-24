@@ -11,9 +11,9 @@ unless Rails.env.production?
       origins 'localhost:8080'
 
       resource '*',
-        headers: :any,
-        methods: [:get, :post, :put, :patch, :delete, :options, :head],
-        credentials: true
+               headers: :any,
+               methods: [:get, :post, :put, :patch, :delete, :options, :head],
+               credentials: true
     end
   end
 end

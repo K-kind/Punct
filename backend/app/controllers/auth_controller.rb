@@ -1,5 +1,5 @@
 class AuthController < ApplicationController
-  skip_before_action :require_login, only: [:create]
+  skip_before_action :require_login, only: [:create, :name]
 
   def create
     user = User.find_by(email: params[:email])
@@ -16,5 +16,13 @@ class AuthController < ApplicationController
 
   def destroy
     session.delete(:user_id)
+  end
+
+  def name
+    name = ''
+    if (user = User.find_by(id: session[:user_id]))
+      name = user.name
+    end
+    render json: { name: name }
   end
 end
