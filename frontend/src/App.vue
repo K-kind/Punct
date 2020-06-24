@@ -1,9 +1,14 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">ホーム</router-link> |
-      <router-link to="/archives">アーカイブ</router-link> |
-      <router-link to="/login">ログイン</router-link>
+      <span v-if="userName">
+        <router-link to="/">ホーム</router-link> |
+        <router-link to="/archives">アーカイブ</router-link> |
+        <a href="Javascript:void(0)">{{ userName }}</a>
+      </span>
+      <span v-else>
+        <router-link to="/login">ログイン</router-link>
+      </span>
     </div>
     <router-view/>
   </div>
@@ -15,6 +20,11 @@ import { SET_NAME } from '@/store/mutation-types'
 
 export default {
   name: 'App',
+  computed: {
+    userName() {
+      return this.$store.state.auth.userName
+    }
+  },
   created() {
     this.$store.dispatch(`auth/${SET_NAME}`)
     console.log('Set name します')

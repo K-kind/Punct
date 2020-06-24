@@ -26,13 +26,16 @@ export default {
     // }
   },
   actions: {
-    [CREATE]({ dispatch }, data) {
+    [CREATE]({ commit, dispatch }, data) {
       dispatch(
         `http/${POST}`,
         { url: 'auth', data },
         { root: true }
-      ).then( () => { router.push('/') })
-       .catch(err => err) // コンソールログでもいいかも
+      ).then(res => { // res.data = { message: '', name: '' }
+        commit(SET_NAME, res.data.name)
+        router.push('/')
+      })
+       .catch(err => err) // window.alertでもいいかも
     },
     [DESTROY]({ commit, dispatch }, data) {
       dispatch(

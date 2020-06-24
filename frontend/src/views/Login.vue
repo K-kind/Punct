@@ -1,10 +1,5 @@
 <template>
   <div class="login">
-    <form action="http://localhost/api/auth" method="post">
-      <input type="email" name="email">
-      <input type="password" name="password">
-      <button>送信</button>
-    </form>
     <section class="hero is-light is-fullheight">
       <div class="hero-body">
         <div class="container has-text-centered">
@@ -77,9 +72,6 @@ export default {
     }
   },
   computed: {
-    token() {
-      return this.$store.state.auth.token
-    },
     errorMessage () {
       return this.$store.state.message.error
     }

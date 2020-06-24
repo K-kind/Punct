@@ -5,13 +5,13 @@ class AuthController < ApplicationController
     user = User.find_by(email: params[:email])
     if user&.authenticate(params[:password])
       session[:user_id] = user.id
+      payload = { message: 'ログインしました。', name: user.name }
       status = :created
-      message = 'ログインしました。'
     else
+      payload = { message: 'メールアドレスまたはパスワードが正しくありません。' }
       status = :unauthorized
-      message = 'メールアドレスまたはパスワードが正しくありません。'
     end
-    render json: { message: message }, status: status
+    render json: payload, status: status
   end
 
   def destroy
