@@ -9,8 +9,8 @@ export default {
     error: '',
   },
   mutations: {
-    [CREATE](state, data) { // data: { error: error, err }
-      state.error = data.error
+    [CREATE](state, data) {
+      state.error = data || '通信エラーが発生しました。'
     },
     [DESTROY](state) {
       state.error = ''

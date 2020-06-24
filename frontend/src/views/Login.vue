@@ -29,7 +29,7 @@
                   ログインしたままにする
                   </label>
                 </div>
-                <button class="button is-block is-info is-large is-fullwidth" @click="login()" :disabled="invalid" >ログイン</button>
+                <button class="button is-block is-info is-large is-fullwidth" @click.prevent="login()" :disabled="invalid" >ログイン</button>
               </validation-observer>
             </div>
             <p class="has-text-grey">
@@ -81,7 +81,7 @@ export default {
   },
   created() {
     this.$store.dispatch(`message/${DESTROY}`)
-    if (this.$store.state.auth.token) {
+    if (this.$store.state.auth.isLoggedIn) {
       // this.$router.push('/')
       console.log('ログイン済みです')
     }

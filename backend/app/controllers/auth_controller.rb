@@ -9,7 +9,7 @@ class AuthController < ApplicationController
       message = 'Login succeeded'
     else
       status = :unauthorized
-      message = 'Login failed'
+      message = 'メールアドレスまたはパスワードが正しくありません。'
     end
     render json: { message: message }, status: status
   end
