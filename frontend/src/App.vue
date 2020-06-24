@@ -5,6 +5,7 @@
         <router-link to="/">ホーム</router-link> |
         <router-link to="/archives">アーカイブ</router-link> |
         <a href="Javascript:void(0)">{{ userName }}</a>
+        <NavLeft />
       </span>
       <span v-else>
         <router-link to="/login">ログイン</router-link>
@@ -16,10 +17,14 @@
 
 <script>
 import 'normalize.css'
+import NavLeft from '@/components/NavLeft.vue'
 import { SET_NAME } from '@/store/mutation-types'
 
 export default {
   name: 'App',
+  components: {
+    NavLeft
+  },
   computed: {
     userName() {
       return this.$store.state.auth.userName

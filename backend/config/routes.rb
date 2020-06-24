@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   scope :api, defaults: { format: :json } do
-    resources :auth, only: [:create, :destroy] do
+    resource :auth, only: [:create, :destroy], controller: 'auth' do
       get :name, on: :collection
     end
     resources :tasks, only: [:index]

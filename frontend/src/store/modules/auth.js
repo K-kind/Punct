@@ -18,12 +18,9 @@ export default {
     [SET_NAME](state, userName) {
       state.userName = userName
     },
-    // [DESTROY](state) {
-      // state.tenant = ''
-      // state.userId = ''
-      // state.token = ''
-      // state.isLoggedIn = false
-    // }
+    [DESTROY](state) {
+      state.userName = ''
+    }
   },
   actions: {
     [CREATE]({ commit, dispatch }, data) {
@@ -32,20 +29,23 @@ export default {
         { url: 'auth', data },
         { root: true }
       ).then(res => { // res.data = { message: '', name: '' }
-        commit(SET_NAME, res.data.name)
+        commit(SET_NAME, res.data.name) // message flashにする
         router.push('/')
       })
        .catch(err => err) // window.alertでもいいかも
     },
-    [DESTROY]({ commit, dispatch }, data) {
+    [DESTROY]({ commit, dispatch }) {
       dispatch(
         `http/${DELETE}`,
-        { url: 'auth', data },
+        { url: 'auth' },
         { root: true }
-      ).then(res => commit(CREATE, res.data))
+      ).then(res => {
+        commit(DESTROY)
+        console.log(res.data.message) // flashにする
+        router.push('/login')
+      })
        .catch(err => err)
-        // logout anyway ...
-      //  .finally(res => commit(DESTROY))
+      //  .finally(() => commit(DESTROY))
     },
     [SET_NAME]({ commit, dispatch }) {
       dispatch(
