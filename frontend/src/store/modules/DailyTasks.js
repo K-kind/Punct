@@ -234,10 +234,10 @@ export default {
       let currentTask = state.tasks.find(task => task.id === state.currentTaskId)
       if (currentTask.onProgress) return false;
 
-      if (currentTask.startedTime) {
-        currentTask.stoppedTime = Date.now()
+      if (currentTask.started_time) {
+        currentTask.stopped_time = Date.now()
       } else {
-        currentTask.startedTime = Date.now()
+        currentTask.started_time = Date.now()
       }
       currentTask.onProgress = true
     },
@@ -246,10 +246,10 @@ export default {
       if (!currentTask.onProgress) return false;
 
       currentTask.onProgress = false
-      let stoppedTime = currentTask.stoppedTime
-      let fromTime = stoppedTime || currentTask.startedTime
+      let stoppedTime = currentTask.stopped_time
+      let fromTime = stoppedTime || currentTask.started_time
       currentTask.elapsed_time += (Date.now() - fromTime)
-      currentTask.stoppedTime = Date.now()
+      currentTask.stopped_time = Date.now()
     },
     [COMPLETE_TASK](state, { taskId, newIndex } = {}) {
       let completedTask = state.tasks.find(task => task.id === taskId)

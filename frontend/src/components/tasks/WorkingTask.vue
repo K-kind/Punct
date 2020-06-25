@@ -108,7 +108,7 @@ export default {
     computeElapsedTime() {
       let elapsed = this.currentTask.elapsed_time
       if (this.currentTask.onProgress) {
-        let started = this.currentTask.stoppedTime || this.currentTask.startedTime
+        let started = this.currentTask.stopped_time || this.currentTask.started_time
         elapsed += (Date.now() - started)
       }
       let h = Math.floor(elapsed / (1000 * 60 * 60))
@@ -166,7 +166,7 @@ export default {
 
     this.disableDrag(true)
     this.computeElapsedTime()
-    if (this.currentTask.startedTime) {
+    if (this.currentTask.started_time) {
       this.setTimer()
     }
   }
