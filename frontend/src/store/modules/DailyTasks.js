@@ -1,7 +1,6 @@
 import {
   SET_TASKS,
   ADD_NEW_TASK,
-  SET_NEW_TASK_ID,
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
@@ -19,7 +18,6 @@ export default {
   namespaced: true,
   state: {
     tasks: [],
-    newTaskId: 1,
     currentTaskId: null
   },
   getters: {
@@ -58,9 +56,6 @@ export default {
         if (taskDate < today) return task;
       })
     },
-    newTaskId(state) {
-      return state.newTaskId
-    },
     currentTask(state) {
       return state.tasks.find(task => task.id === state.currentTaskId)
     },
@@ -68,20 +63,9 @@ export default {
   mutations: {
     [SET_TASKS](state, tasks) {
       state.tasks = tasks
-      // state
-      // console.log(tasks)
     },
     [ADD_NEW_TASK](state, payload) {
       state.tasks.push(payload)
-    },
-    [SET_NEW_TASK_ID](state) {
-      let latestId
-      if (state.tasks.length === 0) {
-        latestId = 0
-      } else {
-        latestId = Math.max.apply(null, state.tasks.map(task => task.id))
-      }
-      state.newTaskId = latestId + 1
     },
     [UPDATE_TASK_CONTENT](state, payload) {
       let updatedTask = state.tasks.find(task => task.id === payload.id)
@@ -307,9 +291,6 @@ export default {
     },
     [ADD_NEW_TASK]({ commit }, payload) {
       commit(ADD_NEW_TASK, payload)
-    },
-    [SET_NEW_TASK_ID]({ commit }) {
-      commit(SET_NEW_TASK_ID)
     },
     [UPDATE_TASK_CONTENT]({ commit }, payload) {
       commit(UPDATE_TASK_CONTENT, payload)

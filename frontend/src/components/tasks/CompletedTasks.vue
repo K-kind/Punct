@@ -48,7 +48,6 @@ import { mapGetters, mapActions } from 'vuex'
 import TaskForm from '@/components/TaskForm.vue'
 import {
   ADD_NEW_TASK,
-  SET_NEW_TASK_ID,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
   MOVE_TASK_TO_ANOTHER,
@@ -71,7 +70,7 @@ export default {
     TaskForm
   },
   computed: {
-    ...mapGetters('daily', ['completedTasks', 'newTaskId']),
+    ...mapGetters('daily', ['completedTasks']),
     dateString() {
       let weekDay = ['日', '月', '火', '水', '木', '金', '土']
       let month =  this.date.getMonth() + 1
@@ -97,7 +96,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, SET_NEW_TASK_ID, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, SET_CURRENT_TASK]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, SET_CURRENT_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -125,7 +124,6 @@ export default {
       let tasks = this.completedTasks(this.date)
       let newOrder = tasks.length
       let newTask = {
-        id: this.newTaskId,
         content: e.content,
         expected_time: e.expected_time,
         elapsed_time: e.elapsed_time,
@@ -136,7 +134,6 @@ export default {
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)
-      this[SET_NEW_TASK_ID]()
       this.$refs.newForm.focusForm()
     },
     updateTask(e, task_id) {

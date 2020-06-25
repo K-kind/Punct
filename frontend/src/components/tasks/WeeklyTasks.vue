@@ -45,7 +45,6 @@ import { mapGetters, mapActions } from 'vuex'
 import LongTermForm from '@/components/LongTermForm.vue'
 import {
   ADD_NEW_TASK,
-  SET_NEW_TASK_ID,
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   COMPLETE_TASK,
@@ -70,7 +69,7 @@ export default {
     isArchive: Boolean
   },
   computed: {
-    ...mapGetters('weekly', ['weeklyTasks', 'newTaskId']),
+    ...mapGetters('weekly', ['weeklyTasks']),
     weekRange() {
       let today = new Date()
       let year = today.getFullYear()
@@ -92,7 +91,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('weekly', [ADD_NEW_TASK, SET_NEW_TASK_ID,
+    ...mapActions('weekly', [ADD_NEW_TASK,
 UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, COMPLETE_TASK, UPDATE_TASK_ORDER]),
     weekFoward(toFoward) {
       if (toFoward) {
@@ -122,14 +121,12 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, COMPLETE_TASK, UPDATE_TASK_ORDER]),
       let tasks = this.weeklyTasks(this.weekRange.monday)
       let newOrder = tasks.length
       let newTask = {
-        id: this.newTaskId,
         content: e.content,
         isChecked: false,
         startDate: this.weekRange.monday.toISOString(), // vuexpersistedの自動変換に合わせる
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)
-      this[SET_NEW_TASK_ID]()
       this.$refs.newForm.focusForm()
     },
     updateTask(e, task_id) {
