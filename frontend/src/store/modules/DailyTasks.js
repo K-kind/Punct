@@ -1,4 +1,5 @@
 import {
+  SET_TASKS,
   ADD_NEW_TASK,
   SET_NEW_TASK_ID,
   UPDATE_TASK_CONTENT,
@@ -10,7 +11,8 @@ import {
   UNSET_CURRENT_TASK,
   START_TASK,
   STOP_TASK,
-  COMPLETE_TASK
+  COMPLETE_TASK,
+  GET
 } from '../mutation-types'
 
 export default {
@@ -65,6 +67,11 @@ export default {
     },
   },
   mutations: {
+    [SET_TASKS](state, tasks) {
+      state.tasks = tasks
+      // state
+      // console.log(tasks)
+    },
     [ADD_NEW_TASK](state, payload) {
       state.tasks.push(payload)
     },
@@ -289,6 +296,16 @@ export default {
     }
   },
   actions: {
+    [SET_TASKS]({ commit, dispatch }) {
+      dispatch(
+        `http/${GET}`,
+        { url: 'tasks' },
+        { root: true }
+      ).then(res => {
+        commit(SET_TASKS, res.data.tasks)
+      })
+       .catch(err => err)
+    },
     [ADD_NEW_TASK]({ commit }, payload) {
       commit(ADD_NEW_TASK, payload)
     },

@@ -14,7 +14,7 @@ import TodayColumn from '@/components/TodayColumn.vue'
 import DailyColumn from '@/components/DailyColumn.vue'
 import WeeklyColumn from '@/components/WeeklyColumn.vue'
 import MonthlyColumn from '@/components/MonthlyColumn.vue'
-import { SET_NEW_TASK_ID } from '@/store/mutation-types'
+import { SET_TASKS, SET_NEW_TASK_ID } from '@/store/mutation-types'
 
 export default {
   name: 'Home',
@@ -38,6 +38,9 @@ export default {
     changeMonth(startDate) {
       this.monthStartDate = startDate
     }
+  },
+  created() {
+    this.$store.dispatch('daily/' + SET_TASKS)
   },
   mounted() {
     this.$store.dispatch('daily/' + SET_NEW_TASK_ID)
