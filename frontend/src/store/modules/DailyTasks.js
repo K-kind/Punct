@@ -86,9 +86,9 @@ export default {
     [UPDATE_TASK_CONTENT](state, payload) {
       let updatedTask = state.tasks.find(task => task.id === payload.id)
       updatedTask.content = payload.content
-      updatedTask.expectedTime = payload.expectedTime
-      if ('elapsedTime' in payload) {
-        updatedTask.elapsedTime = payload.elapsedTime
+      updatedTask.expected_time = payload.expected_time
+      if ('elapsed_time' in payload) {
+        updatedTask.elapsed_time = payload.elapsed_time
       }
     },
     // 全部taskをfilterすると時間がかかるので要改善
@@ -248,7 +248,7 @@ export default {
       currentTask.onProgress = false
       let stoppedTime = currentTask.stoppedTime
       let fromTime = stoppedTime || currentTask.startedTime
-      currentTask.elapsedTime += (Date.now() - fromTime)
+      currentTask.elapsed_time += (Date.now() - fromTime)
       currentTask.stoppedTime = Date.now()
     },
     [COMPLETE_TASK](state, { taskId, newIndex } = {}) {

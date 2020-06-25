@@ -18,7 +18,7 @@
           :formIsOpen="true"
           :taskId="task.id"
           :taskContent="task.content"
-          :taskExpectedTime="toMinutes(task.expectedTime)"
+          :taskExpectedTime="toMinutes(task.expected_time)"
           :taskElapsedTime="0"
           :isNewTask="false"
           ref="updateForm"
@@ -87,7 +87,7 @@ export default {
       return `${year}-${month}-${date}`
     },
     totalTime() {
-      let times = this.dailyTasks(this.date).map(task => task.expectedTime)
+      let times = this.dailyTasks(this.date).map(task => task.expected_time)
       if (!times.length) return null;
       let total = times.reduce((prev, current) => prev + current)
       let m = this.toMinutes(total)
@@ -103,11 +103,6 @@ export default {
       console.log(time)
       return Math.ceil(time / (1000 * 60))
     },
-    // taskTimes(task) {
-    //   let elapsed = task.elapsedTime
-    //   let elapsedString = (elapsed ? `${this.toMinutes(elapsed)}/` : '')
-    //   return `${elapsedString}${this.toMinutes(task.expectedTime)}`
-    // },
     closeForm() {
       this.newFormIsOpen = false
       let self = this
@@ -129,9 +124,9 @@ export default {
       let newTask = {
         id: this.newTaskId,
         content: e.content,
-        expectedTime: e.expectedTime,
+        expected_time: e.expected_time,
         isCompleted: false,
-        elapsedTime: 0,
+        elapsed_time: 0,
         year: this.date.getFullYear(),
         month: this.date.getMonth(),
         date: this.date.getDate(),

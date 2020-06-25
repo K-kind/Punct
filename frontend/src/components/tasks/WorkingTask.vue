@@ -6,7 +6,7 @@
     <div v-if="currentTask">
       <a href="Javascript:void(0)" @click="start" v-if="!timerId"><i class="el-icon-video-play"></i></a>
       <a href="Javascript:void(0)" @click="stop" v-else><i class="el-icon-video-pause"></i></a>
-      <span>経過時間: {{ elapsedTime }}</span>
+      <span>経過時間: {{ elapsed_time }}</span>
       <button @click.prevent="complete()">完了</button>
     </div>
     <draggable tag="ul" :group="dragGroup" @end="onDragEnd" :data-working="true" @add="onAdd" @clone="onClone" draggable=".draggable">
@@ -14,7 +14,7 @@
         <div v-if="!formIsOpen" @click="openForm()" class="task-board__task">
           <p class="task-board__p">
             {{ currentTask.order }}: ID.{{ currentTask.id }}: {{ currentTask.content }} ({{ currentTask.date }}日)
-            <span class="task-board__time">{{ toMinutes(currentTask.expectedTime) }}分</span>
+            <span class="task-board__time">{{ toMinutes(currentTask.expected_time) }}分</span>
           </p>
         </div>
         <TaskForm
@@ -22,7 +22,7 @@
           :formIsOpen="true"
           :taskId="currentTask.id"
           :taskContent="currentTask.content"
-          :taskExpectedTime="toMinutes(currentTask.expectedTime)"
+          :taskExpectedTime="toMinutes(currentTask.expected_time)"
           :taskElapsedTime="0"
           :isNewTask="false"
           ref="updateForm"
@@ -106,7 +106,7 @@ export default {
       this.disableDrag(false)
     },
     computeElapsedTime() {
-      let elapsed = this.currentTask.elapsedTime
+      let elapsed = this.currentTask.elapsed_time
       if (this.currentTask.onProgress) {
         let started = this.currentTask.stoppedTime || this.currentTask.startedTime
         elapsed += (Date.now() - started)

@@ -121,8 +121,8 @@ export default {
         this.$emit('add-task',
           {
             content: this.taskContentData,
-            expectedTime: this.taskExpectedTimeData,
-            elapsedTime: this.taskElapsedTimeData
+            expected_time: this.taskExpectedTimeData,
+            elapsed_time: this.taskElapsedTimeData
           }
         )
         this.taskContentData = ''
@@ -131,10 +131,10 @@ export default {
       } else {
         let taskData = {
           content: this.taskContentData,
-          expectedTime: this.taskExpectedTimeData
+          expected_time: this.taskExpectedTimeData
         }
         if (this.isCompletedTask) {
-          Object.assign(taskData, { elapsedTime: this.taskElapsedTimeData })
+          Object.assign(taskData, { elapsed_time: this.taskElapsedTimeData })
         }
         this.$emit('update-task', taskData)
       }
