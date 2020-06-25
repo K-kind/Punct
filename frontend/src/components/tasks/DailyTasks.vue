@@ -10,7 +10,7 @@
           <p class="task-board__p">
             <!-- {{ task.content }} -->
             {{ task.order }}: ID.{{ task.id }}: {{ task.content }} ({{ task.date }}日)
-            <span class="task-board__time">{{ toMinutes(task.expectedTime) }}分</span>
+            <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
           </p>
         </div>
         <TaskForm
@@ -100,6 +100,7 @@ export default {
   methods: {
     ...mapActions('daily', [ADD_NEW_TASK, SET_NEW_TASK_ID, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, MOVE_TASK_TO_COMPLETED, SET_CURRENT_TASK, COMPLETE_TASK]),
     toMinutes(time) {
+      console.log(time)
       return Math.ceil(time / (1000 * 60))
     },
     // taskTimes(task) {

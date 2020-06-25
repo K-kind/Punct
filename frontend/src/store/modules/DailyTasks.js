@@ -26,9 +26,7 @@ export default {
     dailyTasks(state) {
       return date => {
         return state.tasks.filter(task =>
-          task.year === date.getFullYear() &&
-          task.month === date.getMonth() &&
-          task.date === date.getDate() &&
+          (new Date(task.date)).toDateString() === date.toDateString() &&
           !task.isCurrent && !task.isCompleted
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
@@ -40,9 +38,10 @@ export default {
     completedTasks(state) {
       return date => {
         return state.tasks.filter(task =>
-          task.year === date.getFullYear() &&
-          task.month === date.getMonth() &&
-          task.date === date.getDate() &&
+          (new Date(task.date)).toDateString() === date.toDateString() &&
+          // task.year === date.getFullYear() &&
+          // task.month === date.getMonth() &&
+          // task.date === date.getDate() &&
           task.isCompleted
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
@@ -52,10 +51,10 @@ export default {
       }
     },
     remainingTasks(state) {
-      let today = (new Date) - (1000 * 60 * 60 * 24)
+      let today = (new Date) - (1000 * 60 * 60 * 24) // 昨日の00:00以降
       return state.tasks.filter(task => {
         if (task.isCompleted || task.isCurrent) return false;
-        let taskDate = new Date(task.year, task.month, task.date)
+        let taskDate = new Date(task.date)
         if (taskDate < today) return task;
       })
     },
