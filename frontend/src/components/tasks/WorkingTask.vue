@@ -91,7 +91,7 @@ export default {
         return false
       }
 
-      if (this.currentTask.onProgress) {
+      if (this.currentTask.on_progress) {
         this.stop()
       }
       let [toYear, toMonth, toDate] = e.to.dataset.date.split('-')
@@ -107,7 +107,7 @@ export default {
     },
     computeElapsedTime() {
       let elapsed = this.currentTask.elapsed_time
-      if (this.currentTask.onProgress) {
+      if (this.currentTask.on_progress) {
         let started = this.currentTask.stopped_time || this.currentTask.started_time
         elapsed += (Date.now() - started)
       }
@@ -120,7 +120,7 @@ export default {
       this.elapsedTime = `${h}${m}:${s}`
     },
     setTimer() {
-      if (!this.currentTask.onProgress) return false;
+      if (!this.currentTask.on_progress) return false;
 
       let self = this
       this.timerId = setInterval(() => {
@@ -137,7 +137,7 @@ export default {
       this.timerId = null
     },
     complete(newIndex) {
-      if (this.currentTask.onProgress) {
+      if (this.currentTask.on_progress) {
         this.stop()
       }
       let payload = { taskId: this.currentTask.id }

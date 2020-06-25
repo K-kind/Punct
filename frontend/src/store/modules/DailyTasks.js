@@ -27,7 +27,7 @@ export default {
       return date => {
         return state.tasks.filter(task =>
           (new Date(task.date)).toDateString() === date.toDateString() &&
-          !task.isCurrent && !task.isCompleted
+          !task.is_current && !task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
           if (a.order > b.order) return 1;
@@ -42,7 +42,7 @@ export default {
           // task.year === date.getFullYear() &&
           // task.month === date.getMonth() &&
           // task.date === date.getDate() &&
-          task.isCompleted
+          task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
           if (a.order > b.order) return 1;
@@ -53,7 +53,7 @@ export default {
     remainingTasks(state) {
       let today = (new Date) - (1000 * 60 * 60 * 24) // 昨日の00:00以降
       return state.tasks.filter(task => {
-        if (task.isCompleted || task.isCurrent) return false;
+        if (task.is_completed || task.is_current) return false;
         let taskDate = new Date(task.date)
         if (taskDate < today) return task;
       })
@@ -96,7 +96,7 @@ export default {
       let deletedTask = state.tasks.find(task => task.id === taskId)
       state.tasks = state.tasks.filter(task => task.id !== taskId)
 
-      if (deletedTask.isCurrent) {
+      if (deletedTask.is_current) {
         state.currentTaskId = null
         return false
       }
@@ -107,7 +107,7 @@ export default {
           task.month === deletedTask.month &&
           task.year === deletedTask.year &&
           task.order > deletedTask.order &&
-          task.isCompleted === deletedTask.isCompleted
+          task.is_completed === deletedTask.is_completed
         ) { task.order-- }
 
         return task
@@ -121,7 +121,7 @@ export default {
           task.date != fromDate ||
           task.month != fromMonth ||
           task.year != fromYear ||
-          task.isCompleted !== fromCompleted
+          task.is_completed !== fromCompleted
         ) { return task }
 
         if (oldIndex < newIndex && task.order > oldIndex && task.order <= newIndex) { // 下げた時
@@ -145,13 +145,13 @@ export default {
           task.date= Number.parseInt(payload.toDate)
           task.month = Number.parseInt(payload.toMonth)
           task.year = Number.parseInt(payload.toYear)
-          if (payload.fromCompleted) { task.isCompleted = toCompleted }
+          if (payload.fromCompleted) { task.is_completed = toCompleted }
         } else if ( // 移動元
           task.date == payload.fromDate &&
           task.month == payload.fromMonth &&
           task.year == payload.fromYear &&
           task.order > oldIndex &&
-          task.isCompleted === payload.fromCompleted
+          task.is_completed === payload.fromCompleted
         ) {
           task.order--
         } else if ( // 移動先
@@ -159,7 +159,7 @@ export default {
           task.month == payload.toMonth &&
           task.year == payload.toYear &&
           task.order >= newIndex &&
-          task.isCompleted === toCompleted
+          task.is_completed === toCompleted
           ) {
           task.order++
         }
@@ -175,7 +175,7 @@ export default {
           task.month == fromMonth &&
           task.year == fromYear &&
           task.order > oldIndex &&
-          !task.isCompleted
+          !task.is_completed
         ) { task.order-- }
         return task
       })
@@ -190,12 +190,12 @@ export default {
           task.month == fromMonth &&
           task.year == fromYear &&
           task.order > oldIndex &&
-          task.isCompleted === fromCompleted
+          task.is_completed === fromCompleted
         ) {
           task.order--
         } else if (task.id === taskId) {
-          task.isCurrent = true
-          task.isCompleted = false
+          task.is_current = true
+          task.is_completed = false
           task.year = null
           task.month = null
           task.date = null
@@ -206,7 +206,7 @@ export default {
     [UNSET_CURRENT_TASK](state, { toYear, toMonth, toDate, newIndex, taskId } = {}) {
       state.currentTaskId = null
       if (!toYear) { // リアクティブでない可能性あり
-        state.tasks.find(task => task.id === taskId).isCurrent = false
+        state.tasks.find(task => task.id === taskId).is_current = false
         return false
       }
 
@@ -216,11 +216,11 @@ export default {
           task.month == toMonth &&
           task.year == toYear &&
           task.order >= newIndex &&
-          !task.isCompleted
+          !task.is_completed
         ) { task.order++ }
 
         if (task.id === taskId) {
-          task.isCurrent = false
+          task.is_current = false
           task.order = newIndex
           task.date = Number.parseInt(toDate)
           task.month = Number.parseInt(toMonth)
@@ -232,20 +232,20 @@ export default {
     },
     [START_TASK](state) {
       let currentTask = state.tasks.find(task => task.id === state.currentTaskId)
-      if (currentTask.onProgress) return false;
+      if (currentTask.on_progress) return false;
 
       if (currentTask.started_time) {
         currentTask.stopped_time = Date.now()
       } else {
         currentTask.started_time = Date.now()
       }
-      currentTask.onProgress = true
+      currentTask.on_progress = true
     },
     [STOP_TASK](state) {
       let currentTask = state.tasks.find(task => task.id === state.currentTaskId)
-      if (!currentTask.onProgress) return false;
+      if (!currentTask.on_progress) return false;
 
-      currentTask.onProgress = false
+      currentTask.on_progress = false
       let stoppedTime = currentTask.stopped_time
       let fromTime = stoppedTime || currentTask.started_time
       currentTask.elapsed_time += (Date.now() - fromTime)
@@ -258,7 +258,7 @@ export default {
       completedTask.year = now.getFullYear()
       completedTask.month = now.getMonth()
       completedTask.date = now.getDate()
-      completedTask.isCompleted = true
+      completedTask.is_completed = true
 
       if (newIndex >= 0) {
         state.tasks = state.tasks.map(task => {
@@ -267,7 +267,7 @@ export default {
             task.month === completedTask.month &&
             task.year === completedTask.year &&
             task.order >= newIndex &&
-            task.isCompleted
+            task.is_completed
           ) { task.order++ }
 
           if (task.id === taskId) { task.order = newIndex }
@@ -281,7 +281,7 @@ export default {
             task.month === completedTask.month &&
             task.year === completedTask.year &&
             task.id !== taskId &&
-            task.isCompleted
+            task.is_completed
           ) { orders.push(task.order) }
         }
         let newOrder = 0
@@ -291,7 +291,7 @@ export default {
         state.tasks = state.tasks.concat([]) // リアクティブ対策
         // Vue.set(state.tasks, key, value)
       }
-      // Vue.set(completedTask, 'isCompleted', true)
+      // Vue.set(completedTask, 'is_completed', true)
     }
   },
   actions: {

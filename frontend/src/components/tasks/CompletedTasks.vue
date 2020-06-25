@@ -129,7 +129,7 @@ export default {
         content: e.content,
         expected_time: e.expected_time,
         elapsed_time: e.elapsed_time,
-        isCompleted: true,
+        is_completed: true,
         year: this.date.getFullYear(),
         month: this.date.getMonth(),
         date: this.date.getDate(),

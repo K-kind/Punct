@@ -125,7 +125,7 @@ export default {
         id: this.newTaskId,
         content: e.content,
         expected_time: e.expected_time,
-        isCompleted: false,
+        is_completed: false,
         elapsed_time: 0,
         year: this.date.getFullYear(),
         month: this.date.getMonth(),
