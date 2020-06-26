@@ -11,7 +11,8 @@ import {
   START_TASK,
   STOP_TASK,
   COMPLETE_TASK,
-  GET
+  GET,
+  POST
 } from '../mutation-types'
 
 export default {
@@ -23,9 +24,10 @@ export default {
   getters: {
     dailyTasks(state) {
       return date => {
+        // console.log(date.toLocaleDateString().replace(/\//g, '-'))
         return state.tasks.filter(task =>
-          task.date === date.toLocaleDateString() &&
-          // (new Date(task.date)).toDateString() === date.toDateString() &&
+          // task.date === date.toLocaleDateString().replace(/\//g, '-') &&
+          (new Date(task.date)).toDateString() === date.toDateString() &&
           !task.is_current && !task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
@@ -290,8 +292,21 @@ export default {
       })
        .catch(err => err)
     },
-    [ADD_NEW_TASK]({ commit }, payload) {
-      commit(ADD_NEW_TASK, payload)
+    [ADD_NEW_TASK]({ commit, dispatch }, payload) {
+      dispatch(
+        `http/${POST}`,
+        { url: 'tasks', data: { task: payload } },
+        { root: true }
+      ).then(res => {
+        if (res.data.task) {
+          commit(ADD_NEW_TASK, payload)
+        } else {
+          window.alert(res.data.message)
+        }
+      })
+       .catch(() => {
+         window.alert('通信エラーが発生しました。ページリロード後、再度お試しください。')
+       })
     },
     [UPDATE_TASK_CONTENT]({ commit }, payload) {
       commit(UPDATE_TASK_CONTENT, payload)

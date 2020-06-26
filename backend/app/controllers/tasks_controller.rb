@@ -7,10 +7,10 @@ class TasksController < ApplicationController
   def create
     task = @current_user.tasks.build(task_params)
     if task.save
-      payload = { message: '新しいタスクを作成しました。'}
+      payload = { task: task }
       status = :created
     else
-      payload = { message: task.errors.full_messages }
+      payload = { message: task.errors.full_messages.join("\n") }
       status = :ok
     end
     render json: payload, status: status

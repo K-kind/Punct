@@ -99,7 +99,6 @@ export default {
   methods: {
     ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, MOVE_TASK_TO_COMPLETED, SET_CURRENT_TASK, COMPLETE_TASK]),
     toMinutes(time) {
-      console.log(time)
       return Math.ceil(time / (1000 * 60))
     },
     closeForm() {
