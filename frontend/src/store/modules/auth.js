@@ -29,10 +29,24 @@ export default {
         { url: 'auth', data },
         { root: true }
       ).then(res => { // res.data = { message: '', name: '' }
-        commit(SET_NAME, res.data.name) // message flashにする
-        router.push('/')
+        let name = res.data.name
+        if (name) {
+          commit(SET_NAME, name)
+          router.push('/')
+          dispatch(
+            `message/${CREATE}`,
+            { flash: res.data.message },
+            { root: true }
+          )
+        } else {
+          dispatch(
+            `message/${CREATE}`,
+            { error: res.data.message },
+            { root: true }
+          )
+        }
       })
-       .catch(err => err) // window.alertでもいいかも
+       .catch(err => err)
     },
     [DESTROY]({ commit, dispatch }) {
       dispatch(
@@ -41,11 +55,14 @@ export default {
         { root: true }
       ).then(res => {
         commit(DESTROY)
-        console.log(res.data.message) // flashにする
+        dispatch(
+          `message/${CREATE}`,
+          { flash: res.data.message },
+          { root: true }
+        )
         router.push('/login')
       })
        .catch(err => err)
-      //  .finally(() => commit(DESTROY))
     },
     [SET_NAME]({ commit, dispatch }) {
       dispatch(

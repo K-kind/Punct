@@ -9,7 +9,7 @@ class AuthController < ApplicationController
       status = :created
     else
       payload = { message: 'メールアドレスまたはパスワードが正しくありません。' }
-      status = :unauthorized
+      status = :ok
     end
     render json: payload, status: status
   end

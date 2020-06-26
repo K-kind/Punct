@@ -304,9 +304,7 @@ export default {
           window.alert(res.data.message)
         }
       })
-       .catch(() => {
-         window.alert('通信エラーが発生しました。ページリロード後、再度お試しください。')
-       })
+      .catch(err => err)
     },
     [UPDATE_TASK_CONTENT]({ commit }, payload) {
       commit(UPDATE_TASK_CONTENT, payload)

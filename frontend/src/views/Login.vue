@@ -77,6 +77,10 @@ export default {
     }
   },
   created() {
+    let flash = this.$store.state.message.flash
+    if (flash) {
+      this.$notify({ message: flash, duration: 2500 })
+    }
     this.$store.dispatch(`message/${DESTROY}`)
   },
 }
