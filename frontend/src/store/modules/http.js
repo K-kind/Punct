@@ -3,14 +3,14 @@ import {
   GET,
   POST,
   DELETE,
-  CREATE
+  // CREATE
 } from '../mutation-types'
 import axios from 'axios'
 
 export default {
   namespaced: true,
   actions: {
-    async [REQUEST] ({ dispatch }, { method, url, data }) {
+    async [REQUEST] (context, { method, url, data }) {
     // async [REQUEST] ({ dispatch, rootState }, { method, url, data, error }) {
       const headers = {}
       // headers['Content-Type'] = 'application/json'
@@ -33,12 +33,8 @@ export default {
 
       return axios(options)
         .then(res => res)
-        .catch(err => {
-          dispatch(
-            'message/' + CREATE,
-            err.response.data.message,
-            { root: true }
-          )
+        .catch(() => {
+          window.alert('通信エラーが発生しました。ページリロード後、再度お試しください。')
         })
     },
     async [GET] ({ dispatch }, requests) {

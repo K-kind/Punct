@@ -14,7 +14,7 @@ import TodayColumn from '@/components/TodayColumn.vue'
 import DailyColumn from '@/components/DailyColumn.vue'
 import WeeklyColumn from '@/components/WeeklyColumn.vue'
 import MonthlyColumn from '@/components/MonthlyColumn.vue'
-import { SET_TASKS } from '@/store/mutation-types'
+import { SET_TASKS, DESTROY } from '@/store/mutation-types'
 
 export default {
   name: 'Home',
@@ -41,6 +41,11 @@ export default {
   },
   created() {
     this.$store.dispatch('daily/' + SET_TASKS)
+    let flash = this.$store.state.message.flash
+    if (flash) {
+      this.$notify({ message: flash, duration: 2500 })
+      this.$store.dispatch(`message/${DESTROY}`)
+    }
   },
 }
 </script>

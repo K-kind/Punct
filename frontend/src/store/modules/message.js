@@ -6,13 +6,19 @@ import {
 export default {
   namespaced: true,
   state: {
+    flash: '',
     error: '',
   },
   mutations: {
     [CREATE](state, data) {
-      state.error = data || '通信エラーが発生しました。'
+      if (data.flash) {
+        state.flash = data.flash
+      } else {
+        state.error = data.error
+      }
     },
     [DESTROY](state) {
+      state.flash = ''
       state.error = ''
     }
   },
