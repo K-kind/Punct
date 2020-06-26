@@ -105,11 +105,6 @@ export default {
       this.taskElapsedTimeData = 0
       this.$emit('close-form')
     },
-    clearForm() {
-      this.taskContentData = ''
-      this.taskExpectedTimeData = 0
-      this.taskElapsedTimeData = 0
-    },
     focusForm() {
       this.$refs.contentForm.focus()
     },
@@ -130,6 +125,9 @@ export default {
             elapsed_time: this.taskElapsedTimeData
           }
         )
+        this.taskContentData = ''
+        this.taskExpectedTimeData = 0
+        this.taskElapsedTimeData = 0
       } else {
         let taskData = {
           content: this.taskContentData,
