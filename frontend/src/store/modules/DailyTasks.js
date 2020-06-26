@@ -1,6 +1,6 @@
 import {
+  SET_TASKS,
   ADD_NEW_TASK,
-  SET_NEW_TASK_ID,
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
@@ -10,24 +10,25 @@ import {
   UNSET_CURRENT_TASK,
   START_TASK,
   STOP_TASK,
-  COMPLETE_TASK
+  COMPLETE_TASK,
+  GET,
+  POST
 } from '../mutation-types'
 
 export default {
   namespaced: true,
   state: {
     tasks: [],
-    newTaskId: 1,
     currentTaskId: null
   },
   getters: {
     dailyTasks(state) {
       return date => {
+        // console.log(date.toLocaleDateString().replace(/\//g, '-'))
         return state.tasks.filter(task =>
-          task.year === date.getFullYear() &&
-          task.month === date.getMonth() &&
-          task.date === date.getDate() &&
-          !task.isCurrent && !task.isCompleted
+          // task.date === date.toLocaleDateString().replace(/\//g, '-') &&
+          (new Date(task.date)).toDateString() === date.toDateString() &&
+          !task.is_current && !task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
           if (a.order > b.order) return 1;
@@ -38,10 +39,11 @@ export default {
     completedTasks(state) {
       return date => {
         return state.tasks.filter(task =>
-          task.year === date.getFullYear() &&
-          task.month === date.getMonth() &&
-          task.date === date.getDate() &&
-          task.isCompleted
+          (new Date(task.date)).toDateString() === date.toDateString() &&
+          // task.year === date.getFullYear() &&
+          // task.month === date.getMonth() &&
+          // task.date === date.getDate() &&
+          task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
           if (a.order > b.order) return 1;
@@ -50,39 +52,30 @@ export default {
       }
     },
     remainingTasks(state) {
-      let today = (new Date) - (1000 * 60 * 60 * 24)
+      let today = (new Date) - (1000 * 60 * 60 * 24) // 昨日の00:00以降
       return state.tasks.filter(task => {
-        if (task.isCompleted || task.isCurrent) return false;
-        let taskDate = new Date(task.year, task.month, task.date)
+        if (task.is_completed || task.is_current) return false;
+        let taskDate = new Date(task.date)
         if (taskDate < today) return task;
       })
-    },
-    newTaskId(state) {
-      return state.newTaskId
     },
     currentTask(state) {
       return state.tasks.find(task => task.id === state.currentTaskId)
     },
   },
   mutations: {
+    [SET_TASKS](state, tasks) {
+      state.tasks = tasks
+    },
     [ADD_NEW_TASK](state, payload) {
       state.tasks.push(payload)
-    },
-    [SET_NEW_TASK_ID](state) {
-      let latestId
-      if (state.tasks.length === 0) {
-        latestId = 0
-      } else {
-        latestId = Math.max.apply(null, state.tasks.map(task => task.id))
-      }
-      state.newTaskId = latestId + 1
     },
     [UPDATE_TASK_CONTENT](state, payload) {
       let updatedTask = state.tasks.find(task => task.id === payload.id)
       updatedTask.content = payload.content
-      updatedTask.expectedTime = payload.expectedTime
-      if ('elapsedTime' in payload) {
-        updatedTask.elapsedTime = payload.elapsedTime
+      updatedTask.expected_time = payload.expected_time
+      if ('elapsed_time' in payload) {
+        updatedTask.elapsed_time = payload.elapsed_time
       }
     },
     // 全部taskをfilterすると時間がかかるので要改善
@@ -90,7 +83,7 @@ export default {
       let deletedTask = state.tasks.find(task => task.id === taskId)
       state.tasks = state.tasks.filter(task => task.id !== taskId)
 
-      if (deletedTask.isCurrent) {
+      if (deletedTask.is_current) {
         state.currentTaskId = null
         return false
       }
@@ -101,7 +94,7 @@ export default {
           task.month === deletedTask.month &&
           task.year === deletedTask.year &&
           task.order > deletedTask.order &&
-          task.isCompleted === deletedTask.isCompleted
+          task.is_completed === deletedTask.is_completed
         ) { task.order-- }
 
         return task
@@ -115,7 +108,7 @@ export default {
           task.date != fromDate ||
           task.month != fromMonth ||
           task.year != fromYear ||
-          task.isCompleted !== fromCompleted
+          task.is_completed !== fromCompleted
         ) { return task }
 
         if (oldIndex < newIndex && task.order > oldIndex && task.order <= newIndex) { // 下げた時
@@ -139,13 +132,13 @@ export default {
           task.date= Number.parseInt(payload.toDate)
           task.month = Number.parseInt(payload.toMonth)
           task.year = Number.parseInt(payload.toYear)
-          if (payload.fromCompleted) { task.isCompleted = toCompleted }
+          if (payload.fromCompleted) { task.is_completed = toCompleted }
         } else if ( // 移動元
           task.date == payload.fromDate &&
           task.month == payload.fromMonth &&
           task.year == payload.fromYear &&
           task.order > oldIndex &&
-          task.isCompleted === payload.fromCompleted
+          task.is_completed === payload.fromCompleted
         ) {
           task.order--
         } else if ( // 移動先
@@ -153,7 +146,7 @@ export default {
           task.month == payload.toMonth &&
           task.year == payload.toYear &&
           task.order >= newIndex &&
-          task.isCompleted === toCompleted
+          task.is_completed === toCompleted
           ) {
           task.order++
         }
@@ -169,7 +162,7 @@ export default {
           task.month == fromMonth &&
           task.year == fromYear &&
           task.order > oldIndex &&
-          !task.isCompleted
+          !task.is_completed
         ) { task.order-- }
         return task
       })
@@ -184,12 +177,12 @@ export default {
           task.month == fromMonth &&
           task.year == fromYear &&
           task.order > oldIndex &&
-          task.isCompleted === fromCompleted
+          task.is_completed === fromCompleted
         ) {
           task.order--
         } else if (task.id === taskId) {
-          task.isCurrent = true
-          task.isCompleted = false
+          task.is_current = true
+          task.is_completed = false
           task.year = null
           task.month = null
           task.date = null
@@ -200,7 +193,7 @@ export default {
     [UNSET_CURRENT_TASK](state, { toYear, toMonth, toDate, newIndex, taskId } = {}) {
       state.currentTaskId = null
       if (!toYear) { // リアクティブでない可能性あり
-        state.tasks.find(task => task.id === taskId).isCurrent = false
+        state.tasks.find(task => task.id === taskId).is_current = false
         return false
       }
 
@@ -210,11 +203,11 @@ export default {
           task.month == toMonth &&
           task.year == toYear &&
           task.order >= newIndex &&
-          !task.isCompleted
+          !task.is_completed
         ) { task.order++ }
 
         if (task.id === taskId) {
-          task.isCurrent = false
+          task.is_current = false
           task.order = newIndex
           task.date = Number.parseInt(toDate)
           task.month = Number.parseInt(toMonth)
@@ -226,24 +219,24 @@ export default {
     },
     [START_TASK](state) {
       let currentTask = state.tasks.find(task => task.id === state.currentTaskId)
-      if (currentTask.onProgress) return false;
+      if (currentTask.on_progress) return false;
 
-      if (currentTask.startedTime) {
-        currentTask.stoppedTime = Date.now()
+      if (currentTask.started_time) {
+        currentTask.stopped_time = Date.now()
       } else {
-        currentTask.startedTime = Date.now()
+        currentTask.started_time = Date.now()
       }
-      currentTask.onProgress = true
+      currentTask.on_progress = true
     },
     [STOP_TASK](state) {
       let currentTask = state.tasks.find(task => task.id === state.currentTaskId)
-      if (!currentTask.onProgress) return false;
+      if (!currentTask.on_progress) return false;
 
-      currentTask.onProgress = false
-      let stoppedTime = currentTask.stoppedTime
-      let fromTime = stoppedTime || currentTask.startedTime
-      currentTask.elapsedTime += (Date.now() - fromTime)
-      currentTask.stoppedTime = Date.now()
+      currentTask.on_progress = false
+      let stoppedTime = currentTask.stopped_time
+      let fromTime = stoppedTime || currentTask.started_time
+      currentTask.elapsed_time += (Date.now() - fromTime)
+      currentTask.stopped_time = Date.now()
     },
     [COMPLETE_TASK](state, { taskId, newIndex } = {}) {
       let completedTask = state.tasks.find(task => task.id === taskId)
@@ -252,7 +245,7 @@ export default {
       completedTask.year = now.getFullYear()
       completedTask.month = now.getMonth()
       completedTask.date = now.getDate()
-      completedTask.isCompleted = true
+      completedTask.is_completed = true
 
       if (newIndex >= 0) {
         state.tasks = state.tasks.map(task => {
@@ -261,7 +254,7 @@ export default {
             task.month === completedTask.month &&
             task.year === completedTask.year &&
             task.order >= newIndex &&
-            task.isCompleted
+            task.is_completed
           ) { task.order++ }
 
           if (task.id === taskId) { task.order = newIndex }
@@ -275,7 +268,7 @@ export default {
             task.month === completedTask.month &&
             task.year === completedTask.year &&
             task.id !== taskId &&
-            task.isCompleted
+            task.is_completed
           ) { orders.push(task.order) }
         }
         let newOrder = 0
@@ -285,15 +278,35 @@ export default {
         state.tasks = state.tasks.concat([]) // リアクティブ対策
         // Vue.set(state.tasks, key, value)
       }
-      // Vue.set(completedTask, 'isCompleted', true)
+      // Vue.set(completedTask, 'is_completed', true)
     }
   },
   actions: {
-    [ADD_NEW_TASK]({ commit }, payload) {
-      commit(ADD_NEW_TASK, payload)
+    [SET_TASKS]({ commit, dispatch }) {
+      dispatch(
+        `http/${GET}`,
+        { url: 'tasks' },
+        { root: true }
+      ).then(res => {
+        commit(SET_TASKS, res.data.tasks)
+      })
+       .catch(err => err)
     },
-    [SET_NEW_TASK_ID]({ commit }) {
-      commit(SET_NEW_TASK_ID)
+    [ADD_NEW_TASK]({ commit, dispatch }, payload) {
+      dispatch(
+        `http/${POST}`,
+        { url: 'tasks', data: { task: payload } },
+        { root: true }
+      ).then(res => {
+        if (res.data.task) {
+          commit(ADD_NEW_TASK, payload)
+        } else {
+          window.alert(res.data.message)
+        }
+      })
+       .catch(() => {
+         window.alert('通信エラーが発生しました。ページリロード後、再度お試しください。')
+       })
     },
     [UPDATE_TASK_CONTENT]({ commit }, payload) {
       commit(UPDATE_TASK_CONTENT, payload)

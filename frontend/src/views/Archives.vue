@@ -10,7 +10,6 @@
 import ThisWeekColumn from '@/components/archives/ThisWeekColumn.vue'
 import WeeklyColumn from '@/components/archives/WeeklyColumn.vue'
 import MonthlyColumn from '@/components/archives/MonthlyColumn.vue'
-import { SET_NEW_TASK_ID } from '@/store/mutation-types'
 
 export default {
   name: 'Archives',
@@ -33,9 +32,6 @@ export default {
       this.monthStartDate = startDate
     }
   },
-  mounted() {
-    this.$store.dispatch('daily/' + SET_NEW_TASK_ID)
-  }
 }
 </script>
 

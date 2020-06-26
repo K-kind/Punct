@@ -10,7 +10,7 @@
           <p class="task-board__p">
             <!-- {{ task.content }} -->
             {{ task.order }}: ID.{{ task.id }}: {{ task.content }} ({{ task.date }}日)
-            <span class="task-board__time">{{ toMinutes(task.expectedTime) }}分</span>
+            <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
           </p>
         </div>
         <TaskForm
@@ -18,7 +18,7 @@
           :formIsOpen="true"
           :taskId="task.id"
           :taskContent="task.content"
-          :taskExpectedTime="toMinutes(task.expectedTime)"
+          :taskExpectedTime="toMinutes(task.expected_time)"
           :taskElapsedTime="0"
           :isNewTask="false"
           ref="updateForm"
@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     totalTime() {
-      let times = this.remainingTasks.map(task => task.expectedTime)
+      let times = this.remainingTasks.map(task => task.expected_time)
       if (!times.length) return null;
       let total = times.reduce((prev, current) => prev + current)
       let m = this.toMinutes(total)

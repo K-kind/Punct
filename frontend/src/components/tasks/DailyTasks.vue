@@ -10,7 +10,7 @@
           <p class="task-board__p">
             <!-- {{ task.content }} -->
             {{ task.order }}: ID.{{ task.id }}: {{ task.content }} ({{ task.date }}日)
-            <span class="task-board__time">{{ toMinutes(task.expectedTime) }}分</span>
+            <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
           </p>
         </div>
         <TaskForm
@@ -18,7 +18,7 @@
           :formIsOpen="true"
           :taskId="task.id"
           :taskContent="task.content"
-          :taskExpectedTime="toMinutes(task.expectedTime)"
+          :taskExpectedTime="toMinutes(task.expected_time)"
           :taskElapsedTime="0"
           :isNewTask="false"
           ref="updateForm"
@@ -47,7 +47,6 @@ import { mapGetters, mapActions } from 'vuex'
 import TaskForm from '@/components/TaskForm.vue'
 import {
   ADD_NEW_TASK,
-  SET_NEW_TASK_ID,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
   MOVE_TASK_TO_ANOTHER,
@@ -72,7 +71,7 @@ export default {
     TaskForm
   },
   computed: {
-    ...mapGetters('daily', ['dailyTasks', 'newTaskId']),
+    ...mapGetters('daily', ['dailyTasks']),
     dateString() {
       let weekDay = ['日', '月', '火', '水', '木', '金', '土']
       let month =  this.date.getMonth() + 1
@@ -87,7 +86,7 @@ export default {
       return `${year}-${month}-${date}`
     },
     totalTime() {
-      let times = this.dailyTasks(this.date).map(task => task.expectedTime)
+      let times = this.dailyTasks(this.date).map(task => task.expected_time)
       if (!times.length) return null;
       let total = times.reduce((prev, current) => prev + current)
       let m = this.toMinutes(total)
@@ -98,15 +97,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, SET_NEW_TASK_ID, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, MOVE_TASK_TO_COMPLETED, SET_CURRENT_TASK, COMPLETE_TASK]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, MOVE_TASK_TO_COMPLETED, SET_CURRENT_TASK, COMPLETE_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
-    // taskTimes(task) {
-    //   let elapsed = task.elapsedTime
-    //   let elapsedString = (elapsed ? `${this.toMinutes(elapsed)}/` : '')
-    //   return `${elapsedString}${this.toMinutes(task.expectedTime)}`
-    // },
     closeForm() {
       this.newFormIsOpen = false
       let self = this
@@ -126,18 +120,14 @@ export default {
       let tasks = this.dailyTasks(this.date)
       let newOrder = tasks.length
       let newTask = {
-        id: this.newTaskId,
         content: e.content,
-        expectedTime: e.expectedTime,
-        isCompleted: false,
-        elapsedTime: 0,
-        year: this.date.getFullYear(),
-        month: this.date.getMonth(),
-        date: this.date.getDate(),
+        expected_time: e.expected_time,
+        is_completed: false,
+        elapsed_time: 0,
+        date: this.date.toLocaleDateString(),
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)
-      this[SET_NEW_TASK_ID]()
       this.$refs.newForm.focusForm()
     },
     updateTask(e, task_id) {

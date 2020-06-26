@@ -6,7 +6,6 @@
 
 <script>
 import MonthlyTasks from '@/components/tasks/MonthlyTasks.vue'
-import { SET_NEW_TASK_ID } from '@/store/mutation-types'
 
 export default {
   name: 'MonthlyColumn',
@@ -21,8 +20,5 @@ export default {
       this.$emit('change-month', startDate)
     }
   },
-  mounted() {
-    this.$store.dispatch('monthly/' + SET_NEW_TASK_ID)
-  }
 }
 </script>

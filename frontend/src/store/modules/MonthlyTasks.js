@@ -1,6 +1,5 @@
 import {
   ADD_NEW_TASK,
-  SET_NEW_TASK_ID,
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
@@ -17,7 +16,6 @@ export default {
       // order: Number,
       // isChecked: Boolean
     ],
-    newTaskId: 1,
   },
   getters: {
     monthlyTasks(state) {
@@ -31,20 +29,10 @@ export default {
         });
       }
     },
-    newTaskId(state) {
-      return state.newTaskId
-    },
   },
   mutations: {
     [ADD_NEW_TASK](state, payload) {
       state.tasks.push(payload)
-    },
-    [SET_NEW_TASK_ID](state) {
-      let latestId = 0
-      if (state.tasks.length) {
-        latestId = Math.max.apply(null, state.tasks.map(task => task.id))
-      }
-      state.newTaskId = latestId + 1
     },
     [UPDATE_TASK_CONTENT](state, payload) { // { content, id }
       let updatedTask = state.tasks.find(task => task.id === payload.id)
@@ -89,9 +77,6 @@ export default {
   actions: {
     [ADD_NEW_TASK]({ commit }, payload) {
       commit(ADD_NEW_TASK, payload)
-    },
-    [SET_NEW_TASK_ID]({ commit }) {
-      commit(SET_NEW_TASK_ID)
     },
     [UPDATE_TASK_CONTENT]({ commit }, payload) {
       commit(UPDATE_TASK_CONTENT, payload)
