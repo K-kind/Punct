@@ -13,6 +13,7 @@ import {
   COMPLETE_TASK,
   GET,
   POST,
+  PATCH,
   DELETE
 } from '../mutation-types'
 
@@ -71,12 +72,12 @@ export default {
     [ADD_NEW_TASK](state, payload) {
       state.tasks.push(payload)
     },
-    [UPDATE_TASK_CONTENT](state, payload) {
-      let updatedTask = state.tasks.find(task => task.id === payload.id)
-      updatedTask.content = payload.content
-      updatedTask.expected_time = payload.expected_time
-      if ('elapsed_time' in payload) {
-        updatedTask.elapsed_time = payload.elapsed_time
+    [UPDATE_TASK_CONTENT](state, { id, task }) {
+      let updatedTask = state.tasks.find(task => task.id === id)
+      updatedTask.content = task.content
+      updatedTask.expected_time = task.expected_time
+      if ('elapsed_time' in task) {
+        updatedTask.elapsed_time = task.elapsed_time
       }
     },
     [DELETE_TASK_BY_ID](state, { tasks, is_current }) {
@@ -310,16 +311,32 @@ export default {
       })
       .catch(err => err)
     },
-    [UPDATE_TASK_CONTENT]({ commit }, payload) {
-      commit(UPDATE_TASK_CONTENT, payload)
+    [UPDATE_TASK_CONTENT]({ commit, dispatch }, { id, task }) {
+      // payload = { id, task: { content, expected_time, elapsed_time } }
+      dispatch(
+        `http/${PATCH}`,
+        { url: `tasks/${id}`, data: { task } },
+        { root: true }
+      ).then(res => {
+        let error = res.data.error
+        if (error) {
+          window.alert(error)
+          throw new Error('Validation Error')
+        } else {
+          commit(UPDATE_TASK_CONTENT, { id, task })
+        }
+      })
+      // .catch(err => err)
     },
+    // ({ commit }, payload) {
+    //   commit(UPDATE_TASK_CONTENT, payload)
+    // },
     [DELETE_TASK_BY_ID]({ commit, dispatch }, payload) {
       dispatch(
         `http/${DELETE}`,
         { url: `tasks/${payload}` },
         { root: true }
       ).then(res => {
-        console.log(res.data)
         commit(DELETE_TASK_BY_ID, res.data)
       })
       .catch(err => err)
