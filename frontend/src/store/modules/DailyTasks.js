@@ -12,7 +12,8 @@ import {
   STOP_TASK,
   COMPLETE_TASK,
   GET,
-  POST
+  POST,
+  DELETE
 } from '../mutation-types'
 
 export default {
@@ -78,28 +79,31 @@ export default {
         updatedTask.elapsed_time = payload.elapsed_time
       }
     },
-    // 全部taskをfilterすると時間がかかるので要改善
-    [DELETE_TASK_BY_ID](state, taskId) {
-      let deletedTask = state.tasks.find(task => task.id === taskId)
-      state.tasks = state.tasks.filter(task => task.id !== taskId)
-
-      if (deletedTask.is_current) {
+    [DELETE_TASK_BY_ID](state, { tasks, is_current }) {
+      state.tasks = tasks
+      if (is_current) {
         state.currentTaskId = null
-        return false
       }
-
-      state.tasks = state.tasks.map(task => {
-        if (
-          task.date === deletedTask.date &&
-          task.month === deletedTask.month &&
-          task.year === deletedTask.year &&
-          task.order > deletedTask.order &&
-          task.is_completed === deletedTask.is_completed
-        ) { task.order-- }
-
-        return task
-      })
     },
+    // [DELETE_TASK_BY_ID](state, taskId) {
+    //   let deletedTask = state.tasks.find(task => task.id === taskId)
+    //   state.tasks = state.tasks.filter(task => task.id !== taskId)
+
+    //   if (deletedTask.is_current) {
+    //     state.currentTaskId = null
+    //     return false
+    //   }
+
+    //   state.tasks = state.tasks.map(task => {
+    //     if (
+    //       task.date === deletedTask.date &&
+    //       task.order > deletedTask.order &&
+    //       task.is_completed === deletedTask.is_completed
+    //     ) { task.order-- }
+
+    //     return task
+    //   })
+    // },
     [UPDATE_TASK_ORDER](state, {
       oldIndex, newIndex, fromDate, fromMonth, fromYear, fromCompleted
     }) {
@@ -309,8 +313,16 @@ export default {
     [UPDATE_TASK_CONTENT]({ commit }, payload) {
       commit(UPDATE_TASK_CONTENT, payload)
     },
-    [DELETE_TASK_BY_ID]({ commit }, payload) {
-      commit(DELETE_TASK_BY_ID, payload)
+    [DELETE_TASK_BY_ID]({ commit, dispatch }, payload) {
+      dispatch(
+        `http/${DELETE}`,
+        { url: `tasks/${payload}` },
+        { root: true }
+      ).then(res => {
+        console.log(res.data)
+        commit(DELETE_TASK_BY_ID, res.data)
+      })
+      .catch(err => err)
     },
     [UPDATE_TASK_ORDER]({ commit }, payload) {
       commit(UPDATE_TASK_ORDER, payload)

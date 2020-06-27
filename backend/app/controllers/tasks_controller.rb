@@ -16,6 +16,21 @@ class TasksController < ApplicationController
     render json: payload, status: status
   end
 
+  def update
+
+  end
+
+  def destroy
+    task = Task.find(params[:id])
+    @current_user
+      .tasks
+      .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', task.date, task.order, task.is_completed)
+      .update_all('tasks.order = tasks.order - 1')
+    is_current = task.is_current
+    task.destroy
+    render json: { tasks: @current_user.tasks, is_current: is_current }
+  end
+
   private
 
   def task_params
