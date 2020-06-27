@@ -121,8 +121,8 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, COMPLETE_TASK, UPDATE_TASK_ORDER]),
       this.$refs.newForm.focusForm()
     },
     updateTask(e, task_id) {
-      let task = Object.assign(e, {id: task_id})
-      this[UPDATE_TASK_CONTENT](task)
+      let payload = { id: task_id, task: e }
+      this[UPDATE_TASK_CONTENT](payload)
       this.closeForm()
     },
     deleteTask(taskId) {

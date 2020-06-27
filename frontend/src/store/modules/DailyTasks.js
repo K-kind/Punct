@@ -321,7 +321,7 @@ export default {
         let error = res.data.error
         if (error) {
           window.alert(error)
-          throw new Error('Validation Error')
+          // throw new Error('Validation Error')
         } else {
           commit(UPDATE_TASK_CONTENT, { id, task })
         }

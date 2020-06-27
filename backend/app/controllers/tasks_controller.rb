@@ -17,7 +17,12 @@ class TasksController < ApplicationController
   end
 
   def update
-
+    task = Task.find(params[:id])
+    if task.update(task_params)
+      head :no_content
+    else
+      render json: { error: task.errors.full_messages.join("\n") }
+    end
   end
 
   def destroy
