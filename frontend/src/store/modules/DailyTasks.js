@@ -86,46 +86,27 @@ export default {
         state.currentTaskId = null
       }
     },
-    // [DELETE_TASK_BY_ID](state, taskId) {
-    //   let deletedTask = state.tasks.find(task => task.id === taskId)
-    //   state.tasks = state.tasks.filter(task => task.id !== taskId)
-
-    //   if (deletedTask.is_current) {
-    //     state.currentTaskId = null
-    //     return false
-    //   }
-
+    // [UPDATE_TASK_ORDER](state, {
+    //   oldIndex, newIndex, fromDate, fromMonth, fromYear, fromCompleted
+    // }) {
     //   state.tasks = state.tasks.map(task => {
     //     if (
-    //       task.date === deletedTask.date &&
-    //       task.order > deletedTask.order &&
-    //       task.is_completed === deletedTask.is_completed
-    //     ) { task.order-- }
+    //       task.date != fromDate ||
+    //       task.month != fromMonth ||
+    //       task.year != fromYear ||
+    //       task.is_completed !== fromCompleted
+    //     ) { return task }
 
+    //     if (oldIndex < newIndex && task.order > oldIndex && task.order <= newIndex) { // 下げた時
+    //       task.order--
+    //     } else if (oldIndex > newIndex && task.order >= newIndex && task.order < oldIndex) { // 上げた時
+    //       task.order++
+    //     } else if (task.order === oldIndex) { // 移動主
+    //       task.order = newIndex
+    //     }
     //     return task
     //   })
     // },
-    [UPDATE_TASK_ORDER](state, {
-      oldIndex, newIndex, fromDate, fromMonth, fromYear, fromCompleted
-    }) {
-      state.tasks = state.tasks.map(task => {
-        if (
-          task.date != fromDate ||
-          task.month != fromMonth ||
-          task.year != fromYear ||
-          task.is_completed !== fromCompleted
-        ) { return task }
-
-        if (oldIndex < newIndex && task.order > oldIndex && task.order <= newIndex) { // 下げた時
-          task.order--
-        } else if (oldIndex > newIndex && task.order >= newIndex && task.order < oldIndex) { // 上げた時
-          task.order++
-        } else if (task.order === oldIndex) { // 移動主
-          task.order = newIndex
-        }
-        return task
-      })
-    },
     [MOVE_TASK_TO_ANOTHER](state, payload) {
       let oldIndex = payload.oldIndex
       let newIndex = payload.newIndex
@@ -303,8 +284,9 @@ export default {
         { url: 'tasks', data: { task: payload } },
         { root: true }
       ).then(res => {
-        if (res.data.task) {
-          commit(ADD_NEW_TASK, payload)
+        let task = res.data.task
+        if (task) {
+          commit(ADD_NEW_TASK, task)
         } else {
           window.alert(res.data.message)
         }
@@ -321,16 +303,12 @@ export default {
         let error = res.data.error
         if (error) {
           window.alert(error)
-          // throw new Error('Validation Error')
         } else {
           commit(UPDATE_TASK_CONTENT, { id, task })
         }
       })
       // .catch(err => err)
     },
-    // ({ commit }, payload) {
-    //   commit(UPDATE_TASK_CONTENT, payload)
-    // },
     [DELETE_TASK_BY_ID]({ commit, dispatch }, payload) {
       dispatch(
         `http/${DELETE}`,
@@ -341,8 +319,16 @@ export default {
       })
       .catch(err => err)
     },
-    [UPDATE_TASK_ORDER]({ commit }, payload) {
-      commit(UPDATE_TASK_ORDER, payload)
+    [UPDATE_TASK_ORDER]({ commit, dispatch }, payload) {
+      // payload = { oldIndex, newIndex, fromDate, fromCompleted, taskId }
+      dispatch(
+        `http/${POST}`,
+        { url: `tasks/order`, data: payload },
+        { root: true }
+      ).then(res => {
+        commit(SET_TASKS, res.data.tasks)
+      })
+      .catch(err => err)
     },
     [MOVE_TASK_TO_ANOTHER]({ commit }, payload) {
       commit(MOVE_TASK_TO_ANOTHER, payload)

@@ -79,10 +79,11 @@ export default {
       return `${month}/${date}(${day})`
     },
     separatedDate() {
-      let year = this.date.getFullYear()
-      let month = this.date.getMonth()
-      let date = this.date.getDate()
-      return `${year}-${month}-${date}`
+      // let year = this.date.getFullYear()
+      // let month = this.date.getMonth()
+      // let date = this.date.getDate()
+      // return `${year}-${month}-${date}`
+      return this.date.toLocaleDateString()
     },
     totalTime() {
       let times = this.completedTasks(this.date).map(task => task.elapsed_time)

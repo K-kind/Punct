@@ -36,6 +36,22 @@ class TasksController < ApplicationController
     render json: { tasks: @current_user.tasks, is_current: is_current }
   end
 
+  def order
+    old_index = params[:oldIndex]
+    new_index = params[:newIndex]
+    tasks = @current_user.tasks.where(date: params[:fromDate], is_completed: params[:fromCompleted])
+    if old_index < new_index # 下げた時
+      tasks.where('tasks.order > ? AND tasks.order <= ?', old_index, new_index)
+           .update_all('tasks.order = tasks.order - 1')
+    elsif old_index > new_index # 上げた時
+      tasks.where('tasks.order >= ? AND tasks.order < ?', new_index, old_index)
+           .update_all('tasks.order = tasks.order + 1')
+    end
+    tasks.find(params[:taskId]).update!(order: new_index) # 自身
+
+    render json: { tasks: @current_user.tasks }
+  end
+
   private
 
   def task_params

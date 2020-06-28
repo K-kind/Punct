@@ -3,7 +3,9 @@ Rails.application.routes.draw do
     resource :auth, only: [:create, :destroy], controller: 'auth' do
       get :name, on: :collection
     end
-    resources :tasks, only: [:index, :create, :update, :destroy]
+    resources :tasks, only: [:index, :create, :update, :destroy] do
+      post :order, on: :collection
+    end
     resource :user, only: [:show]
   end
 end

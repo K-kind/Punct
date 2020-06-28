@@ -80,10 +80,11 @@ export default {
       return `${month}/${date}(${day})`
     },
     separatedDate() {
-      let year = this.date.getFullYear()
-      let month = this.date.getMonth()
-      let date = this.date.getDate()
-      return `${year}-${month}-${date}`
+      // let year = this.date.getFullYear()
+      // let month = this.date.getMonth()
+      // let date = this.date.getDate()
+      // return `${year}-${month}-${date}`
+      return this.date.toLocaleDateString() // '2020/6/28'
     },
     totalTime() {
       let times = this.dailyTasks(this.date).map(task => task.expected_time)
@@ -131,7 +132,6 @@ export default {
       this.$refs.newForm.focusForm()
     },
     updateTask(e, task_id) {
-      // let task = Object.assign(e, {id: task_id})
       let payload = { id: task_id, task: e }
       this[UPDATE_TASK_CONTENT](payload)
       this.closeForm()
@@ -139,12 +139,12 @@ export default {
     onDragEnd(e) {
       let fromDateString = e.from.dataset.date
       let toDateString = e.to.dataset.date
-      let [fromYear, fromMonth, fromDate] = fromDateString.split('-')
+      // let [fromYear, fromMonth, fromDate] = fromDateString.split('-')
       let taskId = Number.parseInt(e.clone.dataset.task_id)
       let payload = {
-        fromYear,
-        fromMonth,
-        fromDate,
+        // fromYear,
+        // fromMonth,
+        fromDate: fromDateString,
         oldIndex: e.oldIndex,
         newIndex: e.newIndex,
         fromCompleted: false,
