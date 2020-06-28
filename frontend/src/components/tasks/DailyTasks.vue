@@ -49,7 +49,6 @@ import {
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
-  MOVE_TASK_TO_ANOTHER,
   MOVE_TASK_TO_COMPLETED,
   SET_CURRENT_TASK,
   COMPLETE_TASK
@@ -98,7 +97,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, MOVE_TASK_TO_COMPLETED, SET_CURRENT_TASK, COMPLETE_TASK]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_COMPLETED, SET_CURRENT_TASK, COMPLETE_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -137,17 +136,17 @@ export default {
       this.closeForm()
     },
     onDragEnd(e) {
-      let fromDateString = e.from.dataset.date
-      let toDateString = e.to.dataset.date
-      // let [fromYear, fromMonth, fromDate] = fromDateString.split('-')
+      let fromDate = e.from.dataset.date
+      let toDate = e.to.dataset.date
+      let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
       let payload = {
-        // fromYear,
-        // fromMonth,
-        fromDate: fromDateString,
+        fromDate,
+        toDate,
         oldIndex: e.oldIndex,
         newIndex: e.newIndex,
         fromCompleted: false,
+        toCompleted,
         taskId
       }
 
@@ -156,13 +155,10 @@ export default {
         this[COMPLETE_TASK]({ taskId, newIndex: e.newIndex })
       } else if (e.to.dataset.working) {
         this[SET_CURRENT_TASK](payload)
-      } else if (fromDateString === toDateString) {
-        if (e.oldIndex === e.newIndex) { return false }
-        this[UPDATE_TASK_ORDER](payload)
+      } else if (fromDate === toDate && e.oldIndex === e.newIndex) {
+        return false
       } else {
-        let [toYear, toMonth, toDate] = toDateString.split('-')
-        Object.assign(payload, { toYear, toMonth, toDate })
-        this[MOVE_TASK_TO_ANOTHER](payload)
+        this[UPDATE_TASK_ORDER](payload)
       }
     }
   }

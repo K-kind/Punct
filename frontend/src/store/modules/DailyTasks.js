@@ -4,7 +4,6 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
-  MOVE_TASK_TO_ANOTHER,
   MOVE_TASK_TO_COMPLETED,
   SET_CURRENT_TASK,
   UNSET_CURRENT_TASK,
@@ -85,59 +84,6 @@ export default {
       if (is_current) {
         state.currentTaskId = null
       }
-    },
-    // [UPDATE_TASK_ORDER](state, {
-    //   oldIndex, newIndex, fromDate, fromMonth, fromYear, fromCompleted
-    // }) {
-    //   state.tasks = state.tasks.map(task => {
-    //     if (
-    //       task.date != fromDate ||
-    //       task.month != fromMonth ||
-    //       task.year != fromYear ||
-    //       task.is_completed !== fromCompleted
-    //     ) { return task }
-
-    //     if (oldIndex < newIndex && task.order > oldIndex && task.order <= newIndex) { // 下げた時
-    //       task.order--
-    //     } else if (oldIndex > newIndex && task.order >= newIndex && task.order < oldIndex) { // 上げた時
-    //       task.order++
-    //     } else if (task.order === oldIndex) { // 移動主
-    //       task.order = newIndex
-    //     }
-    //     return task
-    //   })
-    // },
-    [MOVE_TASK_TO_ANOTHER](state, payload) {
-      let oldIndex = payload.oldIndex
-      let newIndex = payload.newIndex
-      let toCompleted = payload.toCompleted || false
-
-      state.tasks = state.tasks.map(task => {
-        if (task.id === payload.taskId) {
-          task.order = newIndex
-          task.date= Number.parseInt(payload.toDate)
-          task.month = Number.parseInt(payload.toMonth)
-          task.year = Number.parseInt(payload.toYear)
-          if (payload.fromCompleted) { task.is_completed = toCompleted }
-        } else if ( // 移動元
-          task.date == payload.fromDate &&
-          task.month == payload.fromMonth &&
-          task.year == payload.fromYear &&
-          task.order > oldIndex &&
-          task.is_completed === payload.fromCompleted
-        ) {
-          task.order--
-        } else if ( // 移動先
-          task.date == payload.toDate &&
-          task.month == payload.toMonth &&
-          task.year == payload.toYear &&
-          task.order >= newIndex &&
-          task.is_completed === toCompleted
-          ) {
-          task.order++
-        }
-        return task
-      })
     },
     [MOVE_TASK_TO_COMPLETED](state, {
       fromYear, fromMonth, fromDate, oldIndex
@@ -320,7 +266,6 @@ export default {
       .catch(err => err)
     },
     [UPDATE_TASK_ORDER]({ commit, dispatch }, payload) {
-      // payload = { oldIndex, newIndex, fromDate, fromCompleted, taskId }
       dispatch(
         `http/${POST}`,
         { url: `tasks/order`, data: payload },
@@ -329,9 +274,6 @@ export default {
         commit(SET_TASKS, res.data.tasks)
       })
       .catch(err => err)
-    },
-    [MOVE_TASK_TO_ANOTHER]({ commit }, payload) {
-      commit(MOVE_TASK_TO_ANOTHER, payload)
     },
     [MOVE_TASK_TO_COMPLETED]({ commit }, payload) {
       commit(MOVE_TASK_TO_COMPLETED, payload)
