@@ -266,6 +266,12 @@ export default {
       .catch(err => err)
     },
     [UPDATE_TASK_ORDER]({ commit, dispatch }, payload) {
+      if (
+        payload.fromDate === payload.toDate &&
+        payload.oldIndex === payload.newIndex &&
+        payload.fromCompleted === payload.toCompleted
+      ) { return false }
+
       dispatch(
         `http/${POST}`,
         { url: `tasks/order`, data: payload },

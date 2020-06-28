@@ -49,9 +49,7 @@ import {
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
-  MOVE_TASK_TO_COMPLETED,
   SET_CURRENT_TASK,
-  COMPLETE_TASK
 } from '@/store/mutation-types'
 
 export default {
@@ -79,10 +77,6 @@ export default {
       return `${month}/${date}(${day})`
     },
     separatedDate() {
-      // let year = this.date.getFullYear()
-      // let month = this.date.getMonth()
-      // let date = this.date.getDate()
-      // return `${year}-${month}-${date}`
       return this.date.toLocaleDateString() // '2020/6/28'
     },
     totalTime() {
@@ -97,7 +91,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_COMPLETED, SET_CURRENT_TASK, COMPLETE_TASK]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, SET_CURRENT_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -150,13 +144,8 @@ export default {
         taskId
       }
 
-      if (e.to.dataset.completed) {
-        this[MOVE_TASK_TO_COMPLETED](payload)
-        this[COMPLETE_TASK]({ taskId, newIndex: e.newIndex })
-      } else if (e.to.dataset.working) {
+      if (e.to.dataset.working) {
         this[SET_CURRENT_TASK](payload)
-      } else if (fromDate === toDate && e.oldIndex === e.newIndex) {
-        return false
       } else {
         this[UPDATE_TASK_ORDER](payload)
       }
