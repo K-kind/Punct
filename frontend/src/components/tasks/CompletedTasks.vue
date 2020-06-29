@@ -50,7 +50,6 @@ import {
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
-  MOVE_TASK_TO_ANOTHER,
   SET_CURRENT_TASK
 } from '@/store/mutation-types'
 
@@ -93,7 +92,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, SET_CURRENT_TASK]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, SET_CURRENT_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -139,29 +138,23 @@ export default {
       this.closeForm()
     },
     onDragEnd(e) {
-      let fromDateString = e.from.dataset.date
-      let toDateString = e.to.dataset.date
-      let [fromYear, fromMonth, fromDate] = fromDateString.split('-')
+      let fromDate = e.from.dataset.date
+      let toDate = e.to.dataset.date
+      let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
       let payload = {
-        fromYear,
-        fromMonth,
         fromDate,
+        toDate,
         oldIndex: e.oldIndex,
         newIndex: e.newIndex,
         fromCompleted: true,
+        toCompleted,
         taskId
       }
       if (e.to.dataset.working) {
         this[SET_CURRENT_TASK](payload)
-      } else if (e.to.dataset.completed && fromDateString === toDateString ) {
-        if (e.oldIndex === e.newIndex) { return false }
-        this[UPDATE_TASK_ORDER](payload)
       } else {
-        let toCompleted = (e.to.dataset.completed ? true : false)
-        let [toYear, toMonth, toDate] = e.to.dataset.date.split('-')
-        payload = Object.assign(payload, { toYear, toMonth, toDate, toCompleted })
-        this[MOVE_TASK_TO_ANOTHER](payload)
+        this[UPDATE_TASK_ORDER](payload)
       }
     },
   },

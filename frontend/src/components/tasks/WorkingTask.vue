@@ -44,7 +44,6 @@ import {
   UNSET_CURRENT_TASK,
   START_TASK,
   STOP_TASK,
-  COMPLETE_TASK
 } from '@/store/mutation-types'
 
 export default {
@@ -65,7 +64,7 @@ export default {
     ...mapGetters('daily', ['currentTask']),
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, UNSET_CURRENT_TASK, START_TASK, STOP_TASK, COMPLETE_TASK]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, UNSET_CURRENT_TASK, START_TASK, STOP_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -142,7 +141,7 @@ export default {
       }
       let payload = { taskId: this.currentTask.id }
       if (newIndex) { Object.assign(payload, { newIndex }) }
-      this[COMPLETE_TASK](payload)
+      // this[COMPLETE_TASK](payload)
       this[UNSET_CURRENT_TASK]({ taskId: this.currentTask.id })
       this.disableDrag(false)
     },

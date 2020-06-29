@@ -4,12 +4,10 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
-  MOVE_TASK_TO_COMPLETED,
   SET_CURRENT_TASK,
   UNSET_CURRENT_TASK,
   START_TASK,
   STOP_TASK,
-  COMPLETE_TASK,
   GET,
   POST,
   PATCH,
@@ -85,20 +83,6 @@ export default {
         state.currentTaskId = null
       }
     },
-    [MOVE_TASK_TO_COMPLETED](state, {
-      fromYear, fromMonth, fromDate, oldIndex
-    }) {
-      state.tasks = state.tasks.map(task => {
-        if ( // 移動元のみ
-          task.date == fromDate &&
-          task.month == fromMonth &&
-          task.year == fromYear &&
-          task.order > oldIndex &&
-          !task.is_completed
-        ) { task.order-- }
-        return task
-      })
-    },
     [SET_CURRENT_TASK](state, {
       fromYear, fromMonth, fromDate, oldIndex, fromCompleted, taskId
     } = {}) {
@@ -170,48 +154,6 @@ export default {
       currentTask.elapsed_time += (Date.now() - fromTime)
       currentTask.stopped_time = Date.now()
     },
-    [COMPLETE_TASK](state, { taskId, newIndex } = {}) {
-      let completedTask = state.tasks.find(task => task.id === taskId)
-      let now = new Date
-
-      completedTask.year = now.getFullYear()
-      completedTask.month = now.getMonth()
-      completedTask.date = now.getDate()
-      completedTask.is_completed = true
-
-      if (newIndex >= 0) {
-        state.tasks = state.tasks.map(task => {
-          if (
-            task.date === completedTask.date && // または今日
-            task.month === completedTask.month &&
-            task.year === completedTask.year &&
-            task.order >= newIndex &&
-            task.is_completed
-          ) { task.order++ }
-
-          if (task.id === taskId) { task.order = newIndex }
-          return task
-        })
-      } else {
-        let orders = []
-        for (let task of state.tasks) {
-          if (
-            task.date === completedTask.date &&
-            task.month === completedTask.month &&
-            task.year === completedTask.year &&
-            task.id !== taskId &&
-            task.is_completed
-          ) { orders.push(task.order) }
-        }
-        let newOrder = 0
-        if (orders.length) { newOrder = Math.max.apply(null, orders) + 1 }
-        completedTask.order = newOrder
-
-        state.tasks = state.tasks.concat([]) // リアクティブ対策
-        // Vue.set(state.tasks, key, value)
-      }
-      // Vue.set(completedTask, 'is_completed', true)
-    }
   },
   actions: {
     [SET_TASKS]({ commit, dispatch }) {
@@ -281,11 +223,14 @@ export default {
       })
       .catch(err => err)
     },
-    [MOVE_TASK_TO_COMPLETED]({ commit }, payload) {
-      commit(MOVE_TASK_TO_COMPLETED, payload)
-    },
-    [SET_CURRENT_TASK]({ commit }, payload) {
-      commit(SET_CURRENT_TASK, payload)
+    [SET_CURRENT_TASK]({ commit, dispatch }, payload) {
+      Object.assign(payload, { current: { set: true } })
+      dispatch(
+        [UPDATE_TASK_ORDER], payload,
+      ).then(res => {
+        commit(SET_CURRENT_TASK, res.data.tasks)
+      })
+      .catch(err => err)
     },
     [UNSET_CURRENT_TASK]({ commit }, payload) {
       commit(UNSET_CURRENT_TASK, payload)
@@ -295,9 +240,6 @@ export default {
     },
     [STOP_TASK]({ commit }, payload) {
       commit(STOP_TASK, payload)
-    },
-    [COMPLETE_TASK]({ commit }, payload) {
-      commit(COMPLETE_TASK, payload)
     },
   },
   modules: {

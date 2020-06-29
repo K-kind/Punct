@@ -58,6 +58,7 @@ class TasksController < ApplicationController
     # elsif (from_date != to_date) && (from_completed == to_completed)
     # if !from_completed && to_completed
     # end
+
     @current_user
       .tasks
       .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', from_date, old_index, from_completed)
