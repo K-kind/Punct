@@ -31,13 +31,12 @@ class TasksController < ApplicationController
       .tasks
       .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', task.date, task.order, task.is_completed)
       .update_all('tasks.order = tasks.order - 1')
-    is_current = task.is_current
     task.destroy
-    render json: { tasks: @current_user.tasks, is_current: is_current }
+    render json: { tasks: @current_user.tasks }
   end
 
   def order
-    # params = { oldIndex, newIndex, fromDate, toDate, fromCompleted, toCompleted, taskId }
+    # params = { oldIndex, newIndex, fromDate, toDate, fromCompleted, toCompleted, taskId, current }
     logger.debug old_index = params[:oldIndex]
     logger.debug new_index = params[:newIndex]
     logger.debug from_date = params[:fromDate]
@@ -45,19 +44,7 @@ class TasksController < ApplicationController
     logger.debug from_completed = params[:fromCompleted]
     logger.debug to_completed = params[:toCompleted]
     logger.debug task_id = params[:taskId]
-    # if (from_date == to_date) && (from_completed == to_completed)
-    #   tasks = @current_user.tasks.where(date: from_date, is_completed: from_completed)
-    #   if old_index < new_index # 下げた時
-    #     tasks.where('tasks.order > ? AND tasks.order <= ?', old_index, new_index)
-    #          .update_all('tasks.order = tasks.order - 1')
-    #   elsif old_index > new_index # 上げた時
-    #     tasks.where('tasks.order >= ? AND tasks.order < ?', new_index, old_index)
-    #          .update_all('tasks.order = tasks.order + 1')
-    #   end
-    #   Task.find(task_id).update!(order: new_index) # 自身
-    # elsif (from_date != to_date) && (from_completed == to_completed)
-    # if !from_completed && to_completed
-    # end
+    logger.debug current = params[:current]
 
     @current_user
       .tasks
@@ -69,19 +56,53 @@ class TasksController < ApplicationController
       .where('tasks.date = ? AND tasks.order >= ? AND tasks.is_completed = ?', to_date, new_index, to_completed)
       .update_all('tasks.order = tasks.order + 1')
 
-    unless new_index
-      to_date = Time.zone.today
-      to_completed = true
-      new_index = @current_user.tasks.where(date: to_date, is_completed: to_completed).count
+    if current # current = { isSetting: boolean }
+      Task.find(task_id).update!(
+        order: new_index,
+        date: to_date,
+        is_completed: to_completed,
+        is_current: current[:isSetting]
+      )
+      # unless new_index
+      #   to_date = Time.zone.today
+      #   to_completed = true
+      #   new_index = @current_user.tasks.where(date: to_date, is_completed: to_completed).count
+      # end
+    else
+      Task.find(task_id).update!(
+        order: new_index,
+        date: to_date,
+        is_completed: to_completed
+      )
     end
-
-    Task.find(task_id).update!(
-      order: new_index,
-      date: to_date,
-      is_completed: to_completed
-    )
-
     render json: { tasks: @current_user.tasks }
+  end
+
+  # // [START_TASK](state) {
+  #   //   let currentTask = state.tasks.find(task => task.id === state.currentTaskId)
+  #   //   if (currentTask.on_progress) return false;
+
+  #   //   if (currentTask.started_time) {
+  #   //     currentTask.stopped_time = Date.now()
+  #   //   } else {
+  #   //     currentTask.started_time = Date.now()
+  #   //   }
+  #   //   currentTask.on_progress = true
+  #   // },
+  def timer
+    task = Task.find(params[:id])
+    raise if task.on_progress
+
+    unix_time_now = (Time.zone.now.to_f * 1000).to_i # ミリ秒
+    if task.started_time
+      task.stopped_time = unix_time_now
+    else
+      task.started_time = unix_time_now
+    end
+    task.on_progress = true
+    task.save!
+
+    head :no_content
   end
 
   private

@@ -6,7 +6,7 @@
     <div v-if="currentTask">
       <a href="Javascript:void(0)" @click="start" v-if="!timerId"><i class="el-icon-video-play"></i></a>
       <a href="Javascript:void(0)" @click="stop" v-else><i class="el-icon-video-pause"></i></a>
-      <span>経過時間: {{ elapsed_time }}</span>
+      <span>経過時間: {{ elapsedTime }}</span>
       <button @click.prevent="complete()">完了</button>
     </div>
     <draggable tag="ul" :group="dragGroup" @end="onDragEnd" :data-working="true" @add="onAdd" @clone="onClone" draggable=".draggable">
@@ -42,8 +42,7 @@ import TaskForm from '@/components/TaskForm.vue'
 import {
   UPDATE_TASK_CONTENT,
   UNSET_CURRENT_TASK,
-  START_TASK,
-  STOP_TASK,
+  UPDATE_TIMER,
 } from '@/store/mutation-types'
 
 export default {
@@ -53,7 +52,7 @@ export default {
       formIsOpen: false,
       timerId: null,
       elapsedTime: null,
-      dragGroup: 'TASKS'
+      dragGroup: ''
     }
   },
   components: {
@@ -64,7 +63,7 @@ export default {
     ...mapGetters('daily', ['currentTask']),
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, UNSET_CURRENT_TASK, START_TASK, STOP_TASK]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, UNSET_CURRENT_TASK, UPDATE_TIMER]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -127,11 +126,11 @@ export default {
       }, 1000)
     },
     start() {
-      this[START_TASK]()
+      this[UPDATE_TIMER]({ taskId: this.currentTask.id, isStarting: true })
       this.setTimer()
     },
     stop() {
-      this[STOP_TASK]()
+      this[UPDATE_TIMER]({ taskId: this.currentTask.id, isStarting: false })
       clearInterval(this.timerId)
       this.timerId = null
     },
@@ -161,13 +160,15 @@ export default {
     }
   },
   mounted() {
-    if (!this.currentTask) return false;
+    let self = this
+    setTimeout(() => {
+      if (!self.currentTask) return false;
 
-    this.disableDrag(true)
-    this.computeElapsedTime()
-    if (this.currentTask.started_time) {
-      this.setTimer()
-    }
+      self.computeElapsedTime()
+      if (self.currentTask.started_time) {
+        self.setTimer()
+      }
+    }, 500)
   }
 }
 </script>

@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_23_093236) do
+ActiveRecord::Schema.define(version: 2020_06_30_115523) do
 
   create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.string "content", null: false
     t.integer "expected_time", default: 0, null: false
     t.integer "elapsed_time", default: 0, null: false
     t.integer "order"
-    t.integer "started_time"
-    t.integer "stopped_time"
+    t.bigint "started_time"
+    t.bigint "stopped_time"
     t.date "date"
     t.boolean "on_progress", default: false, null: false
     t.boolean "is_current", default: false, null: false
