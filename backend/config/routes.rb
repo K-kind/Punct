@@ -8,7 +8,7 @@ Rails.application.routes.draw do
       patch :start, on: :member
       patch :stop, on: :member
     end
-    resources :weekly_tasks, only: [:index, :create, :update, :destroy] do
+    resources :weekly_tasks, only: [:create, :update, :destroy] do
       post :order, on: :collection
     end
     resource :user, only: [:show]

@@ -1,9 +1,14 @@
 import {
+  SET_TASKS,
+  // SET_UPDATED_TASK,
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
-  COMPLETE_TASK
+  COMPLETE_TASK,
+  // POST,
+  // PATCH,
+  // DELETE
 } from '../mutation-types'
 
 export default {
@@ -11,17 +16,17 @@ export default {
   state: {
     tasks: [
       // id: Number,
-      // startDate: Date,
+      // start_date: Date,
       // content: String,
       // order: Number,
-      // isChecked: Boolean
+      // is_checked: Boolean
     ],
   },
   getters: {
     weeklyTasks(state) {
       return date => {
         return state.tasks.filter(task =>
-          task.startDate === date.toISOString()
+          (new Date(task.start_date)).toDateString() === date.toDateString()
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
           if (a.order > b.order) return 1;
@@ -31,6 +36,9 @@ export default {
     },
   },
   mutations: {
+    [SET_TASKS](state, tasks) {
+      state.tasks = tasks
+    },
     [ADD_NEW_TASK](state, payload) {
       state.tasks.push(payload)
     },

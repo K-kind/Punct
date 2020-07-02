@@ -40,7 +40,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('daily/' + SET_TASKS)
+    this.$store.dispatch(SET_TASKS)
     let flash = this.$store.state.message.flash
     if (flash) {
       this.$notify({ message: flash, duration: 2500 })

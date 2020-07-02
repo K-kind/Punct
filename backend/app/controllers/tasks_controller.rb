@@ -1,7 +1,9 @@
 class TasksController < ApplicationController
   def index
-    tasks = @current_user.tasks
-    render json: { tasks: tasks }
+    daily = @current_user.tasks
+    weekly = @current_user.weekly_tasks
+    monthly = @current_user.monthly_tasks
+    render json: { tasks: { daily: daily, weekly: weekly, monthly: monthly } }
   end
 
   def create
