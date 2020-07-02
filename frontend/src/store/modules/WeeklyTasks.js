@@ -61,20 +61,6 @@ export default {
         return task
       })
     },
-    [UPDATE_TASK_ORDER](state, { oldIndex, newIndex, startDate }) {
-      state.tasks = state.tasks.map(task => {
-        if (task.startDate !== startDate) { return task }
-
-        if (oldIndex < newIndex && task.order > oldIndex && task.order <= newIndex) { // 下げた時
-          task.order--
-        } else if (oldIndex > newIndex && task.order >= newIndex && task.order < oldIndex) { // 上げた時
-          task.order++
-        } else if (task.order === oldIndex) { // 移動主
-          task.order = newIndex
-        }
-        return task
-      })
-    },
   },
   actions: {
     [ADD_NEW_TASK]({ commit, dispatch }, payload) {

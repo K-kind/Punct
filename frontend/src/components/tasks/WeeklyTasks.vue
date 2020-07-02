@@ -6,7 +6,7 @@
       <a v-if="daysFromToday !== 0 || !isArchive" href="Javascript:void(0)" @click="weekFoward(true)"><i class="el-icon-caret-right"></i></a>
     </div>
     <draggable tag="ul" group="WEEK" @end="onDragEnd" draggable=".draggable">
-      <li v-for="task of weeklyTasks(weekRange.monday)" :key="task.id"  class="task-board__li" :class="{ draggable: !onUpdatedTaskId }">
+      <li v-for="task of weeklyTasks(weekRange.monday)" :key="task.id"  class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
         <div v-if="onUpdatedTaskId !== task.id" class="task-board__task">
           <input type="checkbox" v-model="task.is_checked" @change="checkTask(task)" />
           <p class="task-board__p" @click="openUpdateForm(task.id)">
@@ -147,7 +147,8 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
       let payload = {
         oldIndex: e.oldIndex,
         newIndex: e.newIndex,
-        startDate: this.weekRange.monday.toLocaleDateString()
+        startDate: this.weekRange.monday.toLocaleDateString(),
+        taskId: Number.parseInt(e.clone.dataset.task_id)
       }
       this[UPDATE_TASK_ORDER](payload)
     }

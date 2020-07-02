@@ -28,6 +28,7 @@ export default new Vuex.Store({
       ).then(res => {
         commit(`daily/${SET_TASKS}`, res.data.tasks.daily, { root: true })
         commit(`weekly/${SET_TASKS}`, res.data.tasks.weekly, { root: true })
+        commit(`monthly/${SET_TASKS}`, res.data.tasks.monthly, { root: true })
       }).catch(err => err)
     },
   }

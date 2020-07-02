@@ -1,11 +1,11 @@
-class WeeklyTasksController < ApplicationController
+class MonthlyTasksController < ApplicationController
   # def index
-  #   tasks = @current_user.weekly_tasks
+  #   tasks = @current_user.monthly_tasks
   #   render json: { tasks: tasks }
   # end
 
   def create
-    task = @current_user.weekly_tasks.build(task_params)
+    task = @current_user.monthly_tasks.build(task_params)
     if task.save
       payload = { task: task }
       status = :created
@@ -17,7 +17,7 @@ class WeeklyTasksController < ApplicationController
   end
 
   def update
-    task = WeeklyTask.find(params[:id])
+    task = MonthlyTask.find(params[:id])
     if task.update(task_params)
       head :no_content
     else
@@ -26,13 +26,13 @@ class WeeklyTasksController < ApplicationController
   end
 
   def destroy
-    task = WeeklyTask.find(params[:id])
+    task = MonthlyTask.find(params[:id])
     @current_user
-      .weekly_tasks
+      .monthly_tasks
       .where('long_tasks.start_date = ? AND long_tasks.order > ?', task.start_date, task.order)
       .update_all('long_tasks.order = long_tasks.order - 1')
     task.destroy
-    render json: { tasks: @current_user.weekly_tasks }
+    render json: { tasks: @current_user.monthly_tasks }
   end
 
   def order
@@ -43,18 +43,18 @@ class WeeklyTasksController < ApplicationController
     task_id = params[:taskId]
 
     @current_user
-      .weekly_tasks
+      .monthly_tasks
       .where('long_tasks.start_date = ? AND long_tasks.order > ?', start_date, old_index)
       .update_all('long_tasks.order = long_tasks.order - 1')
 
     @current_user
-      .weekly_tasks
+      .monthly_tasks
       .where('long_tasks.start_date = ? AND long_tasks.order >= ?', start_date, new_index)
       .update_all('long_tasks.order = long_tasks.order + 1')
 
-    WeeklyTask.find(task_id).update!(order: new_index)
+      MonthlyTask.find(task_id).update!(order: new_index)
 
-    render json: { tasks: @current_user.weekly_tasks }
+    render json: { tasks: @current_user.monthly_tasks }
   end
 
   private
