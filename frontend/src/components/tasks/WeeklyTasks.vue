@@ -147,7 +147,7 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
       let payload = {
         oldIndex: e.oldIndex,
         newIndex: e.newIndex,
-        startDate: this.weekRange.monday.toISOString()
+        startDate: this.weekRange.monday.toLocaleDateString()
       }
       this[UPDATE_TASK_ORDER](payload)
     }

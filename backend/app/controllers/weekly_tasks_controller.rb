@@ -36,63 +36,27 @@ class WeeklyTasksController < ApplicationController
   end
 
   def order
-    # params = { oldIndex, newIndex, fromDate, toDate, fromCompleted, toCompleted, taskId, isCurrent }
-    logger.debug old_index = params[:oldIndex]
-    logger.debug new_index = params[:newIndex]
-    logger.debug from_date = params[:fromDate]
-    logger.debug to_date = params[:toDate]
-    logger.debug from_completed = params[:fromCompleted]
-    logger.debug to_completed = params[:toCompleted]
-    logger.debug task_id = params[:taskId]
-    logger.debug current = params[:isCurrent] || false
+    # params = { oldIndex, newIndex, startDate }
+    old_index = params[:oldIndex]
+    new_index = params[:newIndex]
+    start_date = params[:startDate]
 
     @current_user
-      .tasks
-      .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', from_date, old_index, from_completed)
-      .update_all('tasks.order = tasks.order - 1')
+      .weekly_tasks
+      .where('long_tasks.start_date = ? AND long_tasks.order > ?', start_date, old_index)
+      .update_all('long_tasks.order = long_tasks.order - 1')
 
     @current_user
-      .tasks
-      .where('tasks.date = ? AND tasks.order >= ? AND tasks.is_completed = ?', to_date, new_index, to_completed)
-      .update_all('tasks.order = tasks.order + 1')
+      .weekly_tasks
+      .where('long_tasks.start_date = ? AND long_tasks.order >= ?', start_date, new_index)
+      .update_all('long_tasks.order = long_tasks.order + 1')
 
-    Task.find(task_id).update!(
-      order: new_index,
-      date: to_date,
-      is_completed: to_completed,
-      is_current: current
-    )
-    render json: { tasks: @current_user.tasks }
-  end
+    @current_user
+      .weekly_tasks
+      .find_by(start_date: start_date, order: old_index)
+      .update!(order: new_index)
 
-  def start
-    task = Task.find(params[:id])
-    raise 'The task is already started.' if task.on_progress
-
-    unix_time_now = (Time.zone.now.to_f * 1000).to_i # ミリ秒
-    if task.started_time
-      task.stopped_time = unix_time_now
-    else
-      task.started_time = unix_time_now
-    end
-    task.on_progress = true
-    task.save!
-
-    render json: { task: task }
-  end
-
-  def stop
-    task = Task.find(params[:id])
-    raise 'The task is already stopped.' unless task.on_progress
-
-    initial_time = task.stopped_time || task.started_time
-    unix_time_now = (Time.zone.now.to_f * 1000).to_i
-    task.elapsed_time += (unix_time_now - initial_time)
-    task.stopped_time = unix_time_now
-    task.on_progress = false
-    task.save!
-
-    render json: { task: task }
+    render json: { tasks: @current_user.weekly_tasks }
   end
 
   private

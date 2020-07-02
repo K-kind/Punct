@@ -1,6 +1,5 @@
 import {
   SET_TASKS,
-  // SET_UPDATED_TASK,
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
@@ -107,7 +106,7 @@ export default {
       }).catch(err => { alert(err) })
     },
     [DELETE_TASK_BY_ID]({ commit, dispatch }, taskId) {
-      dispatch(
+      return dispatch(
         `http/${DELETE}`,
         { url: `weekly_tasks/${taskId}` },
         { root: true }
@@ -116,8 +115,14 @@ export default {
       })
       .catch(err => err)
     },
-    [UPDATE_TASK_ORDER]({ commit }, payload) {
-      commit(UPDATE_TASK_ORDER, payload)
+    [UPDATE_TASK_ORDER]({ commit, dispatch }, payload) {
+      return dispatch(
+        `http/${POST}`,
+        { url: 'weekly_tasks/order', data: payload },
+        { root: true }
+      ).then(res => {
+        commit(SET_TASKS, res.data.tasks)
+      }).catch(err => err)
     },
   }
 }
