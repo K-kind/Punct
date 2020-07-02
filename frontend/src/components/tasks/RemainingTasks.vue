@@ -36,9 +36,7 @@ import { mapActions } from 'vuex'
 import TaskForm from '@/components/TaskForm.vue'
 import {
   UPDATE_TASK_CONTENT,
-  MOVE_TASK_TO_ANOTHER,
-  SET_CURRENT_TASK,
-  COMPLETE_TASK
+  UPDATE_TASK_ORDER,
 } from '@/store/mutation-types'
 
 export default {
@@ -69,7 +67,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, MOVE_TASK_TO_ANOTHER, SET_CURRENT_TASK, COMPLETE_TASK]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -83,29 +81,26 @@ export default {
       setTimeout(() => self.$refs.updateForm[0].focusForm())
     },
     updateTask(e, task_id) {
-      let task = Object.assign(e, {id: task_id})
-      this[UPDATE_TASK_CONTENT](task)
+      let payload = { id: task_id, task: e }
+      this[UPDATE_TASK_CONTENT](payload)
       this.closeForm()
     },
     onDragEnd(e) {
       this.disableDrag(true)
       if (e.to.dataset.remaining) { return false }
 
+      let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
       let payload = {
+        toDate: e.to.dataset.date,
         newIndex: e.newIndex,
         fromCompleted: false,
+        toCompleted,
         taskId
       }
 
-      if (e.to.dataset.completed) {
-        this[COMPLETE_TASK]({ taskId, newIndex: e.newIndex })
-      } else if (e.to.dataset.working) {
-        this[SET_CURRENT_TASK](payload)
-      } else {
-        let [toYear, toMonth, toDate] = e.to.dataset.date.split('-')
-        Object.assign(payload, { toYear, toMonth, toDate })
-        this[MOVE_TASK_TO_ANOTHER](payload)
+      if (!e.to.dataset.working) {
+        this[UPDATE_TASK_ORDER](payload)
       }
     },
     onClone() {

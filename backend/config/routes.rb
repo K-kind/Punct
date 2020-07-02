@@ -3,7 +3,11 @@ Rails.application.routes.draw do
     resource :auth, only: [:create, :destroy], controller: 'auth' do
       get :name, on: :collection
     end
-    resources :tasks, only: [:index, :create]
+    resources :tasks, only: [:index, :create, :update, :destroy] do
+      post :order, on: :collection
+      patch :start, on: :member
+      patch :stop, on: :member
+    end
     resource :user, only: [:show]
   end
 end

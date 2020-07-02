@@ -2,6 +2,7 @@ import {
   REQUEST,
   GET,
   POST,
+  PATCH,
   DELETE,
   // CREATE
 } from '../mutation-types'
@@ -43,6 +44,10 @@ export default {
     },
     async [POST] ({ dispatch }, requests) {
       requests.method = 'post'
+      return dispatch(REQUEST, requests)
+    },
+    async [PATCH] ({ dispatch }, requests) {
+      requests.method = 'patch'
       return dispatch(REQUEST, requests)
     },
     async [DELETE] ({ dispatch }, requests) {

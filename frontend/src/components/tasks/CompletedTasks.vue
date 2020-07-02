@@ -50,8 +50,6 @@ import {
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
-  MOVE_TASK_TO_ANOTHER,
-  SET_CURRENT_TASK
 } from '@/store/mutation-types'
 
 export default {
@@ -79,10 +77,7 @@ export default {
       return `${month}/${date}(${day})`
     },
     separatedDate() {
-      let year = this.date.getFullYear()
-      let month = this.date.getMonth()
-      let date = this.date.getDate()
-      return `${year}-${month}-${date}`
+      return this.date.toLocaleDateString()
     },
     totalTime() {
       let times = this.completedTasks(this.date).map(task => task.elapsed_time)
@@ -96,7 +91,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, MOVE_TASK_TO_ANOTHER, SET_CURRENT_TASK]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -128,43 +123,31 @@ export default {
         expected_time: e.expected_time,
         elapsed_time: e.elapsed_time,
         is_completed: true,
-        year: this.date.getFullYear(),
-        month: this.date.getMonth(),
-        date: this.date.getDate(),
+        date: this.date.toLocaleDateString(),
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)
       this.$refs.newForm.focusForm()
     },
     updateTask(e, task_id) {
-      let task = Object.assign(e, {id: task_id})
-      this[UPDATE_TASK_CONTENT](task)
+      let payload = { id: task_id, task: e }
+      this[UPDATE_TASK_CONTENT](payload)
       this.closeForm()
     },
     onDragEnd(e) {
-      let fromDateString = e.from.dataset.date
-      let toDateString = e.to.dataset.date
-      let [fromYear, fromMonth, fromDate] = fromDateString.split('-')
+      let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
       let payload = {
-        fromYear,
-        fromMonth,
-        fromDate,
+        fromDate: e.from.dataset.date,
+        toDate: e.to.dataset.date,
         oldIndex: e.oldIndex,
         newIndex: e.newIndex,
         fromCompleted: true,
+        toCompleted,
         taskId
       }
-      if (e.to.dataset.working) {
-        this[SET_CURRENT_TASK](payload)
-      } else if (e.to.dataset.completed && fromDateString === toDateString ) {
-        if (e.oldIndex === e.newIndex) { return false }
+      if (!e.to.dataset.working) {
         this[UPDATE_TASK_ORDER](payload)
-      } else {
-        let toCompleted = (e.to.dataset.completed ? true : false)
-        let [toYear, toMonth, toDate] = e.to.dataset.date.split('-')
-        payload = Object.assign(payload, { toYear, toMonth, toDate, toCompleted })
-        this[MOVE_TASK_TO_ANOTHER](payload)
       }
     },
   },
