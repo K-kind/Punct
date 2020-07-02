@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import WorkingColumn from '@/components/WorkingColumn.vue'
-import TodayColumn from '@/components/TodayColumn.vue'
-import DailyColumn from '@/components/DailyColumn.vue'
-import WeeklyColumn from '@/components/WeeklyColumn.vue'
-import MonthlyColumn from '@/components/MonthlyColumn.vue'
+import WorkingColumn from '@/components/homeColumns/WorkingColumn.vue'
+import TodayColumn from '@/components/homeColumns/TodayColumn.vue'
+import DailyColumn from '@/components/homeColumns/DailyColumn.vue'
+import WeeklyColumn from '@/components/homeColumns/WeeklyColumn.vue'
+import MonthlyColumn from '@/components/homeColumns/MonthlyColumn.vue'
 import { SET_TASKS, DESTROY } from '@/store/mutation-types'
 
 export default {
