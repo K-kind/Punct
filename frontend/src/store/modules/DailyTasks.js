@@ -5,8 +5,6 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
-  SET_CURRENT_TASK,
-  UNSET_CURRENT_TASK,
   START_TASK,
   STOP_TASK,
   GET,
@@ -23,7 +21,6 @@ export default {
   getters: {
     dailyTasks(state) {
       return date => {
-        // console.log(date.toLocaleDateString().replace(/\//g, '-'))
         return state.tasks.filter(task =>
           // task.date === date.toLocaleDateString().replace(/\//g, '-') &&
           (new Date(task.date)).toDateString() === date.toDateString() &&
@@ -39,9 +36,6 @@ export default {
       return date => {
         return state.tasks.filter(task =>
           (new Date(task.date)).toDateString() === date.toDateString() &&
-          // task.year === date.getFullYear() &&
-          // task.month === date.getMonth() &&
-          // task.date === date.getDate() &&
           task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
@@ -77,33 +71,6 @@ export default {
       if ('elapsed_time' in task) {
         updatedTask.elapsed_time = task.elapsed_time
       }
-    },
-    [UNSET_CURRENT_TASK](state, { toYear, toMonth, toDate, newIndex, taskId } = {}) {
-      state.currentTaskId = null
-      if (!toYear) { // リアクティブでない可能性あり
-        state.tasks.find(task => task.id === taskId).is_current = false
-        return false
-      }
-
-      state.tasks = state.tasks.map(task => {
-        if (
-          task.date == toDate &&
-          task.month == toMonth &&
-          task.year == toYear &&
-          task.order >= newIndex &&
-          !task.is_completed
-        ) { task.order++ }
-
-        if (task.id === taskId) {
-          task.is_current = false
-          task.order = newIndex
-          task.date = Number.parseInt(toDate)
-          task.month = Number.parseInt(toMonth)
-          task.year = Number.parseInt(toYear)
-        }
-
-        return task
-      })
     },
     [SET_UPDATED_TASK](state, { task }) {
       let currentTask = state.tasks.find(t => t.id === task.id)
@@ -150,8 +117,7 @@ export default {
         } else {
           commit(UPDATE_TASK_CONTENT, { id, task })
         }
-      })
-      // .catch(err => err)
+      }).catch(err => err)
     },
     [DELETE_TASK_BY_ID]({ commit, dispatch }, payload) {
       dispatch(
@@ -170,24 +136,6 @@ export default {
         payload.fromCompleted === payload.toCompleted
       ) { return false }
 
-      return dispatch(
-        `http/${POST}`,
-        { url: 'tasks/order', data: payload },
-        { root: true }
-      ).then(res => {
-        commit(SET_TASKS, res.data.tasks)
-      }).catch(err => err)
-    },
-    [SET_CURRENT_TASK]({ commit, dispatch }, payload) {
-      return dispatch(
-        `http/${POST}`,
-        { url: 'tasks/order', data: payload },
-        { root: true }
-      ).then(res => {
-        commit(SET_TASKS, res.data.tasks)
-      }).catch(err => err)
-    },
-    [UNSET_CURRENT_TASK]({ commit, dispatch }, payload) {
       return dispatch(
         `http/${POST}`,
         { url: 'tasks/order', data: payload },

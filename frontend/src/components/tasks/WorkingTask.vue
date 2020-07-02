@@ -7,7 +7,7 @@
       <a href="Javascript:void(0)" @click="start" v-if="!timerId"><i class="el-icon-video-play"></i></a>
       <a href="Javascript:void(0)" @click="stop" v-else><i class="el-icon-video-pause"></i></a>
       <span>経過時間: {{ elapsedTime }}</span>
-      <button @click.prevent="complete()">完了</button>
+      <button @click.prevent="complete(null)">完了</button>
     </div>
     <draggable tag="ul" :group="dragGroup" @end="onDragEnd" :data-working="true" @add="onAdd" @clone="onClone" draggable=".draggable">
       <li v-if="currentTask" class="task-board__li" :class="{ draggable: !formIsOpen }">
@@ -42,7 +42,6 @@ import TaskForm from '@/components/TaskForm.vue'
 import {
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
-  UNSET_CURRENT_TASK,
   START_TASK,
   STOP_TASK,
 } from '@/store/mutation-types'
@@ -62,10 +61,10 @@ export default {
     TaskForm
   },
   computed: {
-    ...mapGetters('daily', ['currentTask']),
+    ...mapGetters('daily', ['currentTask', 'completedTasks']),
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, UNSET_CURRENT_TASK, START_TASK, STOP_TASK]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, START_TASK, STOP_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -86,29 +85,6 @@ export default {
       this.disableDrag(false)
       clearInterval(this.timerId)
       this.timerId = null
-    },
-    onDragEnd(e) {
-      if (e.to.dataset.working) {
-        this.disableDrag(true)
-        return false
-      } else if (e.to.dataset.completed) {
-        this.complete(e.newIndex)
-        return false
-      }
-
-      if (this.currentTask.on_progress) {
-        this.stop()
-      }
-      let [toYear, toMonth, toDate] = e.to.dataset.date.split('-')
-      let payload = {
-        toYear,
-        toMonth,
-        toDate,
-        newIndex: e.newIndex,
-        taskId: this.currentTask.id
-      }
-      this[UNSET_CURRENT_TASK](payload)
-      this.disableDrag(false)
     },
     computeElapsedTime() {
       let elapsed = this.currentTask.elapsed_time
@@ -145,15 +121,43 @@ export default {
           this.timerId = null
         })
     },
-    complete(newIndex) {
+    complete(payload) {
       if (this.currentTask.on_progress) {
         this.stop()
       }
-      let payload = { taskId: this.currentTask.id }
-      if (newIndex) { Object.assign(payload, { newIndex }) }
-      // this[COMPLETE_TASK](payload)
-      this[UNSET_CURRENT_TASK]({ taskId: this.currentTask.id })
-      this.disableDrag(false)
+
+      if (!payload) {
+        let toDate = (new Date).toLocaleDateString()
+        let newIndex = this.completedTasks(new Date).length
+        payload = {
+          toDate,
+          newIndex,
+          fromCompleted: false,
+          toCompleted: true,
+          taskId: this.currentTask.id
+        }
+      }
+
+      this[UPDATE_TASK_ORDER](payload)
+        .then(() => {
+          this.disableDrag(false)
+        })
+    },
+    onDragEnd(e) {
+      if (e.to.dataset.working) {
+        this.disableDrag(true)
+        return false
+      }
+
+      let toCompleted = (e.to.dataset.completed ? true : false)
+      let payload = {
+        toDate: e.to.dataset.date,
+        newIndex: e.newIndex,
+        fromCompleted: false,
+        toCompleted,
+        taskId: this.currentTask.id
+      }
+      this.complete(payload)
     },
     onAdd(e) {
       this.disableDrag(true)
