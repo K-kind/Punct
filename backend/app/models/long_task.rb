@@ -4,5 +4,4 @@ class LongTask < ApplicationRecord
   validates :start_date, presence: true
   validates :type, presence: true
   validates :order, presence: true
-  validates :is_checked, inclusion: [true, false]
 end
