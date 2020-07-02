@@ -1,7 +1,9 @@
 class TasksController < ApplicationController
   def index
-    tasks = @current_user.tasks
-    render json: { tasks: tasks }
+    daily = @current_user.tasks
+    weekly = @current_user.weekly_tasks
+    monthly = @current_user.monthly_tasks
+    render json: { tasks: { daily: daily, weekly: weekly, monthly: monthly } }
   end
 
   def create
@@ -10,7 +12,7 @@ class TasksController < ApplicationController
       payload = { task: task }
       status = :created
     else
-      payload = { message: task.errors.full_messages.join("\n") }
+      payload = { error: task.errors.full_messages.join("\n") }
       status = :ok
     end
     render json: payload, status: status

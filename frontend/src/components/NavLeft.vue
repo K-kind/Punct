@@ -5,7 +5,6 @@
 </template>
 
 <script>
-// import WorkingColumn from '@/components/WorkingColumn.vue'
 import { DESTROY } from '@/store/mutation-types'
 
 export default {

@@ -167,6 +167,7 @@ export default {
       let payload = {
         fromDate: e.from.dataset.date,
         oldIndex: e.oldIndex,
+        newIndex: 0,
         fromCompleted,
         toCompleted: false,
         taskId,

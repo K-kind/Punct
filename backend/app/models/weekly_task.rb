@@ -1,0 +1,2 @@
+class WeeklyTask < LongTask
+end

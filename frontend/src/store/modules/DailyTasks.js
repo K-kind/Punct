@@ -7,7 +7,6 @@ import {
   UPDATE_TASK_ORDER,
   START_TASK,
   STOP_TASK,
-  GET,
   POST,
   PATCH,
   DELETE
@@ -61,8 +60,8 @@ export default {
     [SET_TASKS](state, tasks) {
       state.tasks = tasks
     },
-    [ADD_NEW_TASK](state, payload) {
-      state.tasks.push(payload)
+    [ADD_NEW_TASK](state, task) {
+      state.tasks.push(task)
     },
     [UPDATE_TASK_CONTENT](state, { id, task }) {
       let updatedTask = state.tasks.find(task => task.id === id)
@@ -81,15 +80,6 @@ export default {
     },
   },
   actions: {
-    [SET_TASKS]({ commit, dispatch }) {
-      dispatch(
-        `http/${GET}`,
-        { url: 'tasks' },
-        { root: true }
-      ).then(res => {
-        commit(SET_TASKS, res.data.tasks)
-      }).catch(err => err)
-    },
     [ADD_NEW_TASK]({ commit, dispatch }, payload) {
       dispatch(
         `http/${POST}`,
@@ -100,7 +90,7 @@ export default {
         if (task) {
           commit(ADD_NEW_TASK, task)
         } else {
-          window.alert(res.data.message)
+          window.alert(res.data.error)
         }
       }).catch(err => err)
     },

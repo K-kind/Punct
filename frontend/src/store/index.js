@@ -7,6 +7,7 @@ import MonthlyTasks from './modules/MonthlyTasks'
 import auth from './modules/auth'
 import http from './modules/http'
 import message from './modules/message'
+import { SET_TASKS, GET } from './mutation-types'
 
 Vue.use(Vuex)
 
@@ -19,6 +20,18 @@ export default new Vuex.Store({
     http,
     message
   },
+  actions: {
+    [SET_TASKS]({ commit, dispatch }) {
+      dispatch(
+        `http/${GET}`,
+        { url: 'tasks' }
+      ).then(res => {
+        commit(`daily/${SET_TASKS}`, res.data.tasks.daily, { root: true })
+        commit(`weekly/${SET_TASKS}`, res.data.tasks.weekly, { root: true })
+        commit(`monthly/${SET_TASKS}`, res.data.tasks.monthly, { root: true })
+      }).catch(err => err)
+    },
+  }
   // plugins: [createPersistedState({
   //   key: 'todo',
   //   storage: localStorage
