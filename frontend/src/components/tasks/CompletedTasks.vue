@@ -50,7 +50,6 @@ import {
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
-  SET_CURRENT_TASK
 } from '@/store/mutation-types'
 
 export default {
@@ -92,7 +91,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, SET_CURRENT_TASK]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -138,22 +137,18 @@ export default {
       this.closeForm()
     },
     onDragEnd(e) {
-      let fromDate = e.from.dataset.date
-      let toDate = e.to.dataset.date
       let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
       let payload = {
-        fromDate,
-        toDate,
+        fromDate: e.from.dataset.date,
+        toDate: e.to.dataset.date,
         oldIndex: e.oldIndex,
         newIndex: e.newIndex,
         fromCompleted: true,
         toCompleted,
         taskId
       }
-      if (e.to.dataset.working) {
-        this[SET_CURRENT_TASK](payload)
-      } else {
+      if (!e.to.dataset.working) {
         this[UPDATE_TASK_ORDER](payload)
       }
     },

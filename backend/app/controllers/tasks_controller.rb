@@ -78,20 +78,9 @@ class TasksController < ApplicationController
     render json: { tasks: @current_user.tasks }
   end
 
-  # // [START_TASK](state) {
-  #   //   let currentTask = state.tasks.find(task => task.id === state.currentTaskId)
-  #   //   if (currentTask.on_progress) return false;
-
-  #   //   if (currentTask.started_time) {
-  #   //     currentTask.stopped_time = Date.now()
-  #   //   } else {
-  #   //     currentTask.started_time = Date.now()
-  #   //   }
-  #   //   currentTask.on_progress = true
-  #   // },
-  def timer
+  def start
     task = Task.find(params[:id])
-    raise if task.on_progress
+    raise RuntimeError, 'The task is already started.' if task.on_progress
 
     unix_time_now = (Time.zone.now.to_f * 1000).to_i # ミリ秒
     if task.started_time
@@ -102,7 +91,21 @@ class TasksController < ApplicationController
     task.on_progress = true
     task.save!
 
-    head :no_content
+    render json: { task: task }
+  end
+
+  def stop
+    task = Task.find(params[:id])
+    raise RuntimeError, 'The task is already stopped.' unless task.on_progress
+
+    initial_time = task.stopped_time || task.started_time
+    unix_time_now = (Time.zone.now.to_f * 1000).to_i
+    task.elapsed_time += (unix_time_now - initial_time)
+    task.stopped_time = unix_time_now
+    task.on_progress = false
+    task.save!
+
+    render json: { task: task }
   end
 
   private

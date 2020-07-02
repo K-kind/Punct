@@ -5,7 +5,8 @@ Rails.application.routes.draw do
     end
     resources :tasks, only: [:index, :create, :update, :destroy] do
       post :order, on: :collection
-      patch :timer, on: :member
+      patch :start, on: :member
+      patch :stop, on: :member
     end
     resource :user, only: [:show]
   end

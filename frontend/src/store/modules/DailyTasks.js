@@ -1,12 +1,13 @@
 import {
   SET_TASKS,
+  SET_UPDATED_TASK,
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
   SET_CURRENT_TASK,
   UNSET_CURRENT_TASK,
-  UPDATE_TIMER,
+  START_TASK,
   STOP_TASK,
   GET,
   POST,
@@ -104,21 +105,12 @@ export default {
         return task
       })
     },
-    [UPDATE_TIMER](state, { taskId, isStarting }) {
-      let currentTask = state.tasks.find(task => task.id === taskId)
-      if (isStarting) {
-        currentTask.on_progress = true
-      }
-    },
-    [STOP_TASK](state) {
-      let currentTask = state.tasks.find(task => task.id === state.currentTaskId)
-      if (!currentTask.on_progress) return false;
-
-      currentTask.on_progress = false
-      let stoppedTime = currentTask.stopped_time
-      let fromTime = stoppedTime || currentTask.started_time
-      currentTask.elapsed_time += (Date.now() - fromTime)
-      currentTask.stopped_time = Date.now()
+    [SET_UPDATED_TASK](state, { task }) {
+      let currentTask = state.tasks.find(t => t.id === task.id)
+      currentTask.elapsed_time = task.elapsed_time
+      currentTask.started_time = task.started_time
+      currentTask.stopped_time = task.stopped_time
+      currentTask.on_progress = task.on_progress
     },
   },
   actions: {
@@ -186,18 +178,8 @@ export default {
         commit(SET_TASKS, res.data.tasks)
       }).catch(err => err)
     },
-    [UPDATE_TIMER]({ commit, dispatch }, { taskId, isStarting }) {
-      dispatch(
-        `http/${PATCH}`,
-        { url: `tasks/${taskId}/timer`, data: { isStarting } },
-        { root: true }
-      ).then(
-        commit(UPDATE_TIMER, { taskId, isStarting })
-      ).catch(err => err)
-    },
     [SET_CURRENT_TASK]({ commit, dispatch }, payload) {
-      Object.assign(payload, { current: { isSetting: true } })
-      dispatch(
+      return dispatch(
         `http/${POST}`,
         { url: 'tasks/order', data: payload },
         { root: true }
@@ -208,18 +190,23 @@ export default {
     [UNSET_CURRENT_TASK]({ commit }, payload) {
       commit(UNSET_CURRENT_TASK, payload)
     },
-    // [UPDATE_TIMER]({ commit, dispatch }, { taskId, isStarting }) {
-    //   console.log('settimer')
-    //   dispatch(
-    //     `http/${PATCH}`,
-    //     { utl: `tasks/${taskId}/timer`, data: { isStarting } },
-    //     { root: true }
-    //   ).then(
-    //     commit(UPDATE_TIMER, { taskId, isStarting })
-    //   ).catch(err => err)
-    // },
-    [STOP_TASK]({ commit }, payload) {
-      commit(STOP_TASK, payload)
+    [START_TASK]({ commit, dispatch }, { taskId }) {
+      return dispatch(
+        `http/${PATCH}`,
+        { url: `tasks/${taskId}/start` },
+        { root: true }
+      ).then(res => {
+        commit(SET_UPDATED_TASK, { task: res.data.task })
+      }).catch(err => err)
+    },
+    [STOP_TASK]({ commit, dispatch }, { taskId }) {
+      return dispatch(
+        `http/${PATCH}`,
+        { url: `tasks/${taskId}/stop` },
+        { root: true }
+      ).then(res => {
+        commit(SET_UPDATED_TASK, { task: res.data.task })
+      }).catch(err => err)
     },
   },
   modules: {

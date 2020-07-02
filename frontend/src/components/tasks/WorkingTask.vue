@@ -41,8 +41,10 @@ import { mapGetters, mapActions } from 'vuex'
 import TaskForm from '@/components/TaskForm.vue'
 import {
   UPDATE_TASK_CONTENT,
+  SET_CURRENT_TASK,
   UNSET_CURRENT_TASK,
-  UPDATE_TIMER,
+  START_TASK,
+  STOP_TASK,
 } from '@/store/mutation-types'
 
 export default {
@@ -52,7 +54,7 @@ export default {
       formIsOpen: false,
       timerId: null,
       elapsedTime: null,
-      dragGroup: ''
+      dragGroup: 'TASKS'
     }
   },
   components: {
@@ -63,7 +65,7 @@ export default {
     ...mapGetters('daily', ['currentTask']),
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, UNSET_CURRENT_TASK, UPDATE_TIMER]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, SET_CURRENT_TASK, UNSET_CURRENT_TASK, START_TASK, STOP_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -126,13 +128,17 @@ export default {
       }, 1000)
     },
     start() {
-      this[UPDATE_TIMER]({ taskId: this.currentTask.id, isStarting: true })
-      this.setTimer()
+      this[START_TASK]({ taskId: this.currentTask.id })
+        .then(() => {
+          this.setTimer()
+        })
     },
     stop() {
-      this[UPDATE_TIMER]({ taskId: this.currentTask.id, isStarting: false })
-      clearInterval(this.timerId)
-      this.timerId = null
+      this[STOP_TASK]({ taskId: this.currentTask.id })
+        .then(() => {
+          clearInterval(this.timerId)
+          this.timerId = null
+        })
     },
     complete(newIndex) {
       if (this.currentTask.on_progress) {
@@ -144,12 +150,22 @@ export default {
       this[UNSET_CURRENT_TASK]({ taskId: this.currentTask.id })
       this.disableDrag(false)
     },
-    onAdd() {
+    onAdd(e) {
       this.disableDrag(true)
-      let self = this
-      setTimeout(() => { // onEndの後にするため
-        self.computeElapsedTime()
-        self.start()
+
+      let fromCompleted = (e.from.dataset.completed ? true : false)
+      let taskId = Number.parseInt(e.clone.dataset.task_id)
+      let payload = {
+        fromDate: e.from.dataset.date,
+        oldIndex: e.oldIndex,
+        fromCompleted,
+        toCompleted: false,
+        taskId,
+        current: { isSetting: true }
+      }
+      this[SET_CURRENT_TASK](payload).then(() => {
+        this.computeElapsedTime()
+        this.start()
       })
     },
     onClone() {
@@ -164,6 +180,7 @@ export default {
     setTimeout(() => {
       if (!self.currentTask) return false;
 
+      self.disableDrag(true)
       self.computeElapsedTime()
       if (self.currentTask.started_time) {
         self.setTimer()

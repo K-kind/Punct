@@ -37,7 +37,6 @@ import TaskForm from '@/components/TaskForm.vue'
 import {
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
-  SET_CURRENT_TASK,
 } from '@/store/mutation-types'
 
 export default {
@@ -68,7 +67,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, SET_CURRENT_TASK]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -90,20 +89,17 @@ export default {
       this.disableDrag(true)
       if (e.to.dataset.remaining) { return false }
 
-      let toDate = e.to.dataset.date
       let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
       let payload = {
-        toDate,
+        toDate: e.to.dataset.date,
         newIndex: e.newIndex,
         fromCompleted: false,
         toCompleted,
         taskId
       }
 
-      if (e.to.dataset.working) {
-        this[SET_CURRENT_TASK](payload)
-      } else {
+      if (!e.to.dataset.working) {
         this[UPDATE_TASK_ORDER](payload)
       }
     },
