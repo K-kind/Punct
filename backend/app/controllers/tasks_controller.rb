@@ -36,7 +36,7 @@ class TasksController < ApplicationController
   end
 
   def order
-    # params = { oldIndex, newIndex, fromDate, toDate, fromCompleted, toCompleted, taskId, current }
+    # params = { oldIndex, newIndex, fromDate, toDate, fromCompleted, toCompleted, taskId, isCurrent }
     logger.debug old_index = params[:oldIndex]
     logger.debug new_index = params[:newIndex]
     logger.debug from_date = params[:fromDate]
@@ -44,7 +44,7 @@ class TasksController < ApplicationController
     logger.debug from_completed = params[:fromCompleted]
     logger.debug to_completed = params[:toCompleted]
     logger.debug task_id = params[:taskId]
-    logger.debug current = params[:current]
+    logger.debug current = params[:isCurrent] || false
 
     @current_user
       .tasks
@@ -56,25 +56,26 @@ class TasksController < ApplicationController
       .where('tasks.date = ? AND tasks.order >= ? AND tasks.is_completed = ?', to_date, new_index, to_completed)
       .update_all('tasks.order = tasks.order + 1')
 
-    if current # current = { isSetting: boolean }
-      Task.find(task_id).update!(
-        order: new_index,
-        date: to_date,
-        is_completed: to_completed,
-        is_current: current[:isSetting]
-      )
+    # if current # current = { isSetting: boolean }
+    #   Task.find(task_id).update!(
+    #     order: new_index,
+    #     date: to_date,
+    #     is_completed: to_completed,
+    #     is_current: current[:isSetting]
+    #   )
       # unless new_index
       #   to_date = Time.zone.today
       #   to_completed = true
       #   new_index = @current_user.tasks.where(date: to_date, is_completed: to_completed).count
       # end
-    else
-      Task.find(task_id).update!(
-        order: new_index,
-        date: to_date,
-        is_completed: to_completed
-      )
-    end
+    # else
+    # end
+    Task.find(task_id).update!(
+      order: new_index,
+      date: to_date,
+      is_completed: to_completed,
+      is_current: current
+    )
     render json: { tasks: @current_user.tasks }
   end
 

@@ -28,7 +28,7 @@
           ref="updateForm"
           @close-form="closeForm"
           @update-task="updateTask($event, currentTask.id)"
-          @delete-current-task="disableDrag(false)"
+          @delete-current-task="deleteCurrentTask"
         ></TaskForm>
       </li>
     </draggable>
@@ -41,7 +41,7 @@ import { mapGetters, mapActions } from 'vuex'
 import TaskForm from '@/components/TaskForm.vue'
 import {
   UPDATE_TASK_CONTENT,
-  SET_CURRENT_TASK,
+  UPDATE_TASK_ORDER,
   UNSET_CURRENT_TASK,
   START_TASK,
   STOP_TASK,
@@ -65,7 +65,7 @@ export default {
     ...mapGetters('daily', ['currentTask']),
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, SET_CURRENT_TASK, UNSET_CURRENT_TASK, START_TASK, STOP_TASK]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, UNSET_CURRENT_TASK, START_TASK, STOP_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -81,6 +81,11 @@ export default {
       let payload = { id: task_id, task: e }
       this[UPDATE_TASK_CONTENT](payload)
       this.closeForm()
+    },
+    deleteCurrentTask() {
+      this.disableDrag(false)
+      clearInterval(this.timerId)
+      this.timerId = null
     },
     onDragEnd(e) {
       if (e.to.dataset.working) {
@@ -161,12 +166,13 @@ export default {
         fromCompleted,
         toCompleted: false,
         taskId,
-        current: { isSetting: true }
+        isCurrent: true
       }
-      this[SET_CURRENT_TASK](payload).then(() => {
-        this.computeElapsedTime()
-        this.start()
-      })
+      this[UPDATE_TASK_ORDER](payload)
+        .then(() => {
+          this.computeElapsedTime()
+          this.start()
+        })
     },
     onClone() {
       this.disableDrag(false)

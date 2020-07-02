@@ -170,7 +170,7 @@ export default {
         payload.fromCompleted === payload.toCompleted
       ) { return false }
 
-      dispatch(
+      return dispatch(
         `http/${POST}`,
         { url: 'tasks/order', data: payload },
         { root: true }
@@ -187,8 +187,14 @@ export default {
         commit(SET_TASKS, res.data.tasks)
       }).catch(err => err)
     },
-    [UNSET_CURRENT_TASK]({ commit }, payload) {
-      commit(UNSET_CURRENT_TASK, payload)
+    [UNSET_CURRENT_TASK]({ commit, dispatch }, payload) {
+      return dispatch(
+        `http/${POST}`,
+        { url: 'tasks/order', data: payload },
+        { root: true }
+      ).then(res => {
+        commit(SET_TASKS, res.data.tasks)
+      }).catch(err => err)
     },
     [START_TASK]({ commit, dispatch }, { taskId }) {
       return dispatch(
