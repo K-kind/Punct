@@ -123,9 +123,7 @@ export default {
         expected_time: e.expected_time,
         elapsed_time: e.elapsed_time,
         is_completed: true,
-        year: this.date.getFullYear(),
-        month: this.date.getMonth(),
-        date: this.date.getDate(),
+        date: this.date.toLocaleDateString(),
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)

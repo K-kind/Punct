@@ -56,20 +56,6 @@ class TasksController < ApplicationController
       .where('tasks.date = ? AND tasks.order >= ? AND tasks.is_completed = ?', to_date, new_index, to_completed)
       .update_all('tasks.order = tasks.order + 1')
 
-    # if current # current = { isSetting: boolean }
-    #   Task.find(task_id).update!(
-    #     order: new_index,
-    #     date: to_date,
-    #     is_completed: to_completed,
-    #     is_current: current[:isSetting]
-    #   )
-      # unless new_index
-      #   to_date = Time.zone.today
-      #   to_completed = true
-      #   new_index = @current_user.tasks.where(date: to_date, is_completed: to_completed).count
-      # end
-    # else
-    # end
     Task.find(task_id).update!(
       order: new_index,
       date: to_date,
@@ -81,7 +67,7 @@ class TasksController < ApplicationController
 
   def start
     task = Task.find(params[:id])
-    raise RuntimeError, 'The task is already started.' if task.on_progress
+    raise 'The task is already started.' if task.on_progress
 
     unix_time_now = (Time.zone.now.to_f * 1000).to_i # ミリ秒
     if task.started_time
@@ -97,7 +83,7 @@ class TasksController < ApplicationController
 
   def stop
     task = Task.find(params[:id])
-    raise RuntimeError, 'The task is already stopped.' unless task.on_progress
+    raise 'The task is already stopped.' unless task.on_progress
 
     initial_time = task.stopped_time || task.started_time
     unix_time_now = (Time.zone.now.to_f * 1000).to_i
