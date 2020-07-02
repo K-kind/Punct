@@ -6,7 +6,7 @@ import {
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
   COMPLETE_TASK,
-  // POST,
+  POST,
   // PATCH,
   // DELETE
 } from '../mutation-types'
@@ -39,8 +39,8 @@ export default {
     [SET_TASKS](state, tasks) {
       state.tasks = tasks
     },
-    [ADD_NEW_TASK](state, payload) {
-      state.tasks.push(payload)
+    [ADD_NEW_TASK](state, task) {
+      state.tasks.push(task)
     },
     [UPDATE_TASK_CONTENT](state, payload) { // { content, id }
       let updatedTask = state.tasks.find(task => task.id === payload.id)
@@ -83,8 +83,19 @@ export default {
     }
   },
   actions: {
-    [ADD_NEW_TASK]({ commit }, payload) {
-      commit(ADD_NEW_TASK, payload)
+    [ADD_NEW_TASK]({ commit, dispatch }, payload) {
+      return dispatch(
+        `http/${POST}`,
+        { url: 'weekly_tasks', data: { task: payload } },
+        { root: true }
+      ).then(res => {
+        let task = res.data.task
+        if (task) {
+          commit(ADD_NEW_TASK, task)
+        } else {
+          throw new Error(res.data.message)
+        }
+      }).catch(err => { alert(err) })
     },
     [UPDATE_TASK_CONTENT]({ commit }, payload) {
       commit(UPDATE_TASK_CONTENT, payload)

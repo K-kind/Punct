@@ -122,12 +122,12 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, COMPLETE_TASK, UPDATE_TASK_ORDER]),
       let newOrder = tasks.length
       let newTask = {
         content: e.content,
-        isChecked: false,
-        startDate: this.weekRange.monday.toISOString(), // vuexpersistedの自動変換に合わせる
+        start_date: this.weekRange.monday.toLocaleDateString(),
         order: newOrder
       }
-      this[ADD_NEW_TASK](newTask)
-      this.$refs.newForm.focusForm()
+      this[ADD_NEW_TASK](newTask).then(() => {
+        this.$refs.newForm.focusForm()
+      })
     },
     updateTask(e, task_id) {
       let payload = { id: task_id, task: e }

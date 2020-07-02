@@ -98,6 +98,6 @@ class WeeklyTasksController < ApplicationController
   private
 
   def task_params
-    params.require(:task).permit(:content, :is_checked)
+    params.require(:task).permit(:content, :is_checked, :start_date, :order)
   end
 end
