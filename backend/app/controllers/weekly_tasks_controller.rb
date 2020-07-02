@@ -17,7 +17,7 @@ class WeeklyTasksController < ApplicationController
   end
 
   def update
-    task = Task.find(params[:id])
+    task = WeeklyTask.find(params[:id])
     if task.update(task_params)
       head :no_content
     else
@@ -26,13 +26,13 @@ class WeeklyTasksController < ApplicationController
   end
 
   def destroy
-    task = Task.find(params[:id])
+    task = WeeklyTask.find(params[:id])
     @current_user
-      .tasks
-      .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', task.date, task.order, task.is_completed)
-      .update_all('tasks.order = tasks.order - 1')
+      .weekly_tasks
+      .where('long_tasks.start_date = ? AND long_tasks.order > ?', task.start_date, task.order)
+      .update_all('long_tasks.order = long_tasks.order - 1')
     task.destroy
-    render json: { tasks: @current_user.tasks }
+    render json: { tasks: @current_user.weekly_tasks }
   end
 
   def order

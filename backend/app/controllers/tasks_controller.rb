@@ -12,7 +12,7 @@ class TasksController < ApplicationController
       payload = { task: task }
       status = :created
     else
-      payload = { message: task.errors.full_messages.join("\n") }
+      payload = { error: task.errors.full_messages.join("\n") }
       status = :ok
     end
     render json: payload, status: status

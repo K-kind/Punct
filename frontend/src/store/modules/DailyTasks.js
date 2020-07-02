@@ -90,7 +90,7 @@ export default {
         if (task) {
           commit(ADD_NEW_TASK, task)
         } else {
-          window.alert(res.data.message)
+          window.alert(res.data.error)
         }
       }).catch(err => err)
     },

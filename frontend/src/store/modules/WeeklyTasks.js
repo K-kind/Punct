@@ -5,10 +5,9 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
-  COMPLETE_TASK,
   POST,
-  // PATCH,
-  // DELETE
+  PATCH,
+  DELETE
 } from '../mutation-types'
 
 export default {
@@ -42,9 +41,13 @@ export default {
     [ADD_NEW_TASK](state, task) {
       state.tasks.push(task)
     },
-    [UPDATE_TASK_CONTENT](state, payload) { // { content, id }
-      let updatedTask = state.tasks.find(task => task.id === payload.id)
-      updatedTask.content = payload.content
+    [UPDATE_TASK_CONTENT](state, { id, task }) {
+      let updatedTask = state.tasks.find(task => task.id === id)
+      if (task.content) {
+        updatedTask.content = task.content
+      } else {
+        updatedTask.is_checked = task.is_checked
+      }
     },
     [DELETE_TASK_BY_ID](state, taskId) {
       let deletedTask = state.tasks.find(task => task.id === taskId)
@@ -73,14 +76,6 @@ export default {
         return task
       })
     },
-    [COMPLETE_TASK](state, { taskId, taskIsChecked }) {
-      state.tasks = state.tasks.map(task => {
-        if (task.id === taskId) {
-          task.taskIsChecked = taskIsChecked
-        }
-        return task
-      })
-    }
   },
   actions: {
     [ADD_NEW_TASK]({ commit, dispatch }, payload) {
@@ -97,17 +92,32 @@ export default {
         }
       }).catch(err => { alert(err) })
     },
-    [UPDATE_TASK_CONTENT]({ commit }, payload) {
-      commit(UPDATE_TASK_CONTENT, payload)
+    [UPDATE_TASK_CONTENT]({ commit, dispatch }, { id, task }) {
+      return dispatch(
+        `http/${PATCH}`,
+        { url: `weekly_tasks/${id}`, data: { task } },
+        { root: true }
+      ).then(res => {
+        let error = res.data.error
+        if (error) {
+          throw new Error(error)
+        } else {
+          commit(UPDATE_TASK_CONTENT, { id, task })
+        }
+      }).catch(err => { alert(err) })
     },
-    [DELETE_TASK_BY_ID]({ commit }, payload) {
-      commit(DELETE_TASK_BY_ID, payload)
+    [DELETE_TASK_BY_ID]({ commit, dispatch }, taskId) {
+      dispatch(
+        `http/${DELETE}`,
+        { url: `weekly_tasks/${taskId}` },
+        { root: true }
+      ).then(res => {
+        commit(SET_TASKS, res.data.tasks)
+      })
+      .catch(err => err)
     },
     [UPDATE_TASK_ORDER]({ commit }, payload) {
       commit(UPDATE_TASK_ORDER, payload)
-    },
-    [COMPLETE_TASK]({ commit }, payload) {
-      commit(COMPLETE_TASK, payload)
     },
   }
 }

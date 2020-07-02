@@ -8,10 +8,10 @@
     <draggable tag="ul" group="WEEK" @end="onDragEnd" draggable=".draggable">
       <li v-for="task of weeklyTasks(weekRange.monday)" :key="task.id"  class="task-board__li" :class="{ draggable: !onUpdatedTaskId }">
         <div v-if="onUpdatedTaskId !== task.id" class="task-board__task">
-          <input type="checkbox" v-model="task.isChecked" @change="checkTask(task)" />
+          <input type="checkbox" v-model="task.is_checked" @change="checkTask(task)" />
           <p class="task-board__p" @click="openUpdateForm(task.id)">
             {{ task.order }}: ID.{{ task.id }}: {{ task.content }}
-            <span >完了({{ task.isChecked }})</span>
+            <span >完了({{ task.is_checked }})</span>
           </p>
         </div>
         <LongTermForm
@@ -47,7 +47,6 @@ import {
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
-  COMPLETE_TASK,
   UPDATE_TASK_ORDER,
 } from '@/store/mutation-types'
 
@@ -92,7 +91,7 @@ export default {
   },
   methods: {
     ...mapActions('weekly', [ADD_NEW_TASK,
-UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, COMPLETE_TASK, UPDATE_TASK_ORDER]),
+UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
     weekFoward(toFoward) {
       if (toFoward) {
         this.daysFromToday += 7
@@ -131,14 +130,16 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, COMPLETE_TASK, UPDATE_TASK_ORDER]),
     },
     updateTask(e, task_id) {
       let payload = { id: task_id, task: e }
-      this[UPDATE_TASK_CONTENT](payload)
-      this.closeForm()
+      this[UPDATE_TASK_CONTENT](payload).then(() => {
+        this.closeForm()
+      })
     },
     deleteTask(taskId) {
       this[DELETE_TASK_BY_ID](taskId)
     },
     checkTask(task) {
-      this[COMPLETE_TASK]({ taskId: task.id, taskIsChecked: task.isChecked })
+      let payload = { id: task.id, task: { is_checked: task.is_checked } }
+      this[UPDATE_TASK_CONTENT](payload)
     },
     onDragEnd(e) {
       if (e.oldIndex === e.newIndex) { return false }
