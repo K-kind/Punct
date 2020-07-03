@@ -21,7 +21,6 @@ export default {
     dailyTasks(state) {
       return date => {
         return state.tasks.filter(task =>
-          // task.date === date.toLocaleDateString().replace(/\//g, '-') &&
           (new Date(task.date)).toDateString() === date.toDateString() &&
           !task.is_current && !task.is_completed
         ).sort((a, b) => {

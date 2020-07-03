@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import createPersistedState from 'vuex-persistedstate'
 import DailyTasks from './modules/DailyTasks'
 import WeeklyTasks from './modules/WeeklyTasks'
 import MonthlyTasks from './modules/MonthlyTasks'
@@ -21,10 +20,10 @@ export default new Vuex.Store({
     message
   },
   actions: {
-    [SET_TASKS]({ commit, dispatch }) {
+    [SET_TASKS]({ commit, dispatch }, fromToday) {
       dispatch(
         `http/${GET}`,
-        { url: 'tasks' }
+        { url: 'tasks', data: fromToday }
       ).then(res => {
         commit(`daily/${SET_TASKS}`, res.data.tasks.daily, { root: true })
         commit(`weekly/${SET_TASKS}`, res.data.tasks.weekly, { root: true })
@@ -32,8 +31,4 @@ export default new Vuex.Store({
       }).catch(err => err)
     },
   }
-  // plugins: [createPersistedState({
-  //   key: 'todo',
-  //   storage: localStorage
-  // })]
 })

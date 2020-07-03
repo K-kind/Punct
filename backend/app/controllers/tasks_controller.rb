@@ -1,8 +1,11 @@
 class TasksController < ApplicationController
   def index
-    daily = @current_user.tasks
-    weekly = @current_user.weekly_tasks
-    monthly = @current_user.monthly_tasks
+    today = Time.zone.today
+    daily = @current_user.tasks.where(date: (today - 6)..(today + 6))
+    week_start = Time.zone.today.beginning_of_week
+    weekly = @current_user.weekly_tasks.where(start_date: week_start)
+    month_start = Time.zone.today.beginning_of_month
+    monthly = @current_user.monthly_tasks.where(start_date: month_start)
     render json: { tasks: { daily: daily, weekly: weekly, monthly: monthly } }
   end
 
