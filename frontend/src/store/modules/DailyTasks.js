@@ -52,7 +52,6 @@ export default {
       })
     },
     currentTask(state) {
-      console.log('currenttaskを更新します')
       return state.tasks.find(task => task.is_current)
     },
   },

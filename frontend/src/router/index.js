@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Store from '@/store/index.js'
+import { SET_NAME } from '@/store/mutation-types'
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,16 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (!from.name) {
+    Store.dispatch(`auth/${SET_NAME}`).then(() => {
+      next()
+    })
+  } else {
+    next()
+  }
 })
 
 router.beforeResolve((to, from, next) => {

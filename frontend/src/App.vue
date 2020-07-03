@@ -18,7 +18,6 @@
 <script>
 import 'normalize.css'
 import NavLeft from '@/components/NavLeft.vue'
-import { SET_NAME } from '@/store/mutation-types'
 
 export default {
   name: 'App',
@@ -29,10 +28,6 @@ export default {
     userName() {
       return this.$store.state.auth.userName
     }
-  },
-  created() {
-    this.$store.dispatch(`auth/${SET_NAME}`)
-    console.log('Set name します')
   },
 }
 </script>
