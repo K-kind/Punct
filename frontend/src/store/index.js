@@ -20,10 +20,10 @@ export default new Vuex.Store({
     message
   },
   actions: {
-    [SET_TASKS]({ commit, dispatch }, fromToday) {
+    [SET_TASKS]({ commit, dispatch }) {
       dispatch(
         `http/${GET}`,
-        { url: 'tasks', data: fromToday }
+        { url: 'tasks' }
       ).then(res => {
         commit(`daily/${SET_TASKS}`, res.data.tasks.daily, { root: true })
         commit(`weekly/${SET_TASKS}`, res.data.tasks.weekly, { root: true })

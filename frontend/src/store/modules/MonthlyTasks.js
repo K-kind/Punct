@@ -4,6 +4,7 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
+  GET,
   POST,
   PATCH,
   DELETE
@@ -105,6 +106,15 @@ export default {
       return dispatch(
         `http/${POST}`,
         { url: 'monthly_tasks/order', data: payload },
+        { root: true }
+      ).then(res => {
+        commit(SET_TASKS, res.data.tasks)
+      }).catch(err => err)
+    },
+    [SET_TASKS]({ commit, dispatch }, fromToday) {
+      dispatch(
+        `http/${GET}`,
+        { url: 'monthly_tasks', params: { fromToday } },
         { root: true }
       ).then(res => {
         commit(SET_TASKS, res.data.tasks)

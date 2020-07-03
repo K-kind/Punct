@@ -2,10 +2,17 @@ class TasksController < ApplicationController
   def index
     today = Time.zone.today
     daily = @current_user.tasks.where(date: (today - 6)..(today + 6))
-    week_start = Time.zone.today.beginning_of_week
+
+    week_start = today.beginning_of_week
     weekly = @current_user.weekly_tasks.where(start_date: week_start)
-    month_start = Time.zone.today.beginning_of_month
-    monthly = @current_user.monthly_tasks.where(start_date: month_start)
+
+    month_start_dates = []
+    first_of_this_month = today.beginning_of_month
+    (-1..1).each do |n|
+      month_start_dates << first_of_this_month.next_month(n)
+    end
+    monthly = @current_user.monthly_tasks.where(start_date: month_start_dates)
+
     render json: { tasks: { daily: daily, weekly: weekly, monthly: monthly } }
   end
 

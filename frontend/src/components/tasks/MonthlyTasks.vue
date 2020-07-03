@@ -48,6 +48,7 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
+  SET_TASKS
 } from '@/store/mutation-types'
 
 export default {
@@ -83,7 +84,7 @@ export default {
   },
   methods: {
     ...mapActions('monthly', [ADD_NEW_TASK,
-UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
+UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS]),
     monthFoward(toFoward) {
       if (toFoward) {
         this.monthsFromToday++
@@ -143,6 +144,11 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
       this[UPDATE_TASK_ORDER](payload)
     }
   },
+  watch: {
+    monthsFromToday(fromToday) {
+      this[SET_TASKS](fromToday)
+    }
+  }
 }
 </script>
 
