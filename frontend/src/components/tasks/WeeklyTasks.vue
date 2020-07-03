@@ -64,7 +64,6 @@ export default {
     }
   },
   props: {
-    monthStartDate: Date,
     isArchive: Boolean
   },
   computed: {
@@ -153,23 +152,6 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
       this[UPDATE_TASK_ORDER](payload)
     }
   },
-  watch: {
-    monthStartDate(firstDate) {
-      if (firstDate) {
-        let year = firstDate.getFullYear()
-        let month = firstDate.getMonth()
-        let date = firstDate.getDate()
-        let day_num = firstDate.getDay()
-        let sundayDate = date - day_num + 7
-        let sunday = new Date(year, month, sundayDate)
-        this.daysFromToday += (sunday - this.weekRange.sunday) / (1000 * 60 * 60 * 24)
-      } else {
-        this.daysFromToday = 0
-      }
-      let startDate = (this.daysFromToday === 0 ? null : this.weekRange.monday)
-      this.$emit('change-week', startDate)
-    }
-  }
 }
 </script>
 

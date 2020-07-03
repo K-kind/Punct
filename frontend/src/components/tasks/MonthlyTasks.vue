@@ -64,7 +64,7 @@ export default {
     }
   },
   props: {
-    weekStartDate: Date,
+    // weekStartDate: Date,
     isArchive: Boolean
   },
   computed: {
@@ -90,8 +90,6 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
       } else {
         this.monthsFromToday--
       }
-      let startDate = (this.monthsFromToday === 0 ? null : this.startDate)
-      this.$emit('change-month', startDate)
     },
     closeForm() {
       this.newFormIsOpen = false
@@ -145,26 +143,6 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
       this[UPDATE_TASK_ORDER](payload)
     }
   },
-  watch: {
-    weekStartDate(firstDate) {
-      if (firstDate) {
-        let year = firstDate.getFullYear()
-        let month = firstDate.getMonth()
-        let date = firstDate.getDate()
-        let day_num = firstDate.getDay()
-        let sundayDate = date - day_num + 7
-        let sunday = new Date(year, month, sundayDate)
-        let gap = sunday.getMonth() - this.startDate.getMonth()
-        if (gap === 1 || gap === -11) {
-          this.monthsFromToday++
-        } else if (gap === -1 || gap === 11) {
-          this.monthsFromToday--
-        }
-      } else {
-        this.monthsFromToday = 0
-      }
-    }
-  }
 }
 </script>
 
