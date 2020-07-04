@@ -1,10 +1,11 @@
 class TasksController < ApplicationController
   def index
     today = Time.zone.today
-    daily = @current_user.tasks.where(date: (today - 6)..(today + 6))
+    daily = @current_user.tasks.where(date: (today - 31)..(today + 13))
 
     week_start = today.beginning_of_week
-    weekly = @current_user.weekly_tasks.where(start_date: week_start)
+    week_start_dates = [(week_start - 7), week_start, (week_start + 7)]
+    weekly = @current_user.weekly_tasks.where(start_date: week_start_dates)
 
     month_start_dates = []
     first_of_this_month = today.beginning_of_month

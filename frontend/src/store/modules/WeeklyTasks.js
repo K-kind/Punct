@@ -117,7 +117,8 @@ export default {
         { url: 'weekly_tasks', params: { fromToday } },
         { root: true }
       ).then(res => {
-        commit(SET_TASKS, res.data.tasks)
+        commit(`daily/${SET_TASKS}`, res.data.tasks.daily, { root: true })
+        commit(SET_TASKS, res.data.tasks.weekly)
       }).catch(err => err)
     },
   }
