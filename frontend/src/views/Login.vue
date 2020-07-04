@@ -8,17 +8,17 @@
           </div>
         </div>
         <div class="">
-          <div class="">
-            <validation-observer v-slot="{ invalid }" tag="form">
+          <validation-observer v-slot="{ handleSubmit }" tag="div">
+            <form @submit.prevent="handleSubmit(onSubmit)">
               <div class="">
-                <validation-provider rules="required|email" v-slot="{ errors }" mode="lazy" name="メールアドレス">
-                  <input class="input is-large" type="email" placeholder="Eメール" v-model="email" autofocus="" name="email">
+                <validation-provider rules="required|email" v-slot="{ errors }" mode="eager" name="メールアドレス">
+                  <input class="" type="email" placeholder="Eメール" v-model="email" autofocus="" name="email">
                   <span>{{ errors[0] }}</span>
                 </validation-provider>
               </div>
               <div class="">
-                <validation-provider rules="required|min:6|max:20" v-slot="{ errors }" mode="lazy" name="パスワード">
-                  <input class="input is-large" type="password" placeholder="パスワード" v-model="password" maxlength="20" name="password" autocomplete="on">
+                <validation-provider rules="required|min:6|max:20" v-slot="{ errors }" mode="eager" name="パスワード">
+                  <input class="" type="password" placeholder="パスワード" v-model="password" maxlength="20" name="password" autocomplete="on">
                   <span>{{ errors[0] }}</span>
                 </validation-provider>
               </div>
@@ -28,9 +28,9 @@
                   ログインしたままにする
                 </label>
               </div>
-              <button class="" @click.prevent="login()" :disabled="invalid" >ログイン</button>
-            </validation-observer>
-          </div>
+              <button type="submit">ログイン</button>
+            </form>
+          </validation-observer>
           <p class="">
             <a href="..">パスワードを忘れた方はこちら</a>
           </p>
@@ -60,7 +60,7 @@ export default {
     }
   },
   methods: {
-    login() {
+    onSubmit() {
       this.$store.dispatch(
         `auth/${CREATE}`, {
           email: this.email,

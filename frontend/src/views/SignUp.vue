@@ -12,13 +12,19 @@
             <validation-observer v-slot="{ invalid }" tag="form">
               <div class="">
                 <validation-provider rules="required|email" v-slot="{ errors }" mode="lazy" name="メールアドレス">
-                  <input class="input is-large" type="email" placeholder="Eメール" v-model="email" autofocus="" name="email">
+                  <input class="" type="email" placeholder="Eメール" v-model="email" autofocus="" name="email">
+                  <span>{{ errors[0] }}</span>
+                </validation-provider>
+              </div>
+              <div class="">
+                <validation-provider rules="required|email" v-slot="{ errors }" mode="lazy" name="メールアドレス（確認）">
+                  <input class="" type="email" placeholder="Eメール（確認）" v-model="emailConfirmation" name="email">
                   <span>{{ errors[0] }}</span>
                 </validation-provider>
               </div>
               <div class="">
                 <validation-provider rules="required|min:6|max:20" v-slot="{ errors }" mode="lazy" name="パスワード">
-                  <input class="input is-large" type="password" placeholder="パスワード" v-model="password" maxlength="20" name="password" autocomplete="on">
+                  <input class="" type="password" placeholder="パスワード" v-model="password" maxlength="20" name="password" autocomplete="on">
                   <span>{{ errors[0] }}</span>
                 </validation-provider>
               </div>
