@@ -45,8 +45,7 @@ export default {
             { root: true }
           )
         }
-      })
-       .catch(err => err)
+      }).catch(err => err)
     },
     [DESTROY]({ commit, dispatch }) {
       dispatch(
@@ -61,8 +60,7 @@ export default {
           { root: true }
         )
         router.push('/login')
-      })
-       .catch(err => err)
+      }).catch(err => err)
     },
     [SET_NAME]({ commit, dispatch }) {
       return dispatch(

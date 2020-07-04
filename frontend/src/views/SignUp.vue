@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="signup">
     <section class="">
       <div class="">
         <div v-show="errorMessage" class="">
@@ -22,18 +22,9 @@
                   <span>{{ errors[0] }}</span>
                 </validation-provider>
               </div>
-              <div class="">
-                <label class="">
-                  <input type="checkbox">
-                  ログインしたままにする
-                </label>
-              </div>
-              <button class="" @click.prevent="login()" :disabled="invalid" >ログイン</button>
+              <button class="" @click.prevent="signup()" :disabled="invalid" >登録する</button>
             </validation-observer>
           </div>
-          <p class="">
-            <a href="..">パスワードを忘れた方はこちら</a>
-          </p>
         </div>
       </div>
     </section>
@@ -48,7 +39,7 @@ import {
 } from '@/store/mutation-types'
 
 export default {
-  name: 'Login',
+  name: 'SignUp',
   components: {
     ValidationObserver,
     ValidationProvider,
@@ -60,7 +51,7 @@ export default {
     }
   },
   methods: {
-    login() {
+    signup() {
       this.$store.dispatch(
         `auth/${CREATE}`, {
           email: this.email,
@@ -75,10 +66,10 @@ export default {
     }
   },
   created() {
-    let flash = this.$store.state.message.flash
-    if (flash) {
-      this.$notify({ message: flash, duration: 2500 })
-    }
+    // let flash = this.$store.state.message.flash
+    // if (flash) {
+    //   this.$notify({ message: flash, duration: 2500 })
+    // }
     this.$store.dispatch(`message/${DESTROY}`)
   },
 }

@@ -8,7 +8,8 @@
         <NavLeft />
       </span>
       <span v-else>
-        <router-link to="/login">ログイン</router-link>
+        <router-link to="/login">ログイン</router-link> |
+        <router-link to="/signup">新規登録</router-link>
       </span>
     </div>
     <router-view/>

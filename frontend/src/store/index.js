@@ -16,6 +16,7 @@ export default new Vuex.Store({
     weekly: WeeklyTasks,
     monthly: MonthlyTasks,
     auth,
+    user,
     http,
     message
   },
