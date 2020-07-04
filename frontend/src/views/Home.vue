@@ -3,8 +3,8 @@
     <WorkingColumn />
     <TodayColumn />
     <DailyColumn :startDate="weekStartDate" />
-    <WeeklyColumn @change-week="changeWeek" :monthStartDate="monthStartDate" />
-    <MonthlyColumn @change-month="changeMonth" :weekStartDate="weekStartDate" />
+    <WeeklyColumn @change-week="changeWeek" />
+    <MonthlyColumn />
   </div>
 </template>
 
@@ -28,16 +28,12 @@ export default {
   data() {
     return {
       weekStartDate: null,
-      monthStartDate: null
     }
   },
   methods: {
     changeWeek(startDate) {
       this.weekStartDate = startDate
     },
-    changeMonth(startDate) {
-      this.monthStartDate = startDate
-    }
   },
   created() {
     this.$store.dispatch(SET_TASKS)

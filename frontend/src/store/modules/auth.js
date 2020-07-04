@@ -65,15 +65,14 @@ export default {
        .catch(err => err)
     },
     [SET_NAME]({ commit, dispatch }) {
-      dispatch(
+      return dispatch(
         `http/${GET}`,
         { url: 'auth/name' },
         { root: true }
       ).then(res => {
         let userName = res.data.name
         if (userName) { commit(SET_NAME, userName) }
-      })
-       .catch(err => err)
+      }).catch(err => err)
     },
   }
 }

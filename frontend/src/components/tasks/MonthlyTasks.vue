@@ -48,6 +48,7 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
+  SET_TASKS
 } from '@/store/mutation-types'
 
 export default {
@@ -64,7 +65,7 @@ export default {
     }
   },
   props: {
-    weekStartDate: Date,
+    // weekStartDate: Date,
     isArchive: Boolean
   },
   computed: {
@@ -83,15 +84,13 @@ export default {
   },
   methods: {
     ...mapActions('monthly', [ADD_NEW_TASK,
-UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
+UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS]),
     monthFoward(toFoward) {
       if (toFoward) {
         this.monthsFromToday++
       } else {
         this.monthsFromToday--
       }
-      let startDate = (this.monthsFromToday === 0 ? null : this.startDate)
-      this.$emit('change-month', startDate)
     },
     closeForm() {
       this.newFormIsOpen = false
@@ -146,23 +145,8 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER]),
     }
   },
   watch: {
-    weekStartDate(firstDate) {
-      if (firstDate) {
-        let year = firstDate.getFullYear()
-        let month = firstDate.getMonth()
-        let date = firstDate.getDate()
-        let day_num = firstDate.getDay()
-        let sundayDate = date - day_num + 7
-        let sunday = new Date(year, month, sundayDate)
-        let gap = sunday.getMonth() - this.startDate.getMonth()
-        if (gap === 1 || gap === -11) {
-          this.monthsFromToday++
-        } else if (gap === -1 || gap === 11) {
-          this.monthsFromToday--
-        }
-      } else {
-        this.monthsFromToday = 0
-      }
+    monthsFromToday(fromToday) {
+      this[SET_TASKS](fromToday)
     }
   }
 }

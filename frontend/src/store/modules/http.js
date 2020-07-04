@@ -11,7 +11,7 @@ import axios from 'axios'
 export default {
   namespaced: true,
   actions: {
-    async [REQUEST] (context, { method, url, data }) {
+    async [REQUEST] (context, { method, url, data, params }) {
     // async [REQUEST] ({ dispatch, rootState }, { method, url, data, error }) {
       const headers = {}
       // headers['Content-Type'] = 'application/json'
@@ -29,6 +29,7 @@ export default {
         withCredentials: true, // 開発のみ
         headers,
         data,
+        params,
         timeout: 15000
       }
 

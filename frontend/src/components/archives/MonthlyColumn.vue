@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MonthlyTasks @change-month="changeMonth"  :weekStartDate="weekStartDate" :isArchive="true" />
+    <MonthlyTasks :isArchive="true" />
   </div>
 </template>
 
@@ -11,14 +11,6 @@ export default {
   name: 'MonthlyColumn',
   components: {
     MonthlyTasks
-  },
-  props: {
-    weekStartDate: Date
-  },
-  methods: {
-    changeMonth(startDate) {
-      this.$emit('change-month', startDate)
-    }
   },
 }
 </script>

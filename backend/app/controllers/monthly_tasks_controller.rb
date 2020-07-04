@@ -1,8 +1,15 @@
 class MonthlyTasksController < ApplicationController
-  # def index
-  #   tasks = @current_user.monthly_tasks
-  #   render json: { tasks: tasks }
-  # end
+  def index
+    start_dates = []
+    first_of_this_month = Time.zone.today.beginning_of_month
+    from_today = params[:fromToday].to_i
+    (-1..1).each do |n|
+      start_dates << first_of_this_month.next_month(from_today + n)
+    end
+    tasks = @current_user.monthly_tasks.where(start_date: start_dates)
+
+    render json: { tasks: tasks }
+  end
 
   def create
     task = @current_user.monthly_tasks.build(task_params)
@@ -27,12 +34,14 @@ class MonthlyTasksController < ApplicationController
 
   def destroy
     task = MonthlyTask.find(params[:id])
+    start_date = task.start_date
     @current_user
       .monthly_tasks
-      .where('long_tasks.start_date = ? AND long_tasks.order > ?', task.start_date, task.order)
+      .where('long_tasks.start_date = ? AND long_tasks.order > ?', start_date, task.order)
       .update_all('long_tasks.order = long_tasks.order - 1')
     task.destroy
-    render json: { tasks: @current_user.monthly_tasks }
+    tasks = @current_user.monthly_tasks.where(start_date: start_date)
+    render json: { tasks: tasks, start_date: start_date.to_s }
   end
 
   def order
@@ -52,9 +61,11 @@ class MonthlyTasksController < ApplicationController
       .where('long_tasks.start_date = ? AND long_tasks.order >= ?', start_date, new_index)
       .update_all('long_tasks.order = long_tasks.order + 1')
 
-      MonthlyTask.find(task_id).update!(order: new_index)
+    task = MonthlyTask.find(task_id)
+    task.update!(order: new_index)
 
-    render json: { tasks: @current_user.monthly_tasks }
+    tasks = @current_user.monthly_tasks.where(start_date: start_date)
+    render json: { tasks: tasks, start_date: task.start_date.to_s }
   end
 
   private

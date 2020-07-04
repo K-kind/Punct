@@ -4,6 +4,7 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
+  GET,
   POST,
   PATCH,
   DELETE
@@ -48,18 +49,11 @@ export default {
         updatedTask.is_checked = task.is_checked
       }
     },
-    [DELETE_TASK_BY_ID](state, taskId) {
-      let deletedTask = state.tasks.find(task => task.id === taskId)
-      state.tasks = state.tasks.filter(task => task.id !== taskId)
-
-      state.tasks = state.tasks.map(task => {
-        if (
-          task.startDate === deletedTask.startDate &&
-          task.order > deletedTask.order
-        ) { task.order-- }
-
-        return task
-      })
+    [UPDATE_TASK_ORDER](state, { tasks, start_date }) {
+      state.tasks = state.tasks.filter(task =>
+        task.start_date !== start_date
+      )
+      state.tasks.push(...tasks)
     },
   },
   actions: {
@@ -97,7 +91,7 @@ export default {
         { url: `weekly_tasks/${taskId}` },
         { root: true }
       ).then(res => {
-        commit(SET_TASKS, res.data.tasks)
+        commit(UPDATE_TASK_ORDER, res.data)
       })
       .catch(err => err)
     },
@@ -107,7 +101,17 @@ export default {
         { url: 'weekly_tasks/order', data: payload },
         { root: true }
       ).then(res => {
-        commit(SET_TASKS, res.data.tasks)
+        commit(UPDATE_TASK_ORDER, res.data)
+      }).catch(err => err)
+    },
+    [SET_TASKS]({ commit, dispatch }, fromToday) {
+      dispatch(
+        `http/${GET}`,
+        { url: 'weekly_tasks', params: { fromToday } },
+        { root: true }
+      ).then(res => {
+        commit(`daily/${SET_TASKS}`, res.data.tasks.daily, { root: true })
+        commit(SET_TASKS, res.data.tasks.weekly)
       }).catch(err => err)
     },
   }

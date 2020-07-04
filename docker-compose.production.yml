@@ -1,0 +1,40 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - production-db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  app:
+    image: punct_app:latest
+    command: bash -c "bin/rails db:create && bin/rails db:migrate && bundle exec puma -C config/puma.rb"
+    environment:
+      RAILS_ENV: production
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./backend:/myapp:cached
+      - production-bundle-data:/myapp/vendor/bundle
+      - production-socket-data:/myapp/tmp/sockets
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  web:
+    image: punct_web:production
+    volumes:
+      - production-socket-data:/myapp/tmp/sockets
+    ports:
+      - 80:80
+    depends_on:
+      - app
+
+volumes:
+  production-db-data:
+  production-bundle-data:
+  production-socket-data:

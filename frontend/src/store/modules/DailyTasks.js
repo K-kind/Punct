@@ -21,7 +21,6 @@ export default {
     dailyTasks(state) {
       return date => {
         return state.tasks.filter(task =>
-          // task.date === date.toLocaleDateString().replace(/\//g, '-') &&
           (new Date(task.date)).toDateString() === date.toDateString() &&
           !task.is_current && !task.is_completed
         ).sort((a, b) => {
@@ -52,7 +51,6 @@ export default {
       })
     },
     currentTask(state) {
-      console.log('currenttaskを更新します')
       return state.tasks.find(task => task.is_current)
     },
   },
@@ -70,6 +68,21 @@ export default {
       if ('elapsed_time' in task) {
         updatedTask.elapsed_time = task.elapsed_time
       }
+    },
+    [DELETE_TASK_BY_ID](state, { tasks, date, is_completed }) {
+      state.tasks = state.tasks.filter(task =>
+        task.date !== date ||
+        task.is_completed !== is_completed
+      )
+      state.tasks.push(...tasks)
+    },
+    [UPDATE_TASK_ORDER](state, { tasks, from_date, to_date, task_id }) {
+      state.tasks = state.tasks.filter(task =>
+        task.date !== from_date &&
+        task.date !== to_date &&
+        task.id !== task_id
+      )
+      state.tasks.push(...tasks)
     },
     [SET_UPDATED_TASK](state, { task }) {
       let currentTask = state.tasks.find(t => t.id === task.id)
@@ -115,7 +128,7 @@ export default {
         { url: `tasks/${payload}` },
         { root: true }
       ).then(res => {
-        commit(SET_TASKS, res.data.tasks)
+        commit(DELETE_TASK_BY_ID, res.data)
       })
       .catch(err => err)
     },
@@ -131,7 +144,7 @@ export default {
         { url: 'tasks/order', data: payload },
         { root: true }
       ).then(res => {
-        commit(SET_TASKS, res.data.tasks)
+        commit(UPDATE_TASK_ORDER, res.data)
       }).catch(err => err)
     },
     [START_TASK]({ commit, dispatch }, { taskId }) {
