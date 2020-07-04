@@ -39,12 +39,14 @@ class WeeklyTasksController < ApplicationController
 
   def destroy
     task = WeeklyTask.find(params[:id])
+    start_date = task.start_date
     @current_user
       .weekly_tasks
-      .where('long_tasks.start_date = ? AND long_tasks.order > ?', task.start_date, task.order)
+      .where('long_tasks.start_date = ? AND long_tasks.order > ?', start_date, task.order)
       .update_all('long_tasks.order = long_tasks.order - 1')
     task.destroy
-    render json: { tasks: @current_user.weekly_tasks }
+    tasks = @current_user.weekly_tasks.where(start_date: start_date)
+    render json: { tasks: tasks, start_date: start_date.to_s }
   end
 
   def order
@@ -64,9 +66,11 @@ class WeeklyTasksController < ApplicationController
       .where('long_tasks.start_date = ? AND long_tasks.order >= ?', start_date, new_index)
       .update_all('long_tasks.order = long_tasks.order + 1')
 
-    WeeklyTask.find(task_id).update!(order: new_index)
+    task = WeeklyTask.find(task_id)
+    task.update!(order: new_index)
 
-    render json: { tasks: @current_user.weekly_tasks }
+    tasks = @current_user.weekly_tasks.where(start_date: start_date)
+    render json: { tasks: tasks, start_date: task.start_date.to_s }
   end
 
   private
