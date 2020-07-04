@@ -1,7 +1,8 @@
 class TasksController < ApplicationController
   def index
     today = Time.zone.today
-    daily = @current_user.tasks.where(date: (today - 31)..(today + 13))
+    daily_range = (today - 31)..(today + 13)
+    daily = @current_user.tasks.where(date: [daily_range, nil])
 
     week_start = today.beginning_of_week
     week_start_dates = [(week_start - 7), week_start, (week_start + 7)]
@@ -40,24 +41,29 @@ class TasksController < ApplicationController
 
   def destroy
     task = Task.find(params[:id])
+    date = task.date&.to_s
+    is_completed = task.is_completed
+
     @current_user
       .tasks
-      .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', task.date, task.order, task.is_completed)
+      .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', date, task.order, is_completed)
       .update_all('tasks.order = tasks.order - 1')
     task.destroy
-    render json: { tasks: @current_user.tasks }
+
+    tasks = @current_user.tasks.where(date: date, is_completed: is_completed)
+    render json: { tasks: tasks, date: date, is_completed: is_completed }
   end
 
   def order
     # params = { oldIndex, newIndex, fromDate, toDate, fromCompleted, toCompleted, taskId, isCurrent }
-    logger.debug old_index = params[:oldIndex]
-    logger.debug new_index = params[:newIndex]
-    logger.debug from_date = params[:fromDate]
-    logger.debug to_date = params[:toDate]
-    logger.debug from_completed = params[:fromCompleted]
-    logger.debug to_completed = params[:toCompleted]
-    logger.debug task_id = params[:taskId]
-    logger.debug current = params[:isCurrent] || false
+    old_index = params[:oldIndex]
+    new_index = params[:newIndex]
+    from_date = params[:fromDate]
+    to_date = params[:toDate]
+    from_completed = params[:fromCompleted]
+    to_completed = params[:toCompleted]
+    task_id = params[:taskId]
+    current = params[:isCurrent] || false
 
     @current_user
       .tasks
@@ -75,7 +81,12 @@ class TasksController < ApplicationController
       is_completed: to_completed,
       is_current: current
     )
-    render json: { tasks: @current_user.tasks }
+
+    # tasks = @current_user.tasks.where('tasks.date = ? OR tasks.date = ? OR tasks.id = ?', from_date, to_date, task_id)
+    tasks = @current_user.tasks.where(date: from_date).or(@current_user.tasks.where(date: to_date))
+    from_date_string = from_date ? Date.parse(from_date).to_s : nil
+    to_date_string = to_date ? Date.parse(to_date).to_s : nil
+    render json: { tasks: tasks, from_date: from_date_string, to_date: to_date_string, task_id: task_id }
   end
 
   def start
