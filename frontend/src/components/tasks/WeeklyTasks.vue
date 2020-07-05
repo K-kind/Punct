@@ -27,7 +27,7 @@
         ></LongTermForm>
       </li>
     </draggable>
-    <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+週目標を追加</a>
+    <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+週間タスクを追加</a>
     <LongTermForm
       :formIsOpen="newFormIsOpen"
       taskContent=""

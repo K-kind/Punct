@@ -6,7 +6,7 @@
     <div v-if="currentTask">
       <a href="Javascript:void(0)" @click="start" v-if="!timerId"><i class="el-icon-video-play"></i></a>
       <a href="Javascript:void(0)" @click="stop" v-else><i class="el-icon-video-pause"></i></a>
-      <span>経過時間: {{ elapsedTime }}</span>
+      <span>経過: {{ elapsedTime }}</span>
       <button @click.prevent="complete(null)">完了</button>
     </div>
     <draggable tag="ul" :group="dragGroup" @end="onDragEnd" :data-working="true" @add="onAdd" @clone="onClone" draggable=".draggable">
