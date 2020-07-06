@@ -4,7 +4,13 @@
       <h2 class="task-board__heading"><slot name="taskDate1"></slot>{{ dateString }}</h2>
       <span v-if="totalTime">{{ totalTime }}</span>
     </div>
-    <draggable tag="ul" group="TASKS" @end="onDragEnd" :data-date="separatedDate" draggable=".draggable">
+    <draggable
+      tag="ul"
+      group="TASKS"
+      @end="onDragEnd"
+      :data-date="separatedDate"
+      draggable=".draggable"
+    >
       <li v-for="task of dailyTasks(date)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
         <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
           <p class="task-board__p">

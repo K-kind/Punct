@@ -260,11 +260,12 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-width: 280px;
+    width: 100%;
     font-weight: bold;
   }
   &__header-right {
     padding-right: 8px;
+    padding-left: 14px;
     a {
       color: #fff;
       font-size: 18px;

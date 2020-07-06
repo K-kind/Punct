@@ -122,7 +122,8 @@ export default {
       if (
         payload.fromDate === payload.toDate &&
         payload.oldIndex === payload.newIndex &&
-        payload.fromCompleted === payload.toCompleted
+        payload.fromCompleted === payload.toCompleted &&
+        payload.fromDate
       ) { return false }
 
       let fromToday = rootState.weekly.fromToday
