@@ -49,6 +49,7 @@ import {
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
   SET_TASKS,
+  SET_START_DATE
 } from '@/store/mutation-types'
 
 export default {
@@ -91,7 +92,7 @@ export default {
   },
   methods: {
     ...mapActions('weekly', [ADD_NEW_TASK,
-UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS]),
+UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS, SET_START_DATE]),
     weekFoward(toFoward) {
       if (toFoward) {
         this.daysFromToday += 7
@@ -99,7 +100,8 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS]),
         this.daysFromToday -= 7
       }
       let startDate = (this.daysFromToday === 0 ? null : this.weekRange.monday)
-      this.$emit('change-week', startDate)
+      this[SET_TASKS](this.daysFromToday)
+      this[SET_START_DATE]({ fromToday: this.daysFromToday, startDate })
     },
     closeForm() {
       this.newFormIsOpen = false
@@ -153,11 +155,6 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS]),
       this[UPDATE_TASK_ORDER](payload)
     }
   },
-  watch: {
-    daysFromToday(fromToday) {
-      this[SET_TASKS](fromToday)
-    }
-  }
 }
 </script>
 

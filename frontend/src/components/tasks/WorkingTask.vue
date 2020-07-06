@@ -237,8 +237,7 @@ export default {
 
 <style scoped lang="scss">
 .task-board {
-  min-height: 80px;
-  min-width: 320px;
+  min-height: 82px;
   width: auto;
   padding-bottom: 4px;
   background-color: $theme-green;

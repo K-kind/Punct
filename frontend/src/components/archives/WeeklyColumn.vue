@@ -1,6 +1,6 @@
 <template>
   <div>
-    <WeeklyTasks @change-week="changeWeek" :isArchive="true" />
+    <WeeklyTasks :isArchive="true" />
   </div>
 </template>
 
@@ -11,11 +11,6 @@ export default {
   name: 'WeeklyColumn',
   components: {
     WeeklyTasks
-  },
-  methods: {
-    changeWeek(startDate) {
-      this.$emit('change-week', startDate)
-    }
   },
 }
 </script>
