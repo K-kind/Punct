@@ -1,17 +1,13 @@
 class WeeklyTasksController < ApplicationController
   def index
-    start_dates = []
     today = Time.zone.today
-    first_of_this_week = today.beginning_of_week
     from_today = params[:fromToday].to_i
-    [-7, 0, 7].each do |n|
-      start_dates << first_of_this_week + from_today + n
-    end
-    weekly = @current_user.weekly_tasks.where(start_date: start_dates)
+    monday = today.beginning_of_week + from_today
 
-    fisrt_date = start_dates[0]
-    end_date = start_dates[2] + 6
-    daily = @current_user.tasks.where(date: [(fisrt_date..end_date), today, nil])
+    weekly = @current_user.weekly_tasks
+                          .from_this_day(monday)
+    daily = @current_user.tasks
+                         .from_this_day(today: today, monday: monday)
 
     render json: { tasks: { daily: daily, weekly: weekly } }
   end

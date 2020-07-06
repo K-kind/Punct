@@ -122,10 +122,11 @@ export default {
         }
       }).catch(err => err)
     },
-    [DELETE_TASK_BY_ID]({ commit, dispatch }, payload) {
+    [DELETE_TASK_BY_ID]({ commit, dispatch, rootState }, tadkId) {
+      let fromToday = rootState.weekly.fromToday
       dispatch(
         `http/${DELETE}`,
-        { url: `tasks/${payload}` },
+        { url: `tasks/${tadkId}`, data: { fromToday } },
         { root: true }
       ).then(res => {
         commit(DELETE_TASK_BY_ID, res.data)

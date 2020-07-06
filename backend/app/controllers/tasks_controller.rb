@@ -1,19 +1,12 @@
 class TasksController < ApplicationController
   def index
     today = Time.zone.today
-    daily_range = (today - 31)..(today + 13)
-    daily = @current_user.tasks.where(date: [daily_range, nil])
+    daily = @current_user.tasks.from_this_day(today: today)
 
     week_start = today.beginning_of_week
-    week_start_dates = [(week_start - 7), week_start, (week_start + 7)]
-    weekly = @current_user.weekly_tasks.where(start_date: week_start_dates)
+    weekly = @current_user.weekly_tasks.from_this_day(week_start)
 
-    month_start_dates = []
-    first_of_this_month = today.beginning_of_month
-    (-1..1).each do |n|
-      month_start_dates << first_of_this_month.next_month(n)
-    end
-    monthly = @current_user.monthly_tasks.where(start_date: month_start_dates)
+    monthly = @current_user.monthly_tasks.from_this_day(today: today)
 
     render json: { tasks: { daily: daily, weekly: weekly, monthly: monthly } }
   end
@@ -41,17 +34,17 @@ class TasksController < ApplicationController
 
   def destroy
     task = Task.find(params[:id])
-    date = task.date&.to_s
-    is_completed = task.is_completed
+      # date = task.date&.to_s
+      # is_completed = task.is_completed
 
     @current_user
       .tasks
-      .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', date, task.order, is_completed)
+      .where('tasks.date = ? AND tasks.order > ? AND tasks.is_completed = ?', task.date, task.order, task.is_completed)
       .update_all('tasks.order = tasks.order - 1')
     task.destroy
 
     tasks = @current_user.tasks.where(date: date, is_completed: is_completed)
-    render json: { tasks: tasks, date: date, is_completed: is_completed }
+    render json: { tasks: tasks }
   end
 
   def order
