@@ -70,6 +70,8 @@ export default {
 }
 .el-menu {
   position: fixed!important;
+  z-index: 10;
+  border: none!important;
   width: 100%;
   background-color: $theme-gray!important;
   font-weight: bold!important;

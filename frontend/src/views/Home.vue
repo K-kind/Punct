@@ -1,15 +1,21 @@
 <template>
   <div class="home">
-    <WorkingColumn />
-    <TodayColumn />
-    <DailyColumn :startDate="weekStartDate" />
-    <WeeklyColumn @change-week="changeWeek" />
-    <MonthlyColumn />
+    <div class="working">
+      <WorkingTask />
+    </div>
+    <div class="columns">
+      <CompletedColumn />
+      <TodayColumn />
+      <DailyColumn :startDate="weekStartDate" />
+      <WeeklyColumn @change-week="changeWeek" />
+      <MonthlyColumn />
+    </div>
   </div>
 </template>
 
 <script>
-import WorkingColumn from '@/components/homeColumns/WorkingColumn.vue'
+import WorkingTask from '@/components/tasks/WorkingTask.vue'
+import CompletedColumn from '@/components/homeColumns/CompletedColumn.vue'
 import TodayColumn from '@/components/homeColumns/TodayColumn.vue'
 import DailyColumn from '@/components/homeColumns/DailyColumn.vue'
 import WeeklyColumn from '@/components/homeColumns/WeeklyColumn.vue'
@@ -19,7 +25,8 @@ import { SET_TASKS, DESTROY } from '@/store/mutation-types'
 export default {
   name: 'Home',
   components: {
-    WorkingColumn,
+    WorkingTask,
+    CompletedColumn,
     TodayColumn,
     DailyColumn,
     WeeklyColumn,
@@ -47,7 +54,11 @@ export default {
 </script>
 
 <style scoped>
-.home {
+.working {
+  display: flex;
+  justify-content: center;
+}
+.columns {
   display: flex;
 }
 </style>

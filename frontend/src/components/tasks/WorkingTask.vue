@@ -1,37 +1,61 @@
 <template>
   <div class="task-board">
     <div class="task-board__header">
-      <h2 class="task-board__heading">現在のタスク</h2>
-    </div>
-    <div v-if="currentTask">
-      <a href="Javascript:void(0)" @click="start" v-if="!timerId"><i class="el-icon-video-play"></i></a>
-      <a href="Javascript:void(0)" @click="stop" v-else><i class="el-icon-video-pause"></i></a>
-      <span>経過: {{ elapsedTime }}</span>
-      <button @click.prevent="complete(null)">完了</button>
-    </div>
-    <draggable tag="ul" :group="dragGroup" @end="onDragEnd" :data-working="true" @add="onAdd" @clone="onClone" draggable=".draggable">
-      <li v-if="currentTask" class="task-board__li" :class="{ draggable: !formIsOpen }">
-        <div v-if="!formIsOpen" @click="openForm()" class="task-board__task">
-          <p class="task-board__p">
-            {{ currentTask.order }}: ID.{{ currentTask.id }}: {{ currentTask.content }} ({{ currentTask.date }}日)
-            <span class="task-board__time">{{ toMinutes(currentTask.expected_time) }}分</span>
-          </p>
+      <div class="task-board__header-left">
+        <h2 class="task-board__heading">{{ headerText }}</h2>
+        <div v-if="currentTask">
+          <span class="elapsed-time">経過: {{ elapsedTime }}</span>
         </div>
-        <TaskForm
-          v-else
-          :formIsOpen="true"
-          :taskId="currentTask.id"
-          :taskContent="currentTask.content"
-          :taskExpectedTime="toMinutes(currentTask.expected_time)"
-          :taskElapsedTime="0"
-          :isNewTask="false"
-          ref="updateForm"
-          @close-form="closeForm"
-          @update-task="updateTask($event, currentTask.id)"
-          @delete-current-task="deleteCurrentTask"
-        ></TaskForm>
-      </li>
-    </draggable>
+      </div>
+      <div v-if="currentTask" class="task-board__header-right">
+        <a href="Javascript:void(0)" @click="start" v-if="!timerId">
+          <i class="el-icon-video-play"></i>
+        </a>
+        <a href="Javascript:void(0)" @click="stop" v-else>
+          <i class="el-icon-video-pause"></i>
+        </a>
+      </div>
+    </div>
+    <div class="current-task">
+      <draggable
+        tag="ul"
+        class="task-board__ul"
+        :group="dragGroup"
+        @end="onDragEnd"
+        :data-working="true"
+        @add="onAdd"
+        @clone="onClone"
+        draggable=".draggable"
+      >
+        <li v-if="!currentTask" class="drop-guide">
+          ここにドロップ
+        </li>
+        <li v-if="currentTask" class="task-board__li" :class="{ draggable: !formIsOpen }">
+          <div v-if="!formIsOpen" @click="openForm()" class="task-board__task">
+            <p class="task-board__p">
+              {{ currentTask.order }}: ID.{{ currentTask.id }}: {{ currentTask.content }} ({{ currentTask.date }}日)
+              <span class="task-board__time">{{ toMinutes(currentTask.expected_time) }}分</span>
+            </p>
+          </div>
+          <TaskForm
+            v-else
+            :formIsOpen="true"
+            :taskId="currentTask.id"
+            :taskContent="currentTask.content"
+            :taskExpectedTime="toMinutes(currentTask.expected_time)"
+            :taskElapsedTime="0"
+            :isNewTask="false"
+            ref="updateForm"
+            @close-form="closeForm"
+            @update-task="updateTask($event, currentTask.id)"
+            @delete-current-task="deleteCurrentTask"
+          ></TaskForm>
+        </li>
+      </draggable>
+      <div class="current-task__right">
+        <button v-show="currentTask" @click.prevent="complete(null)">完了</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -62,6 +86,16 @@ export default {
   },
   computed: {
     ...mapGetters('daily', ['currentTask', 'completedTasks']),
+    headerText() {
+      let text = '進行中のタスク'
+      let task = this.currentTask
+      if (task && task.on_progress) {
+        text = '進行中'
+      } else if (task) {
+        text = '停止中'
+      }
+      return text
+    }
   },
   methods: {
     ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, START_TASK, STOP_TASK]),
@@ -201,13 +235,77 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .task-board {
-  min-height: 140px;
-  background-color: bisque;
+  min-height: 80px;
+  min-width: 320px;
+  width: auto;
+  padding-bottom: 4px;
+  background-color: $theme-green;
+  &__header {
+    padding-bottom: 0;
+    height: 21px;
+  }
+  &__header-left {
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 280px;
+    font-weight: bold;
+  }
+  &__header-right {
+    padding-right: 8px;
+    a {
+      color: #fff;
+      font-size: 18px;
+      &:hover {
+        color: $theme-gray;
+      }
+    }
+    i {
+      font-weight: bold;
+    }
+  }
+  &__ul {
+    min-width: 280px;
+    position: relative;
+  }
 }
-/* .task-board__header {
-  display: block;
-  text-align: center;
-} */
+.drop-guide {
+  position: absolute;
+  background-color: #fff;
+  color: #aaa;
+  min-width: 280px;
+  margin: 8px 0;
+  padding: 3px 10px;
+  line-height: 1.8;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(9,30,66,.25);
+}
+.current-task {
+  display: flex;
+  align-items: center;
+  &__right {
+    min-width: 40px;
+    text-align: right;
+  }
+}
+button {
+  cursor: pointer;
+  background-color: #fff;
+  color: $theme-gray;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  &:hover {
+    color: $theme-green;
+  }
+  &:focus {
+    outline: 0;
+    background-color: #efefef;
+  }
+}
 </style>

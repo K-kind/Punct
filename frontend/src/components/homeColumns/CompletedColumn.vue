@@ -1,6 +1,5 @@
 <template>
   <div class="today-column">
-    <WorkingTask />
     <CompletedTasks :date="today">
       <template v-slot:taskDate1>本日の完了タスク</template>
     </CompletedTasks>
@@ -8,13 +7,11 @@
 </template>
 
 <script>
-import WorkingTask from '@/components/tasks/WorkingTask.vue'
 import CompletedTasks from '@/components/tasks/CompletedTasks.vue'
 
 export default {
-  name: 'WorkingColumn',
+  name: 'CompletedColumn',
   components: {
-    WorkingTask,
     CompletedTasks
   },
   computed: {

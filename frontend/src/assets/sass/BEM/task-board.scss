@@ -1,8 +1,13 @@
 .task-board {
-  background-color: azure;
+  background-color: $light-green;
+  border-radius: 3px;
   width: 320px;
   margin: 0 8px 15px;
   padding: 10px 12px;
+  form {
+    border: 1px solid #aaa;
+    border-radius: 3px;
+  }
   &__time {
     min-width: 40px;
     text-align: right;
@@ -17,15 +22,19 @@
   &__heading {
     font-size: 1.4rem;
   }
-  &__li {
-    border: solid #ddd 1px;
-    border-radius: 3px;
-    margin: 8px 0;
-  }
+  // &__li {
+    // form {
+    //   border: 1px solid #aaa;
+    //   border-radius: 3px;
+    // }
+  // }
   &__task {
     cursor: pointer;
     padding: 3px 10px;
+    margin: 8px 0;
     background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(9,30,66,.25);
   }
   &__p {
     line-height: 1.8;
