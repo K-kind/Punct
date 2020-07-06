@@ -8,8 +8,7 @@
       <li v-for="task of remainingTasks" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
         <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
           <p class="task-board__p">
-            <!-- {{ task.content }} -->
-            {{ task.order }}: ID.{{ task.id }}: {{ task.content }} ({{ task.date }}日)
+            {{ task.content }}
             <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
           </p>
         </div>

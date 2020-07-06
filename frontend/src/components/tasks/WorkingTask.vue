@@ -27,27 +27,32 @@
         @clone="onClone"
         draggable=".draggable"
       >
-        <li v-if="!currentTask" class="drop-guide">
+        <li v-show="!currentTask" class="drop-guide">
           ここにドロップ
         </li>
-        <li v-if="currentTask" class="task-board__li" :class="{ draggable: !formIsOpen }">
+        <li
+          v-for="task of tasks"
+          class="task-board__li"
+          :class="{ draggable: !formIsOpen }"
+          :key="task.id"
+        >
           <div v-if="!formIsOpen" @click="openForm()" class="task-board__task">
             <p class="task-board__p">
-              {{ currentTask.order }}: ID.{{ currentTask.id }}: {{ currentTask.content }} ({{ currentTask.date }}日)
-              <span class="task-board__time">{{ toMinutes(currentTask.expected_time) }}分</span>
+              {{ task.content }}
+              <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
             </p>
           </div>
           <TaskForm
             v-else
             :formIsOpen="true"
-            :taskId="currentTask.id"
-            :taskContent="currentTask.content"
-            :taskExpectedTime="toMinutes(currentTask.expected_time)"
+            :taskId="task.id"
+            :taskContent="task.content"
+            :taskExpectedTime="toMinutes(task.expected_time)"
             :taskElapsedTime="0"
             :isNewTask="false"
             ref="updateForm"
             @close-form="closeForm"
-            @update-task="updateTask($event, currentTask.id)"
+            @update-task="updateTask($event, task.id)"
             @delete-current-task="deleteCurrentTask"
           ></TaskForm>
         </li>
@@ -77,7 +82,8 @@ export default {
       formIsOpen: false,
       timerId: null,
       elapsedTime: null,
-      dragGroup: 'TASKS'
+      dragGroup: 'TASKS',
+      tasks: []
     }
   },
   components: {
@@ -106,9 +112,9 @@ export default {
       this.formIsOpen = false
     },
     openForm() {
-      let self = this
       this.formIsOpen = true
-      setTimeout(() => self.$refs.updateForm.focusForm())
+      let self = this
+      setTimeout(() => self.$refs.updateForm[0].focusForm())
     },
     updateTask(e, task_id) {
       let payload = { id: task_id, task: e }
@@ -117,6 +123,7 @@ export default {
     },
     deleteCurrentTask() {
       this.disableDrag(false)
+      this.tasks = []
       clearInterval(this.timerId)
       this.timerId = null
     },
@@ -175,6 +182,7 @@ export default {
       this[UPDATE_TASK_ORDER](payload)
         .then(() => {
           this.disableDrag(false)
+          this.tasks = []
         })
     },
     onDragEnd(e) {
@@ -209,6 +217,7 @@ export default {
       }
       this[UPDATE_TASK_ORDER](payload)
         .then(() => {
+          this.tasks = [this.currentTask]
           this.computeElapsedTime()
           this.start()
         })
@@ -225,6 +234,7 @@ export default {
     setTimeout(() => {
       if (!self.currentTask) return false;
 
+      self.tasks.push(self.currentTask)
       self.disableDrag(true)
       self.computeElapsedTime()
       if (self.currentTask.started_time) {
@@ -242,7 +252,7 @@ export default {
   padding-bottom: 4px;
   background-color: $theme-green;
   &__header {
-    padding-bottom: 0;
+    padding-bottom: 2px;
     height: 21px;
   }
   &__header-left {
@@ -268,6 +278,7 @@ export default {
   }
   &__ul {
     min-width: 280px;
+    min-height: 49px;
     position: relative;
   }
 }
@@ -276,8 +287,8 @@ export default {
   background-color: #fff;
   color: #aaa;
   min-width: 280px;
-  margin: 8px 0;
-  padding: 3px 10px;
+  margin: 5px 0;
+  padding: 5px 10px;
   line-height: 1.8;
   border-radius: 3px;
   box-shadow: 0 1px 0 rgba(9,30,66,.25);

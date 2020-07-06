@@ -10,8 +10,7 @@
         <div v-if="onUpdatedTaskId !== task.id" class="task-board__task">
           <input type="checkbox" v-model="task.is_checked" @change="checkTask(task)"/>
           <p @click="openUpdateForm(task.id)" class="task-board__p">
-            {{ task.order }}: ID.{{ task.id }}: {{ task.content }}
-            <span >完了({{ task.is_checked }})</span>
+            {{ task.content }}
           </p>
         </div>
         <LongTermForm

@@ -22,16 +22,17 @@
   &__heading {
     font-size: 1.4rem;
   }
-  // &__li {
-    // form {
-    //   border: 1px solid #aaa;
-    //   border-radius: 3px;
-    // }
-  // }
+  &__li {
+    position: relative;
+    form {
+      border: 1px solid #aaa;
+      border-radius: 3px;
+    }
+  }
   &__task {
     cursor: pointer;
-    padding: 3px 10px;
-    margin: 8px 0;
+    padding: 5px 10px;
+    margin: 5px 0;
     background-color: white;
     border-radius: 3px;
     box-shadow: 0 1px 0 rgba(9,30,66,.25);
