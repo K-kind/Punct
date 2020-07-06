@@ -1,9 +1,7 @@
 class MonthlyTasksController < ApplicationController
   def index
-    today = Time.zone.today
     from_today = params[:fromToday].to_i
-    tasks = @current_user.monthly_tasks
-                         .from_this_day(today: today, from_today: from_today)
+    tasks = @current_user.monthly_tasks.from_this_day(from_today)
 
     render json: { tasks: tasks }
   end

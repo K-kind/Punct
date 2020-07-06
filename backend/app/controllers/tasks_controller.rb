@@ -1,12 +1,8 @@
 class TasksController < ApplicationController
   def index
-    today = Time.zone.today
-    daily = @current_user.tasks.from_this_day(today: today)
-
-    week_start = today.beginning_of_week
-    weekly = @current_user.weekly_tasks.from_this_day(week_start)
-
-    monthly = @current_user.monthly_tasks.from_this_day(today: today)
+    daily = @current_user.tasks.from_this_day
+    weekly = @current_user.weekly_tasks.from_this_day
+    monthly = @current_user.monthly_tasks.from_this_day
 
     render json: { tasks: { daily: daily, weekly: weekly, monthly: monthly } }
   end
@@ -34,8 +30,6 @@ class TasksController < ApplicationController
 
   def destroy
     task = Task.find(params[:id])
-      # date = task.date&.to_s
-      # is_completed = task.is_completed
 
     @current_user
       .tasks
@@ -43,6 +37,7 @@ class TasksController < ApplicationController
       .update_all('tasks.order = tasks.order - 1')
     task.destroy
 
+    from_today = params[:fromToday].to_i
     tasks = @current_user.tasks.where(date: date, is_completed: is_completed)
     render json: { tasks: tasks }
   end

@@ -1,13 +1,9 @@
 class WeeklyTasksController < ApplicationController
   def index
-    today = Time.zone.today
     from_today = params[:fromToday].to_i
-    monday = today.beginning_of_week + from_today
 
-    weekly = @current_user.weekly_tasks
-                          .from_this_day(monday)
-    daily = @current_user.tasks
-                         .from_this_day(today: today, monday: monday)
+    daily = @current_user.tasks.from_this_day(from_today)
+    weekly = @current_user.weekly_tasks.from_this_day(from_today)
 
     render json: { tasks: { daily: daily, weekly: weekly } }
   end

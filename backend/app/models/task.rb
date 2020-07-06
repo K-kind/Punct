@@ -10,8 +10,10 @@ class Task < ApplicationRecord
                     numericality: { greater_than_or_equal_to: 0 }
 
   class << self
-    def from_this_day(today:, monday: nil)
-      if monday
+    def from_this_day(from_today = nil)
+      today = Time.zone.today
+      if from_today
+        monday = today.beginning_of_week + from_today
         date_range = (monday - 7)..(monday + 13)
         where(date: [date_range, nil, today])
       else
