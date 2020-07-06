@@ -69,21 +69,6 @@ export default {
         updatedTask.elapsed_time = task.elapsed_time
       }
     },
-    [DELETE_TASK_BY_ID](state, { tasks, date, is_completed }) {
-      state.tasks = state.tasks.filter(task =>
-        task.date !== date ||
-        task.is_completed !== is_completed
-      )
-      state.tasks.push(...tasks)
-    },
-    [UPDATE_TASK_ORDER](state, { tasks, from_date, to_date, task_id }) {
-      state.tasks = state.tasks.filter(task =>
-        task.date !== from_date &&
-        task.date !== to_date &&
-        task.id !== task_id
-      )
-      state.tasks.push(...tasks)
-    },
     [SET_UPDATED_TASK](state, { task }) {
       let currentTask = state.tasks.find(t => t.id === task.id)
       currentTask.elapsed_time = task.elapsed_time
@@ -124,28 +109,30 @@ export default {
     },
     [DELETE_TASK_BY_ID]({ commit, dispatch, rootState }, tadkId) {
       let fromToday = rootState.weekly.fromToday
-      dispatch(
+      return dispatch(
         `http/${DELETE}`,
         { url: `tasks/${tadkId}`, data: { fromToday } },
         { root: true }
       ).then(res => {
-        commit(DELETE_TASK_BY_ID, res.data)
+        commit(SET_TASKS, res.data.tasks)
       })
       .catch(err => err)
     },
-    [UPDATE_TASK_ORDER]({ commit, dispatch }, payload) {
+    [UPDATE_TASK_ORDER]({ commit, dispatch, rootState }, payload) {
       if (
         payload.fromDate === payload.toDate &&
         payload.oldIndex === payload.newIndex &&
         payload.fromCompleted === payload.toCompleted
       ) { return false }
 
+      let fromToday = rootState.weekly.fromToday
+      Object.assign(payload, { fromToday })
       return dispatch(
         `http/${POST}`,
         { url: 'tasks/order', data: payload },
         { root: true }
       ).then(res => {
-        commit(UPDATE_TASK_ORDER, res.data)
+        commit(SET_TASKS, res.data.tasks)
       }).catch(err => err)
     },
     [START_TASK]({ commit, dispatch }, { taskId }) {

@@ -38,12 +38,11 @@ class TasksController < ApplicationController
     task.destroy
 
     from_today = params[:fromToday].to_i
-    tasks = @current_user.tasks.where(date: date, is_completed: is_completed)
+    tasks = @current_user.tasks.from_this_day(from_today)
     render json: { tasks: tasks }
   end
 
   def order
-    # params = { oldIndex, newIndex, fromDate, toDate, fromCompleted, toCompleted, taskId, isCurrent }
     old_index = params[:oldIndex]
     new_index = params[:newIndex]
     from_date = params[:fromDate]
@@ -70,11 +69,8 @@ class TasksController < ApplicationController
       is_current: current
     )
 
-    # tasks = @current_user.tasks.where('tasks.date = ? OR tasks.date = ? OR tasks.id = ?', from_date, to_date, task_id)
-    tasks = @current_user.tasks.where(date: from_date).or(@current_user.tasks.where(date: to_date))
-    from_date_string = from_date ? Date.parse(from_date).to_s : nil
-    to_date_string = to_date ? Date.parse(to_date).to_s : nil
-    render json: { tasks: tasks, from_date: from_date_string, to_date: to_date_string, task_id: task_id }
+    tasks = @current_user.tasks.from_this_day(params[:fromToday].to_i)
+    render json: { tasks: tasks }
   end
 
   def start
