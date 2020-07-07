@@ -1,9 +1,9 @@
 .task-board {
   background-color: $light-green;
   border-radius: 3px;
-  width: 320px;
+  min-width: 326px;
   margin: 0 8px 15px;
-  padding: 10px 12px;
+  padding: 10px 11px;
   form {
     border: 1px solid #aaa;
     border-radius: 3px;
@@ -24,6 +24,7 @@
   }
   &__li {
     position: relative;
+    // width: 300px;
     form {
       border: 1px solid #aaa;
       border-radius: 3px;
@@ -31,6 +32,8 @@
   }
   &__task {
     cursor: pointer;
+    // width: 100%;
+    width: 300px;
     padding: 5px 10px;
     margin: 5px 0;
     background-color: white;
@@ -46,5 +49,16 @@
   &__add {
     display: inline-block;
     margin-top: 6px;
+  }
+  &__with-icon {
+    display: flex;
+    align-items: center;
+    &--left {
+      // padding-right: 6px;
+      width: 20px;
+      i {
+        font-weight: bold;
+      }
+    }
   }
 }

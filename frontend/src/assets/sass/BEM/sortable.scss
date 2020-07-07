@@ -1,6 +1,21 @@
 .sortable-ghost {
   color: #aaa;
-  div {
+  .task-board__task {
     background-color: #efefef;
+  }
+  .task-board__with-icon--left {
+    display: none;
+    // a {
+    // }
+  }
+  // .todayTask {
+  //   margin-left: 20px;
+  // }
+}
+.sortable-drag {
+  .task-board__with-icon--left {
+    a {
+      display: none;
+    }
   }
 }

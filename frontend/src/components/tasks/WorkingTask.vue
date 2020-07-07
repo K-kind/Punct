@@ -21,10 +21,10 @@
         tag="ul"
         class="task-board__ul"
         :group="dragGroup"
-        @end="onDragEnd"
         :data-working="true"
         @add="onAdd"
         @clone="onClone"
+        @end="onDragEnd"
         draggable=".draggable"
       >
         <li v-show="!currentTask" class="drop-guide">
@@ -123,7 +123,7 @@ export default {
     },
     deleteCurrentTask() {
       this.disableDrag(false)
-      this.tasks = []
+      // this.tasks = []
       clearInterval(this.timerId)
       this.timerId = null
     },
@@ -180,10 +180,10 @@ export default {
       }
 
       this[UPDATE_TASK_ORDER](payload)
-        .then(() => {
-          this.disableDrag(false)
-          this.tasks = []
-        })
+        // .then(() => {
+        //   this.disableDrag(false)
+        //   this.tasks = []
+        // })
     },
     onDragEnd(e) {
       if (e.to.dataset.working) {
@@ -202,7 +202,7 @@ export default {
       this.complete(payload)
     },
     onAdd(e) {
-      this.disableDrag(true)
+      // this.disableDrag(true)
 
       let fromCompleted = (e.from.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
@@ -217,7 +217,7 @@ export default {
       }
       this[UPDATE_TASK_ORDER](payload)
         .then(() => {
-          this.tasks = [this.currentTask]
+          // this.tasks = [this.currentTask]
           this.computeElapsedTime()
           this.start()
         })
@@ -234,13 +234,26 @@ export default {
     setTimeout(() => {
       if (!self.currentTask) return false;
 
-      self.tasks.push(self.currentTask)
+      // self.tasks.push(self.currentTask)
       self.disableDrag(true)
       self.computeElapsedTime()
       if (self.currentTask.started_time) {
         self.setTimer()
       }
     }, 500)
+  },
+  watch: {
+    currentTask(task) {
+      if (task) {
+        this.tasks = [task]
+        this.disableDrag(true)
+        console.log('taskをセットしました')
+      } else {
+        this.tasks = []
+        this.disableDrag(false)
+        console.log('taskを外しました')
+      }
+    }
   }
 }
 </script>
@@ -248,7 +261,7 @@ export default {
 <style scoped lang="scss">
 .task-board {
   min-height: 82px;
-  width: auto;
+  min-width: 362px;
   padding-bottom: 4px;
   background-color: $theme-green;
   &__header {
@@ -287,7 +300,7 @@ export default {
   position: absolute;
   background-color: #fff;
   color: #aaa;
-  min-width: 280px;
+  min-width: 300px;
   margin: 5px 0;
   padding: 5px 10px;
   line-height: 1.8;

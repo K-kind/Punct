@@ -9,17 +9,26 @@
       group="TASKS"
       @end="onDragEnd"
       :data-date="separatedDate"
-      draggable=".draggable"
+      handle=".handle"
     >
-      <li v-for="task of dailyTasks(date)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
-        <a v-if="forToday" href="Javascript:void(0)">
-          <i class="el-icon-upload2"></i>
-        </a>
-        <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
-          <p class="task-board__p">
-            {{ task.content }}
-            <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
-          </p>
+      <li
+        v-for="task of dailyTasks(date)"
+        :key="task.id"
+        :data-task_id="task.id"
+        class="task-board__li"
+      >
+        <div v-if="onUpdatedTaskId !== task.id" class="task-board__with-icon">
+          <div v-if="forToday" v-show="draggingId !== task.id" class="task-board__with-icon--left">
+            <a href="Javascript:void(0)" @click="upload(task)">
+              <i class="el-icon-upload2"></i>
+            </a>
+          </div>
+          <div @click="openUpdateForm(task.id)" class="task-board__task  handle" :class="{ todayTask: forToday }">
+            <p class="task-board__p">
+              {{ task.content }}
+              <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
+            </p>
+          </div>
         </div>
         <TaskForm
           v-else
@@ -64,7 +73,8 @@ export default {
   data() {
     return {
       newFormIsOpen: false,
-      onUpdatedTaskId: ''
+      onUpdatedTaskId: '',
+      draggingId: null
     }
   },
   props: {
@@ -138,8 +148,10 @@ export default {
       this.closeForm()
     },
     onDragEnd(e) {
-      let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
+      this.draggingId = taskId
+
+      let toCompleted = (e.to.dataset.completed ? true : false)
       let payload = {
         fromDate: e.from.dataset.date,
         toDate: e.to.dataset.date,
@@ -150,14 +162,23 @@ export default {
         taskId
       }
 
-      if (!e.to.dataset.working) {
-        this[UPDATE_TASK_ORDER](payload)
+      if (e.to.dataset.working) {
+        let self = this
+        setTimeout(() => {
+          self.draggingId = null
+        }, 1000)
+      } else {
+        this[UPDATE_TASK_ORDER](payload).then(() => {
+          this.draggingId = null
+        })
       }
+    },
+    upload(task) {
+      task
     }
   }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
 </style>
