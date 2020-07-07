@@ -1,60 +1,62 @@
 <template>
   <div class="task-board">
     <div class="task-board__header">
-      <h2 class="task-board__heading"><slot name="taskDate1"></slot>{{ dateString }}</h2>
+      <h2 class="task-board__heading">{{ dateString }}</h2>
       <span v-if="totalTime">{{ totalTime }}</span>
     </div>
-    <draggable
-      tag="ul"
-      group="TASKS"
-      @end="onDragEnd"
-      :data-date="separatedDate"
-      handle=".handle"
-    >
-      <li
-        v-for="task of dailyTasks(date)"
-        :key="task.id"
-        :data-task_id="task.id"
-        class="task-board__li"
+    <div class="task-board__body">
+      <draggable
+        tag="ul"
+        group="TASKS"
+        @end="onDragEnd"
+        :data-date="separatedDate"
+        handle=".handle"
       >
-        <div v-if="onUpdatedTaskId !== task.id" class="task-board__with-icon">
-          <div v-if="forToday" v-show="draggingId !== task.id" class="task-board__with-icon--left">
-            <a :class="{ disabled: haveCurrent }" href="Javascript:void(0)" @click="upload(task)">
-              <i class="el-icon-upload2"></i>
-            </a>
+        <li
+          v-for="task of dailyTasks(date)"
+          :key="task.id"
+          :data-task_id="task.id"
+          class="task-board__li"
+        >
+          <div v-if="onUpdatedTaskId !== task.id" class="task-board__with-icon">
+            <div @click="openUpdateForm(task.id)" class="task-board__task  handle" :class="{ todayTask: forToday }">
+              <p class="task-board__p">
+                {{ task.content }}
+                <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
+              </p>
+            </div>
+            <div v-if="forToday" v-show="draggingId !== task.id" class="task-board__with-icon--left">
+              <a :class="{ disabled: !!currentTask }" href="Javascript:void(0)" @click="upload(task)">
+                <i class="el-icon-upload2"></i>
+              </a>
+            </div>
           </div>
-          <div @click="openUpdateForm(task.id)" class="task-board__task  handle" :class="{ todayTask: forToday }">
-            <p class="task-board__p">
-              {{ task.content }}
-              <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
-            </p>
-          </div>
-        </div>
-        <TaskForm
-          v-else
-          :formIsOpen="true"
-          :taskId="task.id"
-          :taskContent="task.content"
-          :taskExpectedTime="toMinutes(task.expected_time)"
-          :taskElapsedTime="0"
-          :isNewTask="false"
-          ref="updateForm"
-          @close-form="closeForm"
-          @update-task="updateTask($event, task.id)"
-        ></TaskForm>
-      </li>
-    </draggable>
-    <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+タスクを追加</a>
-    <TaskForm
-      :formIsOpen="newFormIsOpen"
-      taskContent=""
-      :taskExpectedTime="0"
-      :taskElapsedTime="0"
-      :isNewTask="true"
-      ref="newForm"
-      @close-form="closeForm"
-      @add-task="addTask"
-    ></TaskForm>
+          <TaskForm
+            v-else
+            :formIsOpen="true"
+            :taskId="task.id"
+            :taskContent="task.content"
+            :taskExpectedTime="toMinutes(task.expected_time)"
+            :taskElapsedTime="0"
+            :isNewTask="false"
+            ref="updateForm"
+            @close-form="closeForm"
+            @update-task="updateTask($event, task.id)"
+          ></TaskForm>
+        </li>
+      </draggable>
+      <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+タスクを追加</a>
+      <TaskForm
+        :formIsOpen="newFormIsOpen"
+        taskContent=""
+        :taskExpectedTime="0"
+        :taskElapsedTime="0"
+        :isNewTask="true"
+        ref="newForm"
+        @close-form="closeForm"
+        @add-task="addTask"
+      ></TaskForm>
+    </div>
   </div>
 </template>
 
@@ -76,7 +78,6 @@ export default {
       newFormIsOpen: false,
       onUpdatedTaskId: '',
       draggingId: null,
-      haveCurrent: false
     }
   },
   props: {
@@ -194,17 +195,8 @@ export default {
         })
     },
   },
-  watch: {
-    currentTask(task) {
-      this.haveCurrent = !!task
-    }
-  }
 }
 </script>
 
 <style scoped lang="scss">
-.disabled {
-  color: #aaa;
-  cursor: not-allowed;
-}
 </style>

@@ -5,36 +5,38 @@
       <span class="this-month"><h2 class="task-board__heading">{{ monthString }}</h2></span>
       <a v-if="monthsFromToday !== 0 || !isArchive" href="Javascript:void(0)" @click="monthFoward(true)"><i class="el-icon-caret-right"></i></a>
     </div>
-    <draggable tag="ul" group="MONTH" @end="onDragEnd" draggable=".draggable">
-      <li v-for="task of monthlyTasks(startDate)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
-        <div v-if="onUpdatedTaskId !== task.id" class="task-board__task">
-          <input type="checkbox" v-model="task.is_checked" @change="checkTask(task)"/>
-          <p @click="openUpdateForm(task.id)" class="task-board__p">
-            {{ task.content }}
-          </p>
-        </div>
-        <LongTermForm
-          v-else
-          :formIsOpen="true"
-          :taskId="task.id"
-          :taskContent="task.content"
-          :isNewTask="false"
-          ref="updateForm"
-          @close-form="closeForm"
-          @update-task="updateTask($event, task.id)"
-          @delete-task="deleteTask"
-        ></LongTermForm>
-      </li>
-    </draggable>
-    <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+月間タスクを追加</a>
-    <LongTermForm
-      :formIsOpen="newFormIsOpen"
-      taskContent=""
-      :isNewTask="true"
-      ref="newForm"
-      @close-form="closeForm"
-      @add-task="addTask"
-    ></LongTermForm>
+    <div class="task-board__body">
+      <draggable tag="ul" group="MONTH" @end="onDragEnd" draggable=".draggable">
+        <li v-for="task of monthlyTasks(startDate)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
+          <div v-if="onUpdatedTaskId !== task.id" class="task-board__task">
+            <input type="checkbox" v-model="task.is_checked" @change="checkTask(task)"/>
+            <p @click="openUpdateForm(task.id)" class="task-board__p">
+              {{ task.content }}
+            </p>
+          </div>
+          <LongTermForm
+            v-else
+            :formIsOpen="true"
+            :taskId="task.id"
+            :taskContent="task.content"
+            :isNewTask="false"
+            ref="updateForm"
+            @close-form="closeForm"
+            @update-task="updateTask($event, task.id)"
+            @delete-task="deleteTask"
+          ></LongTermForm>
+        </li>
+      </draggable>
+      <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+月間タスクを追加</a>
+      <LongTermForm
+        :formIsOpen="newFormIsOpen"
+        taskContent=""
+        :isNewTask="true"
+        ref="newForm"
+        @close-form="closeForm"
+        @add-task="addTask"
+      ></LongTermForm>
+    </div>
   </div>
 </template>
 
@@ -153,7 +155,7 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS]),
 
 <style scoped>
 .task-board {
-  background-color: rgb(242, 255, 240);
+  /* background-color: rgb(242, 255, 240); */
 }
 .task-board__header {
   display: block;

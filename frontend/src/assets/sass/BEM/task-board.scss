@@ -2,11 +2,13 @@
   background-color: $light-green;
   border-radius: 3px;
   min-width: 326px;
-  margin: 0 8px 15px;
-  padding: 10px 11px;
+  margin-bottom: 2px;
   form {
     border: 1px solid #aaa;
     border-radius: 3px;
+  }
+  &__body {
+    padding: 3px 11px 10px;
   }
   &__time {
     min-width: 40px;
@@ -17,7 +19,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 0 8px;
+    padding: 8px 8px 6px;
+    background-color: $theme-green;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #fff;
+    font-weight: bold;
   }
   &__heading {
     font-size: 1.4rem;
@@ -38,6 +45,9 @@
     background-color: white;
     border-radius: 3px;
     box-shadow: 0 1px 0 rgba(9,30,66,.25);
+    &:hover {
+      background-color: #efefef;
+    }
   }
   &__p {
     line-height: 1.8;
@@ -48,12 +58,34 @@
   &__add {
     display: inline-block;
     margin-top: 6px;
+    color: $middle-gray;
+    text-decoration: none;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 3px;
+    padding: 5px 10px;
+    &:hover {
+      color: $theme-gray;
+      // background-color: #efefef;
+      background-color: #fff;
+    }
   }
   &__with-icon {
     display: flex;
     align-items: center;
     &--left {
       width: 20px;
+      a {
+        padding-left: 6px;
+        color: $thin-gray;
+        &:hover {
+          color: $theme-gray;
+        }
+        &.disabled {
+          color: #aaa;
+          cursor: not-allowed;
+        }
+      }
       i {
         font-weight: bold;
       }

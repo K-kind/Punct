@@ -66,7 +66,7 @@ export default {
   color: $theme-gray;
 }
 .body {
-  padding-top: 50px;
+  padding: 50px 10px 0;
 }
 .el-menu {
   position: fixed!important;

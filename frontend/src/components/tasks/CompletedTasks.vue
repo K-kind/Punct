@@ -1,44 +1,46 @@
 <template>
   <div class="task-board">
     <div class="task-board__header">
-      <h2 class="task-board__heading"><slot name="taskDate1">{{ dateString }}</slot></h2>
+      <h2 class="task-board__heading">{{ dateString }}</h2>
       <span v-if="totalTime">{{ totalTime }}</span>
     </div>
-    <draggable tag="ul" group="TASKS" @end="onDragEnd" :data-completed="true" :data-date="separatedDate" draggable=".draggable">
-      <li v-for="task of completedTasks(date)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
-        <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
-          <p class="task-board__p">
-            {{ task.content }}
-            <span class="task-board__time">{{ taskTimes(task) }}分</span>
-          </p>
-        </div>
-        <TaskForm
-          v-else
-          :formIsOpen="true"
-          :taskId="task.id"
-          :taskContent="task.content"
-          :taskExpectedTime="toMinutes(task.expected_time)"
-          :taskElapsedTime="toMinutes(task.elapsed_time)"
-          :isNewTask="false"
-          :isCompletedTask="true"
-          ref="updateForm"
-          @close-form="closeForm"
-          @update-task="updateTask($event, task.id)"
-        ></TaskForm>
-      </li>
-    </draggable>
-    <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+完了済みを追加</a>
-    <TaskForm
-      :formIsOpen="newFormIsOpen"
-      taskContent=""
-      :taskExpectedTime="0"
-      :taskElapsedTime="0"
-      :isNewTask="true"
-      :isCompletedTask="true"
-      ref="newForm"
-      @close-form="closeForm"
-      @add-task="addTask"
-    ></TaskForm>
+    <div class="task-board__body">
+      <draggable tag="ul" group="TASKS" @end="onDragEnd" :data-completed="true" :data-date="separatedDate" draggable=".draggable">
+        <li v-for="task of completedTasks(date)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
+          <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
+            <p class="task-board__p">
+              {{ task.content }}
+              <span class="task-board__time">{{ taskTimes(task) }}分</span>
+            </p>
+          </div>
+          <TaskForm
+            v-else
+            :formIsOpen="true"
+            :taskId="task.id"
+            :taskContent="task.content"
+            :taskExpectedTime="toMinutes(task.expected_time)"
+            :taskElapsedTime="toMinutes(task.elapsed_time)"
+            :isNewTask="false"
+            :isCompletedTask="true"
+            ref="updateForm"
+            @close-form="closeForm"
+            @update-task="updateTask($event, task.id)"
+          ></TaskForm>
+        </li>
+      </draggable>
+      <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+完了済みを追加</a>
+      <TaskForm
+        :formIsOpen="newFormIsOpen"
+        taskContent=""
+        :taskExpectedTime="0"
+        :taskElapsedTime="0"
+        :isNewTask="true"
+        :isCompletedTask="true"
+        ref="newForm"
+        @close-form="closeForm"
+        @add-task="addTask"
+      ></TaskForm>
+    </div>
   </div>
 </template>
 
@@ -156,6 +158,6 @@ export default {
 
 <style scoped>
 .task-board {
-  background-color: rgb(253, 242, 219);
+  /* background-color: rgb(253, 242, 219); */
 }
 </style>

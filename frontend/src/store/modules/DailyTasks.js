@@ -43,7 +43,7 @@ export default {
       }
     },
     remainingTasks(state) {
-      let today = (new Date) - (1000 * 60 * 60 * 24) // 昨日の00:00以降
+      let today = (new Date) - (1000 * 60 * 60 * 15) // 昨日の09:00以降
       return state.tasks.filter(task => {
         if (task.is_completed || task.is_current) return false;
         let taskDate = new Date(task.date)

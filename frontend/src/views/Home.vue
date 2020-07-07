@@ -4,11 +4,26 @@
       <WorkingTask />
     </div>
     <div class="columns">
-      <CompletedColumn />
-      <TodayColumn />
-      <DailyColumn />
-      <WeeklyColumn />
-      <MonthlyColumn />
+      <Column>
+        <template v-slot:head>本日の完了タスク</template>
+        <template v-slot:body><CompletedColumn /></template>
+      </Column>
+      <Column>
+        <template v-slot:head>本日のタスク</template>
+        <template v-slot:body><TodayColumn /></template>
+      </Column>
+      <Column>
+        <template v-slot:head>6日間のタスク</template>
+        <template v-slot:body><DailyColumn /></template>
+      </Column>
+      <Column>
+        <template v-slot:head>週間タスク</template>
+        <template v-slot:body><WeeklyColumn /></template>
+      </Column>
+      <Column>
+        <template v-slot:head>月間タスク</template>
+        <template v-slot:body><MonthlyColumn /></template>
+      </Column>
     </div>
   </div>
 </template>
@@ -20,6 +35,7 @@ import TodayColumn from '@/components/homeColumns/TodayColumn.vue'
 import DailyColumn from '@/components/homeColumns/DailyColumn.vue'
 import WeeklyColumn from '@/components/homeColumns/WeeklyColumn.vue'
 import MonthlyColumn from '@/components/homeColumns/MonthlyColumn.vue'
+import Column from '@/components/Column.vue'
 import { SET_TASKS, SET_START_DATE, DESTROY } from '@/store/mutation-types'
 
 export default {
@@ -31,6 +47,7 @@ export default {
     DailyColumn,
     WeeklyColumn,
     MonthlyColumn,
+    Column
   },
   created() {
     this.$store.dispatch(SET_TASKS)
@@ -53,5 +70,6 @@ export default {
 }
 .columns {
   display: flex;
+  margin-top: 16px;
 }
 </style>

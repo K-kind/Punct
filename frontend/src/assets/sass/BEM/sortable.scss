@@ -8,6 +8,9 @@
   }
 }
 .sortable-drag {
+  .task-board__task {
+    background-color: #fff;
+  }
   .task-board__with-icon--left {
     a {
       display: none;

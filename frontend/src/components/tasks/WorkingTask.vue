@@ -1,6 +1,6 @@
 <template>
   <div class="task-board">
-    <div class="task-board__header">
+    <div class="task-board__header--top">
       <div class="task-board__header-left">
         <h2 class="task-board__heading">{{ headerText }}</h2>
         <div v-if="currentTask">
@@ -245,9 +245,12 @@ export default {
 .task-board {
   min-height: 82px;
   min-width: 362px;
-  padding-bottom: 4px;
+  padding: 10px 11px 4px;
   background-color: $theme-green;
-  &__header {
+  &__header--top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding-bottom: 2px;
     height: 21px;
   }

@@ -4,47 +4,49 @@
       <h2 class="task-board__heading">前日の未消化タスク</h2>
       <span v-if="totalTime">{{ totalTime }}</span>
     </div>
-    <draggable
-      tag="ul"
-      :group="dragGroup"
-      @end="onDragEnd"
-      @clone="onClone"
-      data-remaining="true"
-      handle=".handle"
-    >
-      <li
-        v-for="task of remainingTasks"
-        :key="task.id"
-        :data-task_id="task.id"
-        class="task-board__li"
+    <div class="task-board__body">
+      <draggable
+        tag="ul"
+        :group="dragGroup"
+        @end="onDragEnd"
+        @clone="onClone"
+        data-remaining="true"
+        handle=".handle"
       >
-        <div v-if="onUpdatedTaskId !== task.id" class="task-board__with-icon">
-          <div v-show="draggingId !== task.id" class="task-board__with-icon--left">
-            <a :class="{ disabled: haveCurrent }" href="Javascript:void(0)" @click="upload(task)">
-              <i class="el-icon-upload2"></i>
-            </a>
+        <li
+          v-for="task of remainingTasks"
+          :key="task.id"
+          :data-task_id="task.id"
+          class="task-board__li"
+        >
+          <div v-if="onUpdatedTaskId !== task.id" class="task-board__with-icon">
+            <div @click="openUpdateForm(task.id)" class="task-board__task handle">
+              <p class="task-board__p">
+                {{ task.content }}
+                <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
+              </p>
+            </div>
+            <div v-show="draggingId !== task.id" class="task-board__with-icon--left">
+              <a :class="{ disabled: !!currentTask }" href="Javascript:void(0)" @click="upload(task)">
+                <i class="el-icon-upload2"></i>
+              </a>
+            </div>
           </div>
-          <div @click="openUpdateForm(task.id)" class="task-board__task handle">
-            <p class="task-board__p">
-              {{ task.content }}
-              <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
-            </p>
-          </div>
-        </div>
-        <TaskForm
-          v-else
-          :formIsOpen="true"
-          :taskId="task.id"
-          :taskContent="task.content"
-          :taskExpectedTime="toMinutes(task.expected_time)"
-          :taskElapsedTime="0"
-          :isNewTask="false"
-          ref="updateForm"
-          @close-form="closeForm"
-          @update-task="updateTask($event, task.id)"
-        ></TaskForm>
-      </li>
-    </draggable>
+          <TaskForm
+            v-else
+            :formIsOpen="true"
+            :taskId="task.id"
+            :taskContent="task.content"
+            :taskExpectedTime="toMinutes(task.expected_time)"
+            :taskElapsedTime="0"
+            :isNewTask="false"
+            ref="updateForm"
+            @close-form="closeForm"
+            @update-task="updateTask($event, task.id)"
+          ></TaskForm>
+        </li>
+      </draggable>
+    </div>
   </div>
 </template>
 
@@ -68,7 +70,6 @@ export default {
       onUpdatedTaskId: '',
       dragGroup: 'REMAINING',
       draggingId: null,
-      haveCurrent: false
     }
   },
   components: {
@@ -157,17 +158,8 @@ export default {
       this.dragGroup = (boolean ? 'REMAINING' : 'TASKS')
     }
   },
-  watch: {
-    currentTask(task) {
-      this.haveCurrent = !!task
-    }
-  }
 }
 </script>
 
 <style scoped lang="scss">
-.disabled {
-  color: #aaa;
-  cursor: not-allowed;
-}
 </style>
