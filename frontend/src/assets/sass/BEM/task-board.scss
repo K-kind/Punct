@@ -32,7 +32,6 @@
   }
   &__task {
     cursor: pointer;
-    // width: 100%;
     width: 300px;
     padding: 5px 10px;
     margin: 5px 0;
@@ -54,7 +53,6 @@
     display: flex;
     align-items: center;
     &--left {
-      // padding-right: 6px;
       width: 20px;
       i {
         font-weight: bold;

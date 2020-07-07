@@ -19,7 +19,7 @@
       >
         <div v-if="onUpdatedTaskId !== task.id" class="task-board__with-icon">
           <div v-if="forToday" v-show="draggingId !== task.id" class="task-board__with-icon--left">
-            <a href="Javascript:void(0)" @click="upload(task)">
+            <a :class="{ disabled: haveCurrent }" href="Javascript:void(0)" @click="upload(task)">
               <i class="el-icon-upload2"></i>
             </a>
           </div>
@@ -66,6 +66,7 @@ import {
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
+  START_TASK,
 } from '@/store/mutation-types'
 
 export default {
@@ -74,7 +75,8 @@ export default {
     return {
       newFormIsOpen: false,
       onUpdatedTaskId: '',
-      draggingId: null
+      draggingId: null,
+      haveCurrent: false
     }
   },
   props: {
@@ -86,7 +88,7 @@ export default {
     TaskForm
   },
   computed: {
-    ...mapGetters('daily', ['dailyTasks']),
+    ...mapGetters('daily', ['dailyTasks', 'currentTask']),
     dateString() {
       let weekDay = ['日', '月', '火', '水', '木', '金', '土']
       let month =  this.date.getMonth() + 1
@@ -109,7 +111,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, START_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -149,7 +151,7 @@ export default {
     },
     onDragEnd(e) {
       let taskId = Number.parseInt(e.clone.dataset.task_id)
-      this.draggingId = taskId
+      this.draggingId = taskId // ドラッグ後に一瞬現れるアイコン対策
 
       let toCompleted = (e.to.dataset.completed ? true : false)
       let payload = {
@@ -174,11 +176,35 @@ export default {
       }
     },
     upload(task) {
-      task
+      if (this.currentTask) return false;
+
+      let taskId = task.id
+      let payload = {
+        fromDate: task.date,
+        oldIndex: task.order,
+        newIndex: 0,
+        fromCompleted: false,
+        toCompleted: false,
+        taskId,
+        isCurrent: true
+      }
+      this[UPDATE_TASK_ORDER](payload)
+        .then(() => {
+          this[START_TASK]({ taskId })
+        })
+    },
+  },
+  watch: {
+    currentTask(task) {
+      this.haveCurrent = !!task
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}
 </style>

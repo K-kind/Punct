@@ -122,8 +122,6 @@ export default {
       this.closeForm()
     },
     deleteCurrentTask() {
-      this.disableDrag(false)
-      // this.tasks = []
       clearInterval(this.timerId)
       this.timerId = null
     },
@@ -142,7 +140,9 @@ export default {
       this.elapsedTime = `${h}${m}:${s}`
     },
     setTimer() {
-      if (!this.currentTask.on_progress) return false;
+      if (!this.currentTask.on_progress || this.timerId) {
+        return false
+      }
 
       let self = this
       this.timerId = setInterval(() => {
@@ -180,10 +180,6 @@ export default {
       }
 
       this[UPDATE_TASK_ORDER](payload)
-        // .then(() => {
-        //   this.disableDrag(false)
-        //   this.tasks = []
-        // })
     },
     onDragEnd(e) {
       if (e.to.dataset.working) {
@@ -202,8 +198,6 @@ export default {
       this.complete(payload)
     },
     onAdd(e) {
-      // this.disableDrag(true)
-
       let fromCompleted = (e.from.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
       let payload = {
@@ -217,8 +211,6 @@ export default {
       }
       this[UPDATE_TASK_ORDER](payload)
         .then(() => {
-          // this.tasks = [this.currentTask]
-          this.computeElapsedTime()
           this.start()
         })
     },
@@ -229,29 +221,20 @@ export default {
       this.dragGroup = (boolean ? '' : 'TASKS')
     }
   },
-  mounted() {
-    let self = this
-    setTimeout(() => {
-      if (!self.currentTask) return false;
-
-      // self.tasks.push(self.currentTask)
-      self.disableDrag(true)
-      self.computeElapsedTime()
-      if (self.currentTask.started_time) {
-        self.setTimer()
-      }
-    }, 500)
-  },
   watch: {
     currentTask(task) {
       if (task) {
         this.tasks = [task]
         this.disableDrag(true)
-        console.log('taskをセットしました')
+        this.computeElapsedTime()
+        let self = this
+        setTimeout(() => {
+          self.computeElapsedTime()
+          self.setTimer()
+        }, 1000)
       } else {
         this.tasks = []
         this.disableDrag(false)
-        console.log('taskを外しました')
       }
     }
   }
@@ -294,6 +277,10 @@ export default {
     min-width: 280px;
     min-height: 49px;
     position: relative;
+  }
+  &__task {
+    width: 100%;
+    min-width: 300px;
   }
 }
 .drop-guide {
