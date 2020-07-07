@@ -14,8 +14,9 @@ export default {
 <style lang="scss" scoped>
 .column {
   margin: 0 4px;
-  border-radius: 3px;
+  border-radius: 4px;
   background-color: $light-gray;
+  box-shadow: 0 0 3px 1px rgba(9, 30, 66, .25);
   &__heading {
     font-size: 1.4rem;
     padding: 8px;

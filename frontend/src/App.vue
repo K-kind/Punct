@@ -75,6 +75,7 @@ export default {
   width: 100%;
   background-color: $theme-gray!important;
   font-weight: bold!important;
+  box-shadow: 0 0 3px 1px rgba(9, 30, 66, .25);
   .is-active {
     background-color: #fff!important;
     color: $theme-gray!important;

@@ -6,3 +6,13 @@
     overflow-wrap: anywhere;
   }
 }
+
+.el-input-number--small {
+  width: 80px !important;
+  .el-input__inner {
+    padding-left: 0 !important;
+  }
+}
+.el-input-number__decrease, .el-input-number__increase {
+  width: 26px !important;
+}

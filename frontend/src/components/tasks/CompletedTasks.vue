@@ -28,7 +28,10 @@
           ></TaskForm>
         </li>
       </draggable>
-      <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+完了済みを追加</a>
+      <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">
+        <i class="el-icon-plus"></i>
+        完了済みを追加
+      </a>
       <TaskForm
         :formIsOpen="newFormIsOpen"
         taskContent=""

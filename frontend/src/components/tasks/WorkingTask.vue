@@ -247,6 +247,7 @@ export default {
   min-width: 362px;
   padding: 10px 11px 4px;
   background-color: $theme-green;
+  box-shadow: 0 0 3px 1px rgba(9, 30, 66, .25);
   &__header--top {
     display: flex;
     justify-content: space-between;
@@ -303,6 +304,7 @@ export default {
   &__right {
     min-width: 40px;
     text-align: right;
+    margin-left: 4px;
   }
 }
 button {
@@ -312,7 +314,6 @@ button {
   border: none;
   border-radius: 3px;
   padding: 2px 4px;
-  font-size: 12px;
   font-weight: 500;
   &:hover {
     color: $theme-green;

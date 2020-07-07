@@ -13,30 +13,29 @@
       />
     </div>
     <div class="time-inputs">
-      <div v-if="isCompletedTask" class="time-form">
+      <div v-if="isCompletedTask" class="time-form__elapsed">
         <label class="time-label">
           経過(分)
-          <input
+          <el-input-number
             v-model="taskElapsedTimeData"
-            ref="elapsedForm"
             @blur="formBlur"
-            type="number"
-            class="time-input"
+            controls-position="right"
+            size="small"
             :min="0"
             :max="999"
             :step="10"
           />
         </label>
       </div>
-      <div class="time-form">
+      <div class="time-form__expected">
         <label class="time-label">
           予定(分)
-          <input
+          <el-input-number
             v-model="taskExpectedTimeData"
             ref="expectedForm"
             @blur="formBlur"
-            type="number"
-            class="time-input"
+            controls-position="right"
+            size="small"
             :min="0"
             :max="999"
             :step="10"
@@ -89,8 +88,6 @@ export default {
           self.taskContentData === self.taskContent &&
           self.taskExpectedTimeData == self.taskExpectedTime &&
           self.taskElapsedTimeData == self.taskElapsedTime &&
-          activeElement !== self.$refs.elapsedForm &&
-          activeElement !== self.$refs.expectedForm &&
           activeElement.className !== 'el-input__inner' &&
           activeElement !== self.$refs.submitButton &&
           activeElement !== self.$refs.deleteButton
@@ -149,22 +146,12 @@ export default {
 </script>
 
 <style scoped>
-.time-input {
-  width: 55px;
-  padding: 3px 0 3px 6px;
-}
-.time-label {
-  margin-right: 6px;
-}
 .time-inputs {
   margin: 5px 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
-.time-form {
-  margin-left: 10px;
-}
-form {
-  padding: 6px 10px;
+.time-form__expected {
+  margin-left: auto;
 }
 </style>
