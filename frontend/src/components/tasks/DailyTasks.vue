@@ -12,6 +12,9 @@
       draggable=".draggable"
     >
       <li v-for="task of dailyTasks(date)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
+        <a v-if="forToday" href="Javascript:void(0)">
+          <i class="el-icon-upload2"></i>
+        </a>
         <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
           <p class="task-board__p">
             {{ task.content }}
@@ -65,7 +68,8 @@ export default {
     }
   },
   props: {
-    date: Date
+    date: Date,
+    forToday: Boolean
   },
   components: {
     draggable,
