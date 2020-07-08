@@ -1,6 +1,46 @@
 <template>
   <div id="app">
-    <el-menu v-show="userName" :default-active="activeIndex" mode="horizontal" router>
+    <el-menu :default-active="activeIndex" mode="horizontal" router>
+      <el-menu-item
+        v-show="userName"
+        index="/"
+        :route="{ path: '/' }"
+        class="el-menu-item__left"
+      >
+        ホーム
+      </el-menu-item>
+      <el-menu-item
+        v-show="userName"
+        index="/archives"
+        :route="{ path: '/archives' }"
+        class="el-menu-item__left"
+      >
+        アーカイブ
+      </el-menu-item>
+      <el-submenu v-show="userName" index="MyPage" :show-timeout="10">
+        <template slot="title">{{ userName }}</template>
+        <el-menu-item>マイページ</el-menu-item>
+        <el-menu-item>ヘルプ</el-menu-item>
+        <el-menu-item><NavLeft /></el-menu-item>
+      </el-submenu>
+      <el-menu-item
+        v-show="!userName"
+        index="/login"
+        :route="{ path: '/login' }"
+        class="el-menu-item__left"
+      >
+        ログイン
+      </el-menu-item>
+      <el-menu-item
+        v-show="!userName"
+        index="/signup"
+        :route="{ path: '/signup' }"
+        class="el-menu-item__left"
+      >
+        新規登録
+      </el-menu-item>
+    </el-menu>
+    <!-- <el-menu v-show="userName" :default-active="activeIndex" mode="horizontal" router>
       <el-menu-item index="/" :route="{ path: '/' }" class="el-menu-item__left">
         ホーム
       </el-menu-item>
@@ -21,7 +61,7 @@
       <el-menu-item index="/signup" :route="{ path: '/signup' }" class="el-menu-item__left">
         新規登録
       </el-menu-item>
-    </el-menu>
+    </el-menu> -->
     <div class="body">
       <router-view/>
     </div>
@@ -80,6 +120,7 @@ export default {
     background-color: #fff!important;
     color: $theme-gray!important;
     border-bottom-color: $theme-green!important;
+    pointer-events: none;
     cursor: default;
     &:hover {
       color: $theme-gray!important;
@@ -100,7 +141,7 @@ export default {
 }
 .el-submenu {
   float: right!important;
-  margin-right: 6px!important;
+  margin-right: 16px!important;
   i {
     color: #fff!important;
   }
