@@ -1,8 +1,18 @@
 .task-board {
-  background-color: azure;
-  width: 320px;
-  margin: 0 8px 15px;
-  padding: 10px 12px;
+  background-color: $light-green;
+  border-radius: 4px;
+  min-width: 326px;
+  margin-bottom: 2px;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, .25);
+  form {
+    border: 1px solid $primary;
+    border-radius: 4px;
+    background-color: $light-green;
+    padding: 6px 10px;
+  }
+  &__body {
+    padding: 3px 11px 10px;
+  }
   &__time {
     min-width: 40px;
     text-align: right;
@@ -12,20 +22,37 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 0 8px;
+    padding: 0 10px;
+    height: 3.0rem;
+    line-height: 3.0rem;
+    background-color: $theme-green;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    color: #fff;
+    font-weight: bold;
   }
   &__heading {
     font-size: 1.4rem;
   }
   &__li {
-    border: solid #ddd 1px;
-    border-radius: 3px;
-    margin: 8px 0;
+    position: relative;
+    padding: 4px 0;
+    // width: 300px;
   }
   &__task {
     cursor: pointer;
-    padding: 3px 10px;
+    width: 300px;
+    padding: 5px 10px;
+    // margin: 5px 0;
     background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(9, 30, 66, .25);
+    &:hover {
+      background-color: #efefef;
+    }
+    &.checked {
+      color: #aaa;
+    }
   }
   &__p {
     line-height: 1.8;
@@ -36,5 +63,39 @@
   &__add {
     display: inline-block;
     margin-top: 6px;
+    color: $middle-gray;
+    text-decoration: none;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 3px;
+    padding: 5px 10px;
+    &:hover {
+      color: $theme-gray;
+      background-color: #fff;
+    }
+  }
+  &__with-icon {
+    display: flex;
+    align-items: center;
+    &--left {
+      width: 20px;
+      a {
+        padding-left: 6px;
+        color: $thin-gray;
+        &:hover {
+          color: $theme-gray;
+        }
+        &.disabled {
+          color: #aaa;
+          pointer-events: none;
+        }
+      }
+      i {
+        font-weight: bold;
+      }
+    }
+  }
+  &__caret {
+    @include green-btn;
   }
 }

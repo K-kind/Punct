@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '@/views/Home.vue'
 import Store from '@/store/index.js'
 import { SET_NAME } from '@/store/mutation-types'
 
@@ -15,14 +15,24 @@ Vue.use(VueRouter)
   {
     path: '/archives',
     name: 'Archives',
-    component: () => import('../views/Archives.vue')
+    component: () => import('@/views/Archives.vue')
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue'),
+    component: () => import('@/views/Login.vue'),
     meta: {
-      isPublic: true
+      isPublic: true,
+      forGuest: true
+    }
+  },
+  {
+    path: '/signup',
+    name: 'SignUp',
+    component: () => import('@/views/SignUp.vue'),
+    meta: {
+      isPublic: true,
+      forGuest: true
     }
   }
 ]
@@ -45,7 +55,7 @@ router.beforeEach((to, from, next) => {
 
 router.beforeResolve((to, from, next) => {
   let userName = Store.state.auth.userName
-  if (to.name === 'Login' && userName) {
+  if (to.meta.forGuest && userName) {
     next('/') // ログイン済み
   } else if (to.meta.isPublic || userName) {
     next()

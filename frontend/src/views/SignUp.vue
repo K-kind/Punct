@@ -4,24 +4,13 @@
       @on-submit="onSubmit"
       :fields="fields"
     >
-      <template #heading>ログイン</template>
-      <template #button>ログイン</template>
-      <template #checkbox>
-        <el-checkbox>
-          ログインしたままにする
-        </el-checkbox>
-      </template>
+      <template #heading>新規登録</template>
+      <template #button>登録する</template>
       <template #switch-link>
-        <router-link to="/signup">
+        <router-link to="/login">
           <i class="el-icon-caret-right"></i>
-          新規登録はこちら
+          ログインはこちら
         </router-link>
-      </template>
-      <template #reset-link>
-        <a href="..">
-          <i class="el-icon-caret-right"></i>
-          パスワードを忘れた方はこちら
-        </a>
       </template>
     </AuthForm>
   </div>
@@ -32,7 +21,7 @@ import AuthForm from '@/components/AuthForm.vue'
 import { CREATE } from '@/store/mutation-types'
 
 export default {
-  name: 'Login',
+  name: 'SignUp',
   components: {
     AuthForm
   },
@@ -40,9 +29,25 @@ export default {
     return {
       fields: [
         {
+          name: 'name',
+          nameJa: 'ユーザー名',
+          first: true,
+          type: 'text',
+          icon: 'el-icon-user',
+          rules: 'required|max:8'
+        },
+        {
           name: 'email',
           nameJa: 'メールアドレス',
-          first: true,
+          first: false,
+          type: 'email',
+          icon: 'el-icon-message',
+          rules: 'required|email'
+        },
+        {
+          name: 'email_confirmation',
+          nameJa: 'メールアドレス（確認）',
+          first: false,
           type: 'email',
           icon: 'el-icon-message',
           rules: 'required|email'
@@ -54,13 +59,21 @@ export default {
           type: 'password',
           icon: 'el-icon-unlock',
           rules: 'required|min:6|max:20'
+        },
+        {
+          name: 'password_confirmation',
+          nameJa: 'パスワード（確認）',
+          first: false,
+          type: 'password',
+          icon: 'el-icon-unlock',
+          rules: 'required|min:6|max:20'
         }
       ]
     }
   },
   methods: {
     onSubmit(params) {
-      this.$store.dispatch(`auth/${CREATE}`, params)
+      this.$store.dispatch(`user/${CREATE}`, params)
     }
   },
   created() {

@@ -1,12 +1,7 @@
 class MonthlyTasksController < ApplicationController
   def index
-    start_dates = []
-    first_of_this_month = Time.zone.today.beginning_of_month
     from_today = params[:fromToday].to_i
-    (-1..1).each do |n|
-      start_dates << first_of_this_month.next_month(from_today + n)
-    end
-    tasks = @current_user.monthly_tasks.where(start_date: start_dates)
+    tasks = @current_user.monthly_tasks.from_this_day(from_today)
 
     render json: { tasks: tasks }
   end

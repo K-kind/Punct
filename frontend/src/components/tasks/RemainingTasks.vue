@@ -4,39 +4,60 @@
       <h2 class="task-board__heading">前日の未消化タスク</h2>
       <span v-if="totalTime">{{ totalTime }}</span>
     </div>
-    <draggable tag="ul" :group="dragGroup" @end="onDragEnd" @clone="onClone" draggable=".draggable" data-remaining="true">
-      <li v-for="task of remainingTasks" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
-        <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
-          <p class="task-board__p">
-            <!-- {{ task.content }} -->
-            {{ task.order }}: ID.{{ task.id }}: {{ task.content }} ({{ task.date }}日)
-            <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
-          </p>
-        </div>
-        <TaskForm
-          v-else
-          :formIsOpen="true"
-          :taskId="task.id"
-          :taskContent="task.content"
-          :taskExpectedTime="toMinutes(task.expected_time)"
-          :taskElapsedTime="0"
-          :isNewTask="false"
-          ref="updateForm"
-          @close-form="closeForm"
-          @update-task="updateTask($event, task.id)"
-        ></TaskForm>
-      </li>
-    </draggable>
+    <div class="task-board__body">
+      <draggable
+        tag="ul"
+        :group="dragGroup"
+        @end="onDragEnd"
+        @clone="onClone"
+        data-remaining="true"
+        handle=".handle"
+      >
+        <li
+          v-for="task of remainingTasks"
+          :key="task.id"
+          :data-task_id="task.id"
+          class="task-board__li"
+        >
+          <div v-if="onUpdatedTaskId !== task.id" class="task-board__with-icon">
+            <div @click="openUpdateForm(task.id)" class="task-board__task handle">
+              <p class="task-board__p">
+                {{ task.content }}
+                <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
+              </p>
+            </div>
+            <div v-show="draggingId !== task.id" class="task-board__with-icon--left">
+              <a :class="{ disabled: !!currentTask }" href="Javascript:void(0)" @click="upload(task)">
+                <i class="el-icon-upload2"></i>
+              </a>
+            </div>
+          </div>
+          <TaskForm
+            v-else
+            :formIsOpen="true"
+            :taskId="task.id"
+            :taskContent="task.content"
+            :taskExpectedTime="toMinutes(task.expected_time)"
+            :taskElapsedTime="0"
+            :isNewTask="false"
+            ref="updateForm"
+            @close-form="closeForm"
+            @update-task="updateTask($event, task.id)"
+          ></TaskForm>
+        </li>
+      </draggable>
+    </div>
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import TaskForm from '@/components/TaskForm.vue'
 import {
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
+  START_TASK
 } from '@/store/mutation-types'
 
 export default {
@@ -47,7 +68,8 @@ export default {
   data() {
     return {
       onUpdatedTaskId: '',
-      dragGroup: 'REMAINING'
+      dragGroup: 'REMAINING',
+      draggingId: null,
     }
   },
   components: {
@@ -55,6 +77,7 @@ export default {
     TaskForm
   },
   computed: {
+    ...mapGetters('daily', ['currentTask']),
     totalTime() {
       let times = this.remainingTasks.map(task => task.expected_time)
       if (!times.length) return null;
@@ -67,7 +90,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, START_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -89,8 +112,10 @@ export default {
       this.disableDrag(true)
       if (e.to.dataset.remaining) { return false }
 
-      let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
+      this.draggingId = taskId // ドラッグ後に一瞬現れるアイコン対策
+
+      let toCompleted = (e.to.dataset.completed ? true : false)
       let payload = {
         toDate: e.to.dataset.date,
         newIndex: e.newIndex,
@@ -99,9 +124,32 @@ export default {
         taskId
       }
 
-      if (!e.to.dataset.working) {
-        this[UPDATE_TASK_ORDER](payload)
+      if (e.to.dataset.working) {
+        let self = this
+        setTimeout(() => {
+          self.draggingId = null
+        }, 1000)
+      } else {
+        this[UPDATE_TASK_ORDER](payload).then(() => {
+          this.draggingId = null
+        })
       }
+    },
+    upload(task) {
+      if (this.currentTask) return false;
+
+      let taskId = task.id
+      let payload = {
+        newIndex: 0,
+        fromCompleted: false,
+        toCompleted: false,
+        taskId,
+        isCurrent: true
+      }
+      this[UPDATE_TASK_ORDER](payload)
+        .then(() => {
+          this[START_TASK]({ taskId })
+        })
     },
     onClone() {
       this.disableDrag(false)
@@ -109,10 +157,9 @@ export default {
     disableDrag(boolean) {
       this.dragGroup = (boolean ? 'REMAINING' : 'TASKS')
     }
-  }
+  },
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
 </style>

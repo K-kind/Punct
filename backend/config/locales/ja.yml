@@ -14,6 +14,7 @@
         user:
           name: ユーザー名
           email: メールアドレス
+          email_confirmation: メールアドレス（確認）
           password: パスワード
           password_confirmation: パスワード（確認）
         # user/cycles:

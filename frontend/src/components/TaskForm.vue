@@ -10,33 +10,33 @@
         autocomplete="off"
         clearable
         size="small"
+        :maxlength="255"
       />
     </div>
     <div class="time-inputs">
-      <div v-if="isCompletedTask" class="time-form">
+      <div v-if="isCompletedTask" class="time-form__elapsed">
         <label class="time-label">
           経過(分)
-          <input
+          <el-input-number
             v-model="taskElapsedTimeData"
-            ref="elapsedForm"
             @blur="formBlur"
-            type="number"
-            class="time-input"
+            controls-position="right"
+            size="small"
             :min="0"
             :max="999"
             :step="10"
           />
         </label>
       </div>
-      <div class="time-form">
+      <div class="time-form__expected">
         <label class="time-label">
           予定(分)
-          <input
+          <el-input-number
             v-model="taskExpectedTimeData"
             ref="expectedForm"
             @blur="formBlur"
-            type="number"
-            class="time-input"
+            controls-position="right"
+            size="small"
             :min="0"
             :max="999"
             :step="10"
@@ -44,10 +44,26 @@
         </label>
       </div>
     </div>
-    <div>
-      <input @click.prevent="changeTask" type="submit" :value="buttonText" ref="submitButton">
-      <button v-if="!isNewTask" @click.prevent="deleteTask" ref="deleteButton">削除</button>
-      <a @click="closeForm" href="Javascript:void(0)"><i class="el-icon-close"></i></a>
+    <div class="buttons">
+      <el-button
+        @click.prevent="changeTask"
+        ref="submitButton"
+        size="mini"
+        type="primary"
+        native-type="submit"
+      >
+        {{ buttonText }}
+      </el-button>
+      <a @click="closeForm" class="close-btn" href="Javascript:void(0)"><i class="el-icon-close"></i></a>
+      <el-button
+        v-if="!isNewTask"
+        class="delete-btn"
+        @click.prevent="deleteTask"
+        ref="deleteButton"
+        type="danger"
+        icon="el-icon-delete"
+        size="mini"
+      ></el-button>
     </div>
   </form>
 </template>
@@ -76,7 +92,7 @@ export default {
   },
   computed: {
     buttonText() {
-      return this.isNewTask ? '追加' : '変更'
+      return this.isNewTask ? '追加' : '更新'
     },
   },
   methods: {
@@ -89,8 +105,6 @@ export default {
           self.taskContentData === self.taskContent &&
           self.taskExpectedTimeData == self.taskExpectedTime &&
           self.taskElapsedTimeData == self.taskElapsedTime &&
-          activeElement !== self.$refs.elapsedForm &&
-          activeElement !== self.$refs.expectedForm &&
           activeElement.className !== 'el-input__inner' &&
           activeElement !== self.$refs.submitButton &&
           activeElement !== self.$refs.deleteButton
@@ -148,23 +162,34 @@ export default {
 }
 </script>
 
-<style scoped>
-.time-input {
-  width: 55px;
-  padding: 3px 0 3px 6px;
-}
-.time-label {
-  margin-right: 6px;
-}
+<style scoped lang="scss">
 .time-inputs {
   margin: 5px 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
 }
-.time-form {
-  margin-left: 10px;
+.time-form__expected {
+  margin-left: auto;
 }
-form {
-  padding: 6px 10px;
+.buttons {
+  padding-top: 4px;
+  display: flex;
+}
+.delete-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+}
+.close-btn {
+  margin-left: 6px;
+  font-size: 20px;
+  padding-top: 1px;
+  i {
+    font-weight: bold;
+    color: #999;
+    &:hover {
+      color: #6b778c;
+    }
+  }
 }
 </style>

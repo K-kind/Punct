@@ -1,9 +1,7 @@
 <template>
   <div class="today-column">
-    <RemainingTasks v-if="remainings.length" :remainingTasks="remainings"/>
-    <DailyTasks :date="today">
-      <template v-slot:taskDate1>本日 </template>
-    </DailyTasks>
+    <DailyTasks :date="today" :forToday="true" />
+    <RemainingTasks v-if="remainings.length" :remainingTasks="remainings" />
   </div>
 </template>
 

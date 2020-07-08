@@ -4,6 +4,7 @@ import {
   UPDATE_TASK_CONTENT,
   DELETE_TASK_BY_ID,
   UPDATE_TASK_ORDER,
+  SET_START_DATE,
   GET,
   POST,
   PATCH,
@@ -20,6 +21,9 @@ export default {
       // order: Number,
       // is_checked: Boolean
     ],
+    fromToday: 0,
+    startDate: null,
+    weekString: null
   },
   getters: {
     weeklyTasks(state) {
@@ -55,6 +59,11 @@ export default {
       )
       state.tasks.push(...tasks)
     },
+    [SET_START_DATE](state, { fromToday, startDate, weekString }) {
+      state.fromToday = fromToday
+      state.startDate = startDate
+      state.weekString = weekString
+    }
   },
   actions: {
     [ADD_NEW_TASK]({ commit, dispatch }, payload) {
@@ -114,5 +123,8 @@ export default {
         commit(SET_TASKS, res.data.tasks.weekly)
       }).catch(err => err)
     },
+    [SET_START_DATE]({ commit }, payload) {
+      commit(SET_START_DATE, payload)
+    }
   }
 }

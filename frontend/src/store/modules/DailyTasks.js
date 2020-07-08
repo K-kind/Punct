@@ -43,7 +43,7 @@ export default {
       }
     },
     remainingTasks(state) {
-      let today = (new Date) - (1000 * 60 * 60 * 24) // 昨日の00:00以降
+      let today = (new Date) - (1000 * 60 * 60 * 15) // 昨日の09:00以降
       return state.tasks.filter(task => {
         if (task.is_completed || task.is_current) return false;
         let taskDate = new Date(task.date)
@@ -68,21 +68,6 @@ export default {
       if ('elapsed_time' in task) {
         updatedTask.elapsed_time = task.elapsed_time
       }
-    },
-    [DELETE_TASK_BY_ID](state, { tasks, date, is_completed }) {
-      state.tasks = state.tasks.filter(task =>
-        task.date !== date ||
-        task.is_completed !== is_completed
-      )
-      state.tasks.push(...tasks)
-    },
-    [UPDATE_TASK_ORDER](state, { tasks, from_date, to_date, task_id }) {
-      state.tasks = state.tasks.filter(task =>
-        task.date !== from_date &&
-        task.date !== to_date &&
-        task.id !== task_id
-      )
-      state.tasks.push(...tasks)
     },
     [SET_UPDATED_TASK](state, { task }) {
       let currentTask = state.tasks.find(t => t.id === task.id)
@@ -122,29 +107,33 @@ export default {
         }
       }).catch(err => err)
     },
-    [DELETE_TASK_BY_ID]({ commit, dispatch }, payload) {
-      dispatch(
+    [DELETE_TASK_BY_ID]({ commit, dispatch, rootState }, tadkId) {
+      let fromToday = rootState.weekly.fromToday
+      return dispatch(
         `http/${DELETE}`,
-        { url: `tasks/${payload}` },
+        { url: `tasks/${tadkId}`, data: { fromToday } },
         { root: true }
       ).then(res => {
-        commit(DELETE_TASK_BY_ID, res.data)
+        commit(SET_TASKS, res.data.tasks)
       })
       .catch(err => err)
     },
-    [UPDATE_TASK_ORDER]({ commit, dispatch }, payload) {
+    [UPDATE_TASK_ORDER]({ commit, dispatch, rootState }, payload) {
       if (
         payload.fromDate === payload.toDate &&
         payload.oldIndex === payload.newIndex &&
-        payload.fromCompleted === payload.toCompleted
+        payload.fromCompleted === payload.toCompleted &&
+        payload.fromDate
       ) { return false }
 
+      let fromToday = rootState.weekly.fromToday
+      Object.assign(payload, { fromToday })
       return dispatch(
         `http/${POST}`,
         { url: 'tasks/order', data: payload },
         { root: true }
       ).then(res => {
-        commit(UPDATE_TASK_ORDER, res.data)
+        commit(SET_TASKS, res.data.tasks)
       }).catch(err => err)
     },
     [START_TASK]({ commit, dispatch }, { taskId }) {

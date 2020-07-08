@@ -1,0 +1,25 @@
+@mixin green-btn {
+  background-color: #fff;
+  color: $theme-green;
+  border-radius: 3px;
+  font-size: 1.6rem;
+  padding: 0 4px;
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+  &:hover {
+    opacity: 0.9;
+  }
+  &:active {
+    opacity: 1;
+  }
+}
+
+@mixin green-link {
+  color: $theme-green;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}

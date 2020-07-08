@@ -12,10 +12,10 @@ export default {
   components: {
     CompletedTasks
   },
-  props: {
-    startDate: Date
-  },
   computed: {
+    startDate() {
+      return this.$store.state.weekly.startDate
+    },
     dates() {
       let dates = []
       if (this.startDate) {

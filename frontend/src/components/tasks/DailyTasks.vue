@@ -1,43 +1,65 @@
 <template>
   <div class="task-board">
     <div class="task-board__header">
-      <h2 class="task-board__heading"><slot name="taskDate1"></slot>{{ dateString }}</h2>
+      <h2 class="task-board__heading">{{ dateString }}</h2>
       <span v-if="totalTime">{{ totalTime }}</span>
     </div>
-    <draggable tag="ul" group="TASKS" @end="onDragEnd" :data-date="separatedDate" draggable=".draggable">
-      <li v-for="task of dailyTasks(date)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
-        <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
-          <p class="task-board__p">
-            <!-- {{ task.content }} -->
-            {{ task.order }}: ID.{{ task.id }}: {{ task.content }} ({{ task.date }}日)
-            <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
-          </p>
-        </div>
-        <TaskForm
-          v-else
-          :formIsOpen="true"
-          :taskId="task.id"
-          :taskContent="task.content"
-          :taskExpectedTime="toMinutes(task.expected_time)"
-          :taskElapsedTime="0"
-          :isNewTask="false"
-          ref="updateForm"
-          @close-form="closeForm"
-          @update-task="updateTask($event, task.id)"
-        ></TaskForm>
-      </li>
-    </draggable>
-    <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">+タスクを追加</a>
-    <TaskForm
-      :formIsOpen="newFormIsOpen"
-      taskContent=""
-      :taskExpectedTime="0"
-      :taskElapsedTime="0"
-      :isNewTask="true"
-      ref="newForm"
-      @close-form="closeForm"
-      @add-task="addTask"
-    ></TaskForm>
+    <div class="task-board__body">
+      <draggable
+        tag="ul"
+        group="TASKS"
+        @end="onDragEnd"
+        :data-date="separatedDate"
+        handle=".handle"
+      >
+        <li
+          v-for="task of dailyTasks(date)"
+          :key="task.id"
+          :data-task_id="task.id"
+          class="task-board__li"
+        >
+          <div v-if="onUpdatedTaskId !== task.id" class="task-board__with-icon">
+            <div @click="openUpdateForm(task.id)" class="task-board__task  handle" :class="{ todayTask: forToday }">
+              <p class="task-board__p">
+                {{ task.content }}
+                <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
+              </p>
+            </div>
+            <div v-if="forToday" v-show="draggingId !== task.id" class="task-board__with-icon--left">
+              <a :class="{ disabled: !!currentTask }" href="Javascript:void(0)" @click="upload(task)">
+                <i class="el-icon-upload2"></i>
+              </a>
+            </div>
+          </div>
+          <TaskForm
+            v-else
+            :formIsOpen="true"
+            :taskId="task.id"
+            :taskContent="task.content"
+            :taskExpectedTime="toMinutes(task.expected_time)"
+            :taskElapsedTime="0"
+            :isNewTask="false"
+            ref="updateForm"
+            @close-form="closeForm"
+            @update-task="updateTask($event, task.id)"
+          ></TaskForm>
+        </li>
+      </draggable>
+      <a @click="openForm" v-show="!newFormIsOpen" href="Javascript:void(0)" class="task-board__add">
+        <i class="el-icon-plus"></i>
+        タスクを追加
+      </a>
+      <TaskForm
+        :formIsOpen="newFormIsOpen"
+        taskContent=""
+        :taskExpectedTime="0"
+        :taskElapsedTime="0"
+        :isNewTask="true"
+        ref="newForm"
+        @close-form="closeForm"
+        @add-task="addTask"
+      ></TaskForm>
+    </div>
   </div>
 </template>
 
@@ -49,6 +71,7 @@ import {
   ADD_NEW_TASK,
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
+  START_TASK,
 } from '@/store/mutation-types'
 
 export default {
@@ -56,18 +79,20 @@ export default {
   data() {
     return {
       newFormIsOpen: false,
-      onUpdatedTaskId: ''
+      onUpdatedTaskId: '',
+      draggingId: null,
     }
   },
   props: {
-    date: Date
+    date: Date,
+    forToday: Boolean
   },
   components: {
     draggable,
     TaskForm
   },
   computed: {
-    ...mapGetters('daily', ['dailyTasks']),
+    ...mapGetters('daily', ['dailyTasks', 'currentTask']),
     dateString() {
       let weekDay = ['日', '月', '火', '水', '木', '金', '土']
       let month =  this.date.getMonth() + 1
@@ -90,7 +115,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER]),
+    ...mapActions('daily', [ADD_NEW_TASK, UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, START_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -129,8 +154,10 @@ export default {
       this.closeForm()
     },
     onDragEnd(e) {
-      let toCompleted = (e.to.dataset.completed ? true : false)
       let taskId = Number.parseInt(e.clone.dataset.task_id)
+      this.draggingId = taskId // ドラッグ後に一瞬現れるアイコン対策
+
+      let toCompleted = (e.to.dataset.completed ? true : false)
       let payload = {
         fromDate: e.from.dataset.date,
         toDate: e.to.dataset.date,
@@ -141,14 +168,38 @@ export default {
         taskId
       }
 
-      if (!e.to.dataset.working) {
-        this[UPDATE_TASK_ORDER](payload)
+      if (e.to.dataset.working) {
+        let self = this
+        setTimeout(() => {
+          self.draggingId = null
+        }, 1000)
+      } else {
+        this[UPDATE_TASK_ORDER](payload).then(() => {
+          this.draggingId = null
+        })
       }
-    }
-  }
+    },
+    upload(task) {
+      if (this.currentTask) return false;
+
+      let taskId = task.id
+      let payload = {
+        fromDate: task.date,
+        oldIndex: task.order,
+        newIndex: 0,
+        fromCompleted: false,
+        toCompleted: false,
+        taskId,
+        isCurrent: true
+      }
+      this[UPDATE_TASK_ORDER](payload)
+        .then(() => {
+          this[START_TASK]({ taskId })
+        })
+    },
+  },
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
 </style>
