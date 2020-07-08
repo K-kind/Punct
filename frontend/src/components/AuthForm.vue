@@ -48,7 +48,7 @@
                 size="small"
                 native-type="submit"
               >
-                <slot name="heading"></slot>
+                <slot name="button"></slot>
               </el-button>
             </div>
           </form>
@@ -61,12 +61,20 @@
             size="small"
             class="board__btn--google"
           >
-            Googleで<slot name="heading"></slot>
+            Googleで<slot name="button"></slot>
           </el-button>
         </div>
       </div>
     </section>
-    <slot name="links"></slot>
+    <ul class="board__links">
+      <li class="board__link">
+        <slot name="switch-link"></slot>
+      </li>
+      <li class="board__link">
+        <slot name="reset-link"></slot>
+      </li>
+      <slot name="links"></slot>
+    </ul>
   </div>
 </template>
 
@@ -176,6 +184,16 @@ export default {
       &:hover, &:focus {
         background-color: $light-google !important;
       }
+    }
+  }
+  &__links {
+    padding: 24px 0;
+  }
+  &__link {
+    line-height: 32px;
+    a {
+      @include green-link;
+      font-weight: bold;
     }
   }
 }

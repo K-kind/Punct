@@ -5,20 +5,23 @@
       :fields="fields"
     >
       <template #heading>ログイン</template>
+      <template #button>ログイン</template>
       <template #checkbox>
         <el-checkbox>
           ログインしたままにする
         </el-checkbox>
       </template>
-      <template #links>
-        <ul class="board__links">
-          <li class="board__link">
-            <router-link to="/signup">新規登録はこちら</router-link>
-          </li>
-          <li class="board__link">
-            <a href="..">パスワードを忘れた方はこちら</a>
-          </li>
-        </ul>
+      <template #switch-link>
+        <router-link to="/signup">
+          <i class="el-icon-caret-right"></i>
+          新規登録はこちら
+        </router-link>
+      </template>
+      <template #reset-link>
+        <a href="..">
+          <i class="el-icon-caret-right"></i>
+          パスワードを忘れた方はこちら
+        </a>
       </template>
     </AuthForm>
   </div>
@@ -75,17 +78,5 @@ export default {
   flex-direction: column;
   align-items: center;
   padding-top: 32px;
-}
-.board {
-  &__links {
-    padding: 24px 0;
-  }
-  &__link {
-    line-height: 32px;
-    a {
-      @include green-link;
-      font-weight: bold;
-    }
-  }
 }
 </style>

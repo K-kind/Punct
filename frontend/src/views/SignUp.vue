@@ -5,6 +5,13 @@
       :fields="fields"
     >
       <template #heading>新規登録</template>
+      <template #button>登録する</template>
+      <template #switch-link>
+        <router-link to="/login">
+          <i class="el-icon-caret-right"></i>
+          ログインはこちら
+        </router-link>
+      </template>
     </AuthForm>
   </div>
 </template>
@@ -26,7 +33,7 @@ export default {
           nameJa: 'ユーザー名',
           first: true,
           type: 'text',
-          icon: 'el-icon-message',
+          icon: 'el-icon-user',
           rules: 'required|max:8'
         },
         {
