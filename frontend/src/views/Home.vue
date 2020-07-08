@@ -13,7 +13,7 @@
         <template v-slot:body><TodayColumn /></template>
       </Column>
       <Column>
-        <template v-slot:head>6日間のタスク</template>
+        <template v-slot:head>{{ weekString }}</template>
         <template v-slot:body><DailyColumn /></template>
       </Column>
       <Column>
@@ -49,10 +49,16 @@ export default {
     MonthlyColumn,
     Column
   },
+  computed: {
+    weekString() {
+      let range = this.$store.state.weekly.weekString || '6日間'
+      return `${range}のタスク`
+    }
+  },
   created() {
     this.$store.dispatch(SET_TASKS)
     this.$store.dispatch(`weekly/${SET_START_DATE}`,{
-      fromToday: 0, startDate: null
+      fromToday: 0, startDate: null, weekString: null
     })
     let flash = this.$store.state.message.flash
     if (flash) {

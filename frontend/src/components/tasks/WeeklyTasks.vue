@@ -132,9 +132,18 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS, SET_START_
       } else {
         this.daysFromToday -= 7
       }
-      let startDate = (this.daysFromToday === 0 ? null : this.weekRange.monday)
+      let startDate = null
+      let weekString = null
+      if (this.daysFromToday) {
+        startDate = this.weekRange.monday
+        weekString = this.weekString
+      }
       this[SET_TASKS](this.daysFromToday)
-      this[SET_START_DATE]({ fromToday: this.daysFromToday, startDate })
+      this[SET_START_DATE]({
+        fromToday: this.daysFromToday,
+        startDate,
+        weekString
+      })
     },
     closeForm() {
       this.newFormIsOpen = false

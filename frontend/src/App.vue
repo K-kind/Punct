@@ -40,28 +40,6 @@
         新規登録
       </el-menu-item>
     </el-menu>
-    <!-- <el-menu v-show="userName" :default-active="activeIndex" mode="horizontal" router>
-      <el-menu-item index="/" :route="{ path: '/' }" class="el-menu-item__left">
-        ホーム
-      </el-menu-item>
-      <el-menu-item index="/archives" :route="{ path: '/archives' }" class="el-menu-item__left">
-        アーカイブ
-      </el-menu-item>
-      <el-submenu index="MyPage" :show-timeout="10">
-        <template slot="title">{{ userName }}</template>
-        <el-menu-item>マイページ</el-menu-item>
-        <el-menu-item>ヘルプ</el-menu-item>
-        <el-menu-item><NavLeft /></el-menu-item>
-      </el-submenu>
-    </el-menu>
-    <el-menu v-show="!userName" :default-active="activeIndex" mode="horizontal" router>
-      <el-menu-item index="/login" :route="{ path: '/login' }" class="el-menu-item__left">
-        ログイン
-      </el-menu-item>
-      <el-menu-item index="/signup" :route="{ path: '/signup' }" class="el-menu-item__left">
-        新規登録
-      </el-menu-item>
-    </el-menu> -->
     <div class="body">
       <router-view/>
     </div>
@@ -113,6 +91,8 @@ export default {
   z-index: 10;
   border: none!important;
   width: 100%;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
   background-color: $theme-gray!important;
   font-weight: bold!important;
   box-shadow: 0 0 3px 1px rgba(9, 30, 66, .25);
@@ -125,6 +105,12 @@ export default {
     &:hover {
       color: $theme-gray!important;
     }
+  }
+  &--popup {
+    min-width: 110px !important;
+    width: 110px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 .el-menu-item {
@@ -141,7 +127,6 @@ export default {
 }
 .el-submenu {
   float: right!important;
-  margin-right: 16px!important;
   i {
     color: #fff!important;
   }
@@ -156,6 +141,9 @@ export default {
   height: 35px!important;
   line-height: 35px!important;
   color: #fff!important;
+  min-width: 110px;
+  padding: 0 !important;
+  text-align: center;
   &:hover {
     color: $theme-green!important;
   }

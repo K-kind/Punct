@@ -1,7 +1,7 @@
 <template>
   <div class="archives">
     <Column>
-      <template v-slot:head>今週の完了タスク</template>
+      <template v-slot:head>{{ weekString }}</template>
       <template v-slot:body><ThisWeekColumn /></template>
     </Column>
     <Column>
@@ -30,10 +30,16 @@ export default {
     MonthlyColumn,
     Column
   },
+  computed: {
+    weekString() {
+      let range = this.$store.state.weekly.weekString || '今週'
+      return `${range}の完了タスク`
+    }
+  },
   created() {
     this.$store.dispatch(SET_TASKS)
     this.$store.dispatch(`weekly/${SET_START_DATE}`,{
-      fromToday: 0, startDate: null
+      fromToday: 0, startDate: null, weekString: null
     })
   },
 }

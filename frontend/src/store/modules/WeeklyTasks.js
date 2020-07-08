@@ -21,8 +21,9 @@ export default {
       // order: Number,
       // is_checked: Boolean
     ],
+    fromToday: 0,
     startDate: null,
-    fromToday: 0
+    weekString: null
   },
   getters: {
     weeklyTasks(state) {
@@ -58,9 +59,10 @@ export default {
       )
       state.tasks.push(...tasks)
     },
-    [SET_START_DATE](state, { fromToday, startDate }) {
+    [SET_START_DATE](state, { fromToday, startDate, weekString }) {
       state.fromToday = fromToday
       state.startDate = startDate
+      state.weekString = weekString
     }
   },
   actions: {
