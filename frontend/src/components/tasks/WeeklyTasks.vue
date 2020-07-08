@@ -1,15 +1,38 @@
 <template>
   <div class="task-board">
     <div class="task-board__header">
-      <a v-if="daysFromToday !== 0 || isArchive" href="Javascript:void(0)" @click="weekFoward(false)"><i class="el-icon-caret-left"></i></a>
-      <span class="this-week"><h2 class="task-board__heading">{{ weekString }}</h2></span>
-      <a v-if="daysFromToday !== 0 || !isArchive" href="Javascript:void(0)" @click="weekFoward(true)"><i class="el-icon-caret-right"></i></a>
+      <a
+        :class="{ disabled: leftDisabled }"
+        href="Javascript:void(0)"
+        @click="weekFoward(false)"
+        class="task-board__caret"
+      >
+        <i class="el-icon-caret-left"></i>
+      </a>
+      <span class="this-week">
+        <h2 class="task-board__heading">{{ weekString }}</h2>
+      </span>
+      <a
+        :class="{ disabled: rightDisabled }"
+        href="Javascript:void(0)"
+        @click="weekFoward(true)"
+        class="task-board__caret"
+      >
+        <i class="el-icon-caret-right"></i>
+      </a>
     </div>
     <div class="task-board__body">
       <draggable tag="ul" group="WEEK" @end="onDragEnd" draggable=".draggable">
         <li v-for="task of weeklyTasks(weekRange.monday)" :key="task.id"  class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
-          <div v-if="onUpdatedTaskId !== task.id" class="task-board__task">
-            <input type="checkbox" v-model="task.is_checked" @change="checkTask(task)" />
+          <div
+            v-if="onUpdatedTaskId !== task.id"
+            class="task-board__task"
+            :class="{ checked: task.is_checked && !isArchive }"
+          >
+            <el-checkbox
+              v-model="task.is_checked"
+              @change="checkTask(task)"
+            />
             <p class="task-board__p" @click="openUpdateForm(task.id)">
               {{ task.content }}
             </p>
@@ -92,6 +115,12 @@ export default {
       let mondayString = `${monday.getMonth() + 1}/${monday.getDate()}(月)`
       let sundayString = `${sunday.getMonth() + 1}/${sunday.getDate()}(日)`
       return `${mondayString} - ${sundayString}`
+    },
+    leftDisabled() {
+      return this.daysFromToday === 0 && !this.isArchive
+    },
+    rightDisabled() {
+      return this.daysFromToday === 0 && this.isArchive
     }
   },
   methods: {
@@ -170,8 +199,12 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS, SET_START_
   display: block;
   text-align: center;
 }
+.task-board__heading {
+  width: 150px;
+}
 .this-week {
-  padding: 0 10px;
+  /* width: 160px; */
+  margin: 0 auto;
 }
 h2 {
   display: inline-block;
@@ -179,9 +212,14 @@ h2 {
 .task-board__task {
   display: flex;
   align-items: center;
+  padding: 0;
 }
 .task-board__p {
-  margin-left: 10px;
+  margin-left: 4px;
   width: 100%;
+  padding: 5px 10px 5px 0;
+}
+.el-checkbox {
+  padding: 9px;
 }
 </style>

@@ -10,6 +10,7 @@
         autocomplete="off"
         clearable
         size="small"
+        :maxlength="255"
       />
     </div>
     <div class="time-inputs">
@@ -43,10 +44,26 @@
         </label>
       </div>
     </div>
-    <div>
-      <input @click.prevent="changeTask" type="submit" :value="buttonText" ref="submitButton">
-      <button v-if="!isNewTask" @click.prevent="deleteTask" ref="deleteButton">削除</button>
-      <a @click="closeForm" href="Javascript:void(0)"><i class="el-icon-close"></i></a>
+    <div class="buttons">
+      <el-button
+        @click.prevent="changeTask"
+        ref="submitButton"
+        size="mini"
+        type="primary"
+        native-type="submit"
+      >
+        {{ buttonText }}
+      </el-button>
+      <a @click="closeForm" class="close-btn" href="Javascript:void(0)"><i class="el-icon-close"></i></a>
+      <el-button
+        v-if="!isNewTask"
+        class="delete-btn"
+        @click.prevent="deleteTask"
+        ref="deleteButton"
+        type="danger"
+        icon="el-icon-delete"
+        size="mini"
+      ></el-button>
     </div>
   </form>
 </template>
@@ -75,7 +92,7 @@ export default {
   },
   computed: {
     buttonText() {
-      return this.isNewTask ? '追加' : '変更'
+      return this.isNewTask ? '追加' : '更新'
     },
   },
   methods: {
@@ -145,13 +162,34 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .time-inputs {
   margin: 5px 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .time-form__expected {
   margin-left: auto;
+}
+.buttons {
+  padding-top: 4px;
+  display: flex;
+}
+.delete-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+}
+.close-btn {
+  margin-left: 6px;
+  font-size: 20px;
+  padding-top: 1px;
+  i {
+    font-weight: bold;
+    color: #999;
+    &:hover {
+      color: #6b778c;
+    }
+  }
 }
 </style>

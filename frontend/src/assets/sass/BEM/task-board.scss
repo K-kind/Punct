@@ -5,7 +5,7 @@
   margin-bottom: 2px;
   box-shadow: 0 1px 0 rgba(9, 30, 66, .25);
   form {
-    border: 1px solid #aaa;
+    border: 1px solid $primary;
     border-radius: 4px;
     background-color: $light-green;
     padding: 6px 10px;
@@ -22,7 +22,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 8px 6px;
+    padding: 0 10px;
+    height: 3.0rem;
+    line-height: 3.0rem;
     background-color: $theme-green;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -47,6 +49,9 @@
     &:hover {
       background-color: #efefef;
     }
+    &.checked {
+      color: #aaa;
+    }
   }
   &__p {
     line-height: 1.8;
@@ -65,7 +70,6 @@
     padding: 5px 10px;
     &:hover {
       color: $theme-gray;
-      // background-color: #efefef;
       background-color: #fff;
     }
   }
@@ -82,12 +86,15 @@
         }
         &.disabled {
           color: #aaa;
-          cursor: not-allowed;
+          pointer-events: none;
         }
       }
       i {
         font-weight: bold;
       }
     }
+  }
+  &__caret {
+    @include green-btn;
   }
 }

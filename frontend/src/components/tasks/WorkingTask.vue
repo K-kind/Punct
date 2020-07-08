@@ -4,7 +4,10 @@
       <div class="task-board__header-left">
         <h2 class="task-board__heading">{{ headerText }}</h2>
         <div v-if="currentTask">
-          <span class="elapsed-time">経過: {{ elapsedTime }}</span>
+          <span>
+            経過
+            <span class="elapsed-time">{{ elapsedTime }}</span>
+          </span>
         </div>
       </div>
       <div v-if="currentTask" class="task-board__header-right">
@@ -58,7 +61,11 @@
         </li>
       </draggable>
       <div class="current-task__right">
-        <button v-show="currentTask" @click.prevent="complete(null)">完了</button>
+        <el-button
+        v-show="currentTask"
+        @click.prevent="complete(null)"
+        size="mini"
+      >完了</el-button>
       </div>
     </div>
   </div>
@@ -248,12 +255,16 @@ export default {
   padding: 10px 11px 4px;
   background-color: $theme-green;
   box-shadow: 0 0 3px 1px rgba(9, 30, 66, .25);
+  &__heading {
+    font-size: 1.6rem;
+  }
   &__header--top {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 2px;
     height: 21px;
+    margin-bottom: 2px;
   }
   &__header-left {
     color: #fff;
@@ -264,14 +275,14 @@ export default {
     font-weight: bold;
   }
   &__header-right {
-    padding-right: 8px;
+    padding-right: 10px;
     padding-left: 14px;
+    padding-top: 1px;
     a {
-      color: #fff;
-      font-size: 18px;
-      &:hover {
-        color: $theme-gray;
-      }
+      @include green-btn;
+      display: inline-block;
+      font-size: 1.8rem;
+      padding-top: 2px;
     }
     i {
       font-weight: bold;
@@ -304,23 +315,15 @@ export default {
   &__right {
     min-width: 40px;
     text-align: right;
-    margin-left: 4px;
+    margin-left: 8px;
   }
 }
-button {
-  cursor: pointer;
+.elapsed-time {
+  font-size: 1.6rem;
   background-color: #fff;
-  color: $theme-gray;
-  border: none;
   border-radius: 3px;
-  padding: 2px 4px;
-  font-weight: 500;
-  &:hover {
-    color: $theme-green;
-  }
-  &:focus {
-    outline: 0;
-    background-color: #efefef;
-  }
+  color: $theme-gray;
+  padding: 1px 6px;
+  margin-left: 4px;
 }
 </style>

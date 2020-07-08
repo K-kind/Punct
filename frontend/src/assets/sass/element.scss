@@ -16,3 +16,26 @@
 .el-input-number__decrease, .el-input-number__increase {
   width: 26px !important;
 }
+
+.el-button--mini {
+  font-size: 1.4rem;
+  padding: 4px 6px;
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner{
+  background-color: $theme-green !important;
+  border-color: $theme-green !important;
+}
+.el-checkbox__inner {
+  &:hover {
+    border-color: $theme-green !important;
+  }
+}
+.el-checkbox__input {
+  height: 1.6rem !important;
+  width: 1.6rem !important;
+}
+.el-checkbox__inner {
+  height: 1.6rem !important;
+  width: 1.6rem !important;
+}

@@ -6,15 +6,31 @@
         ref="contentForm"
         @blur="formBlur"
         type="text"
+        placeholder="タスク内容"
         autocomplete="off"
         clearable
         size="small"
+        :maxlength="255"
       />
     </div>
-    <div>
-      <input @click.prevent="changeTask" type="submit" :value="buttonText" ref="submitButton">
-      <button v-if="!isNewTask" @click.prevent="deleteTask" ref="deleteButton">削除</button>
-      <a @click="closeForm" href="Javascript:void(0)"><i class="el-icon-close"></i></a>
+    <div class="buttons">
+      <el-button
+        @click.prevent="changeTask"
+        size="mini"
+        type="primary"
+        native-type="submit"
+      >
+        {{ buttonText }}
+      </el-button>
+      <a @click="closeForm" class="close-btn" href="Javascript:void(0)"><i class="el-icon-close"></i></a>
+      <el-button
+        v-if="!isNewTask"
+        class="delete-btn"
+        @click.prevent="deleteTask"
+        type="danger"
+        icon="el-icon-delete"
+        size="mini"
+      ></el-button>
     </div>
   </form>
 </template>
@@ -45,12 +61,11 @@ export default {
         let activeElement = document.activeElement
         if (
           self.taskContentData === self.taskContent &&
-          activeElement !== self.$refs.submitButton &&
-          activeElement !== self.$refs.deleteButton
+          activeElement.className !== 'el-button'
           ) {
           self.$emit('close-form')
         }
-      })
+      }, 100)
     },
     closeForm() {
       this.taskContentData = ''
@@ -79,11 +94,28 @@ export default {
 }
 </script>
 
-<style  scoped>
-form {
-  padding: 6px 10px;
-}
+<style scoped lang="scss">
 .content-block {
   margin-bottom: 8px;
+}
+.buttons {
+  padding-top: 4px;
+  display: flex;
+}
+.delete-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+}
+.close-btn {
+  margin-left: 6px;
+  font-size: 20px;
+  padding-top: 1px;
+  i {
+    color: #6b778c;
+    font-weight: bold;
+    &:hover {
+      color: #aaa;
+    }
+  }
 }
 </style>

@@ -1,15 +1,38 @@
 <template>
   <div class="task-board">
     <div class="task-board__header">
-      <a v-if="monthsFromToday !== 0 || isArchive" href="Javascript:void(0)" @click="monthFoward(false)"><i class="el-icon-caret-left"></i></a>
-      <span class="this-month"><h2 class="task-board__heading">{{ monthString }}</h2></span>
-      <a v-if="monthsFromToday !== 0 || !isArchive" href="Javascript:void(0)" @click="monthFoward(true)"><i class="el-icon-caret-right"></i></a>
+      <a
+        :class="{ disabled: leftDisabled }"
+        class="task-board__caret"
+        href="Javascript:void(0)"
+        @click="monthFoward(false)"
+      >
+        <i class="el-icon-caret-left"></i>
+      </a>
+      <span class="this-month">
+        <h2 class="task-board__heading">{{ monthString }}</h2>
+      </span>
+      <a
+        :class="{ disabled: rightDisabled }"
+        class="task-board__caret"
+        href="Javascript:void(0)"
+        @click="monthFoward(true)"
+      >
+        <i class="el-icon-caret-right"></i>
+      </a>
     </div>
     <div class="task-board__body">
       <draggable tag="ul" group="MONTH" @end="onDragEnd" draggable=".draggable">
         <li v-for="task of monthlyTasks(startDate)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
-          <div v-if="onUpdatedTaskId !== task.id" class="task-board__task">
-            <input type="checkbox" v-model="task.is_checked" @change="checkTask(task)"/>
+          <div
+            v-if="onUpdatedTaskId !== task.id"
+            class="task-board__task"
+            :class="{ checked: task.is_checked && !isArchive }"
+          >
+            <el-checkbox
+              v-model="task.is_checked"
+              @change="checkTask(task)"
+            />
             <p @click="openUpdateForm(task.id)" class="task-board__p">
               {{ task.content }}
             </p>
@@ -69,7 +92,6 @@ export default {
     }
   },
   props: {
-    // weekStartDate: Date,
     isArchive: Boolean
   },
   computed: {
@@ -84,6 +106,12 @@ export default {
       let year = this.startDate.getFullYear()
       let month = this.startDate.getMonth() + 1
       return `${year}年${month}月`
+    },
+    leftDisabled() {
+      return this.monthsFromToday === 0 && !this.isArchive
+    },
+    rightDisabled() {
+      return this.monthsFromToday === 0 && this.isArchive
     }
   },
   methods: {
@@ -164,8 +192,11 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS]),
   display: block;
   text-align: center;
 }
+.task-board__heading {
+  width: 100px;
+}
 .this-month {
-  padding: 0 10px;
+  margin: 0 auto;
 }
 h2 {
   display: inline-block;
@@ -173,9 +204,14 @@ h2 {
 .task-board__task {
   display: flex;
   align-items: center;
+  padding: 0;
 }
 .task-board__p {
-  margin-left: 10px;
+  margin-left: 4px;
   width: 100%;
+  padding: 5px 10px 5px 0;
+}
+.el-checkbox {
+  padding: 9px;
 }
 </style>
