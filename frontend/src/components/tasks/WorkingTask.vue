@@ -251,7 +251,7 @@ export default {
 <style scoped lang="scss">
 .task-board {
   min-height: 82px;
-  min-width: 362px;
+  min-width: 372px;
   padding: 10px 11px 4px;
   background-color: $theme-green;
   box-shadow: 0 0 3px 1px rgba(9, 30, 66, .25);
@@ -303,7 +303,7 @@ export default {
   background-color: #fff;
   color: #aaa;
   min-width: 300px;
-  margin: 5px 0;
+  margin: 4px 0;
   padding: 5px 10px;
   line-height: 1.8;
   border-radius: 3px;

@@ -36,13 +36,14 @@
   }
   &__li {
     position: relative;
+    padding: 4px 0;
     // width: 300px;
   }
   &__task {
     cursor: pointer;
     width: 300px;
     padding: 5px 10px;
-    margin: 5px 0;
+    // margin: 5px 0;
     background-color: white;
     border-radius: 3px;
     box-shadow: 0 1px 0 rgba(9, 30, 66, .25);

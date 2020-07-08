@@ -15,3 +15,11 @@
     opacity: 1;
   }
 }
+
+@mixin green-link {
+  color: $theme-green;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}

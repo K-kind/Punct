@@ -142,7 +142,7 @@ export default {
   line-height: 35px!important;
   color: #fff!important;
   min-width: 110px;
-  padding: 0 !important;
+  padding: 0 16px !important;
   text-align: center;
   &:hover {
     color: $theme-green!important;
