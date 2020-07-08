@@ -20,25 +20,25 @@ export default {
     // }
   },
   actions: {
-    [CREATE]({ commit, dispatch }, data) {
-      dispatch(
+    [CREATE]({ commit, dispatch }, params) {
+      return dispatch(
         `http/${POST}`,
-        { url: 'user', data },
+        { url: 'user', data: { user: params } },
         { root: true }
-      ).then(res => { // res.data = { message: '', name: '' }
+      ).then(res => { // res.data = { message, name } or { errors }
         let name = res.data.name
         if (name) {
-          commit(`auth/${SET_NAME}`, name, { route: true })
-          router.push('/')
+          commit(`auth/${SET_NAME}`, name, { root: true })
           dispatch(
             `message/${CREATE}`,
             { flash: res.data.message },
             { root: true }
           )
+          router.push('/')
         } else {
           dispatch(
             `message/${CREATE}`,
-            { error: res.data.message },
+            { errors: res.data.errors },
             { root: true }
           )
         }

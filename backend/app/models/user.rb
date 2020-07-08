@@ -1,8 +1,8 @@
 class User < ApplicationRecord
   has_secure_password
-  has_many :tasks
-  has_many :weekly_tasks
-  has_many :monthly_tasks
+  has_many :tasks, dependent: :destroy
+  has_many :weekly_tasks, dependent: :destroy
+  has_many :monthly_tasks, dependent: :destroy
 
   validates :name, presence: true,
                    length: { maximum: 8 }

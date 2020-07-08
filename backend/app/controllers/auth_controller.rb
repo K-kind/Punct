@@ -8,7 +8,7 @@ class AuthController < ApplicationController
       payload = { message: 'ログインしました。', name: user.name }
       status = :created
     else
-      payload = { message: 'メールアドレスまたはパスワードが正しくありません。' }
+      payload = { errors: ['メールアドレスまたはパスワードが正しくありません。'] }
       status = :ok
     end
     render json: payload, status: status

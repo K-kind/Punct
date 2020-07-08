@@ -9,26 +9,40 @@
         </div>
         <div class="">
           <div class="">
-            <validation-observer v-slot="{ invalid }" tag="form">
-              <div class="">
-                <validation-provider rules="required|email" v-slot="{ errors }" mode="lazy" name="メールアドレス">
-                  <input class="" type="email" placeholder="Eメール" v-model="email" autofocus="" name="email">
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
-              <div class="">
-                <validation-provider rules="required|email" v-slot="{ errors }" mode="lazy" name="メールアドレス（確認）">
-                  <input class="" type="email" placeholder="Eメール（確認）" v-model="emailConfirmation" name="email">
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
-              <div class="">
-                <validation-provider rules="required|min:6|max:20" v-slot="{ errors }" mode="lazy" name="パスワード">
-                  <input class="" type="password" placeholder="パスワード" v-model="password" maxlength="20" name="password" autocomplete="on">
-                  <span>{{ errors[0] }}</span>
-                </validation-provider>
-              </div>
-              <button class="" @click.prevent="signup()" :disabled="invalid" >登録する</button>
+            <validation-observer v-slot="{ handleSubmit }" tag="div">
+              <form @submit.prevent="handleSubmit(onSubmit)">
+                <div class="">
+                  <validation-provider rules="required|max:8" v-slot="{ errors }" mode="eager" name="ユーザー名">
+                    <input class="" type="text" placeholder="ユーザー名" v-model="name" autofocus name="name">
+                    <span>{{ errors[0] }}</span>
+                  </validation-provider>
+                </div>
+                <div class="">
+                  <validation-provider rules="required|email" v-slot="{ errors }" mode="eager" name="メールアドレス">
+                    <input class="" type="email" placeholder="Eメール" v-model="email" name="email">
+                    <span>{{ errors[0] }}</span>
+                  </validation-provider>
+                </div>
+                <div class="">
+                  <validation-provider rules="required|email" v-slot="{ errors }" mode="eager" name="メールアドレス（確認）">
+                    <input class="" type="email" placeholder="Eメール（確認）" v-model="emailConfirmation" name="email-confirmation">
+                    <span>{{ errors[0] }}</span>
+                  </validation-provider>
+                </div>
+                <div class="">
+                  <validation-provider rules="required|min:6|max:20" v-slot="{ errors }" mode="eager" name="パスワード">
+                    <input class="" type="password" placeholder="パスワード" v-model="password" maxlength="20" name="password" autocomplete="on">
+                    <span>{{ errors[0] }}</span>
+                  </validation-provider>
+                </div>
+                <div class="">
+                  <validation-provider rules="required|min:6|max:20" v-slot="{ errors }" mode="eager" name="パスワード（確認）">
+                    <input class="" type="password" placeholder="パスワード（確認）" v-model="passwordConfirmation" maxlength="20" name="password-confirmation" autocomplete="on">
+                    <span>{{ errors[0] }}</span>
+                  </validation-provider>
+                </div>
+                <button type="submit">登録する</button>
+              </form>
             </validation-observer>
           </div>
         </div>
@@ -52,18 +66,23 @@ export default {
   },
   data() {
     return {
+      name: '',
       email: '',
-      password: ''
+      emailConfirmation: '',
+      password: '',
+      passwordConfirmation: '',
     }
   },
   methods: {
-    signup() {
-      this.$store.dispatch(
-        `auth/${CREATE}`, {
-          email: this.email,
-          password: this.password
-        }
-      )
+    onSubmit() {
+      let payload = {
+        name: this.name,
+        email: this.email,
+        email_confirmation: this.emailConfirmation,
+        password: this.password,
+        password_confirmation: this.passwordConfirmation,
+      }
+      this.$store.dispatch(`user/${CREATE}`, payload)
     }
   },
   computed: {

@@ -28,20 +28,20 @@ export default {
         `http/${POST}`,
         { url: 'auth', data },
         { root: true }
-      ).then(res => { // res.data = { message: '', name: '' }
+      ).then(res => { // res.data = { message, name } or { errors }
         let name = res.data.name
         if (name) {
           commit(SET_NAME, name)
-          router.push('/')
           dispatch(
             `message/${CREATE}`,
             { flash: res.data.message },
             { root: true }
           )
+          router.push('/')
         } else {
           dispatch(
             `message/${CREATE}`,
-            { error: res.data.message },
+            { errors: res.data.errors },
             { root: true }
           )
         }
