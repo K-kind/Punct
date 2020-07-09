@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home.vue'
+import Login from '@/views/Login.vue'
 import Store from '@/store/index.js'
 import { SET_NAME } from '@/store/mutation-types'
 
@@ -18,9 +19,14 @@ Vue.use(VueRouter)
     component: () => import('@/views/Archives.vue')
   },
   {
+    path: '/mypage',
+    name: 'MyPage',
+    component: () => import('@/views/MyPage.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/Login.vue'),
+    component: Login,
     meta: {
       isPublic: true,
       forGuest: true

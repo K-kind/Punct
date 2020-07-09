@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <section class="board">
       <h2 class="board__heading">ユーザー情報</h2>
       <UserForm
@@ -7,27 +7,7 @@
         :fields="fields"
         :buttonText="'更新する'"
       />
-      <el-divider>または</el-divider>
-      <div class="board__bottom">
-        <div class="board__btn-wrapper">
-          <el-button
-            size="small"
-            class="board__btn--google"
-          >
-            Googleで{{ buttonText }}
-          </el-button>
-        </div>
-      </div>
     </section>
-    <ul class="board__links">
-      <li class="board__link">
-        <slot name="switch-link"></slot>
-      </li>
-      <li class="board__link">
-        <slot name="reset-link"></slot>
-      </li>
-      <slot name="links"></slot>
-    </ul>
   </div>
 </template>
 
@@ -63,9 +43,9 @@ export default {
     }
   },
   methods: {
-    // onSubmit(params) {
-    //   this.$store.dispatch(`auth/${CREATE}`, params)
-    // }
+    onSubmit(params) {
+      this.$store.dispatch(`user/${UPDATE}`, params)
+    }
   },
   created() {
     this.$store.dispatch(`user/${GET}`)
