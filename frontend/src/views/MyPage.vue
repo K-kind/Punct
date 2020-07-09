@@ -2,23 +2,35 @@
   <div class="container">
     <section class="board">
       <h2 class="board__heading">ユーザー情報</h2>
-      <div v-if="!partialForm">
-        <div>
-          <span>ユーザー名</span>
-          <span>{{ user.name }}</span>
+      <div v-if="!partialForm" class="board__info">
+        <div class="board__each-info">
+          <div>
+            <strong>ユーザー名</strong>
+          </div>
+          <div class="board__info-text">
+            <span>{{ user.name }}</span>
+          </div>
         </div>
-        <div>
-          <span>メールアドレス</span>
-          <span>{{ user.email }}</span>
+        <div class="board__each-info">
+          <div>
+            <strong v-if="user.email">メールアドレス</strong>
+            <strong v-else>ログイン方法</strong>
+          </div>
+          <div class="board__info-text">
+            <span v-if="user.email">{{ user.email }}</span>
+            <span v-else>Googleアカウント</span>
+          </div>
         </div>
       </div>
       <UserForm
         v-else
         @on-submit="onSubmit"
+        @open-password="openPassword"
         :fields="fields"
         :buttonText="'更新する'"
+        :passwordOpen="!fullForm"
       />
-      <div>
+      <div class="board__btn-wrapper">
         <el-button
           v-if="!partialForm"
           @click.prevent="openForm"
@@ -72,6 +84,8 @@ export default {
           icon: 'el-icon-message',
           rules: 'required|email'
         },
+      ],
+      passwordFields:[
         {
           name: 'password',
           nameJa: 'パスワード',
@@ -103,12 +117,21 @@ export default {
     closeForm() {
       this.partialForm = false
     },
+    openPassword() {
+      this.fields.push(...this.passwordFields)
+      this.fullForm = true
+    },
     onSubmit(params) {
       this.$store.dispatch(`user/${UPDATE}`, params)
     },
   },
   created() {
-    this.$store.dispatch(`user/${GET}`)
+    this.$store.dispatch(`user/${GET}`).then(() => {
+      if (!this.user.email) {
+        this.fields.pop()
+        this.fullForm = true
+      }
+    })
   }
 }
 </script>
@@ -127,6 +150,19 @@ export default {
   padding: 20px;
   &__heading {
     padding-bottom: 4px;
+  }
+  &__info {
+    padding: 12px 0 8px;
+  }
+  &__each-info {
+    padding: 8px 0;
+  }
+  &__info-text {
+    padding-top: 8px;
+  }
+  &__btn-wrapper {
+    padding-top: 4px;
+    text-align: center;
   }
 }
 </style>

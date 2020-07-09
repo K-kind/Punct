@@ -11,7 +11,7 @@
     padding: 6px 10px;
   }
   &__body {
-    padding: 3px 11px 10px;
+    padding: 3px 4px 10px 11px;
   }
   &__time {
     min-width: 40px;
@@ -78,12 +78,14 @@
     display: flex;
     align-items: center;
     &--left {
-      width: 20px;
+      // width: 20px;
       a {
-        padding-left: 6px;
-        // color: $thin-gray;
+        padding: 6px;
+        margin-left: 4px;
         color: $theme-green;
         &:hover {
+          border-radius: 3px;
+          background-color: #fff;
           color: $theme-gray;
         }
         &.disabled {

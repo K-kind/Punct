@@ -40,6 +40,12 @@
             ログインしたままにする
           </el-checkbox>
         </div>
+        <div v-if="passwordOpen" class="board__check">
+          <a @click="$emit('open-password')" href="javascript:">
+            <i class="el-icon-caret-bottom"></i>
+            パスワードを変更する
+          </a>
+        </div>
         <div class="board__btn-wrapper--top">
           <el-button
             @click.prevent="handleSubmit(onSubmit)"
@@ -67,7 +73,8 @@ export default {
   },
   props: {
     fields: Array,
-    buttonText: String
+    buttonText: String,
+    passwordOpen: Boolean
   },
   data() {
     return {
@@ -125,6 +132,9 @@ export default {
   }
   &__check {
     line-height: 28px;
+    a {
+      @include green-link;
+    }
   }
   &__btn-wrapper {
     text-align: center;
