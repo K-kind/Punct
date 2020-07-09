@@ -24,8 +24,8 @@ export default {
 
       const options = {
         method,
-        url: `http://localhost/api/${url}`,
-        // url: `${process.env.API_URL}${url}`,
+        // url: `http://localhost/api/${url}`,
+        url: `${process.env.API_URL}${url}`,
         withCredentials: true, // 開発のみ
         headers,
         data,

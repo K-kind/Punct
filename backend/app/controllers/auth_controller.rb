@@ -28,9 +28,13 @@ class AuthController < ApplicationController
   end
 
   def success
-    logger debug auth = request.env['omniauth.auth']
+    auth = request.env['omniauth.auth']
+    user = User.find_or_create_from_auth(auth)
+    session[:user_id] = user.id
+    redirect_to ENV.fetch('FRONTEND_URL')
   end
 
   def failure
+    redirect_to ENV.fetch('FRONTEND_URL') + '/login'
   end
 end

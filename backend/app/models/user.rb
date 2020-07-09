@@ -10,10 +10,29 @@ class User < ApplicationRecord
   validates :email, presence: true,
                     length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
-                    uniqueness: { case_sensitive: false }
+                    uniqueness: { case_sensitive: false },
+                    unless: :uid?
   validates :email, confirmation: true, on: :signup
   validates :email_confirmation, presence: true, on: :signup
   validates :password, presence: true,
                        length: { minimum: 6 },
                        allow_nil: true
+  validates :password_confirmation, presence: true, on: :signup
+  validates :provider, presence: true, if: :uid?
+  validates :uid, presence: true, if: :provider?
+
+  class << self
+    def find_or_create_from_auth(auth)
+      provider = auth[:provider]
+      uid = auth[:uid]
+      name = auth[:info][:name]
+      email = auth[:info][:email]
+
+      find_or_create_by!(provider: provider, uid: uid) do |user|
+        user.name = name[0..7]
+        user.email = email || 'not registered'
+        user.password = SecureRandom.hex(9)
+      end
+    end
+  end
 end

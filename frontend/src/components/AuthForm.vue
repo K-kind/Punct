@@ -11,6 +11,7 @@
       <div class="board__bottom">
         <div class="board__btn-wrapper">
           <el-button
+            :href="`${process.env.API_URL}auth/google_oauth2`"
             size="small"
             class="board__btn--google"
           >
@@ -33,7 +34,7 @@
 
 <script>
 import UserForm from '@/components/UserForm.vue'
-import { CLEAR } from '@/store/mutation-types'
+import { CLEAR, OAUTH } from '@/store/mutation-types'
 
 export default {
   name: 'AuthForm',
@@ -43,6 +44,11 @@ export default {
   props: {
     fields: Array,
     buttonText: String
+  },
+  methods: {
+    googleOuth() {
+      this.$store.dispatch(`auth/${OAUTH}`)
+    }
   },
   created() {
     this.$store.dispatch(`user/${CLEAR}`)

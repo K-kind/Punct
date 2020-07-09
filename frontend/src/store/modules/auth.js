@@ -4,6 +4,7 @@ import {
   CREATE,
   DESTROY,
   SET_NAME,
+  OAUTH,
   GET,
   POST,
   DELETE,
@@ -46,6 +47,13 @@ export default {
           )
         }
       }).catch(err => err)
+    },
+    [OAUTH]({ dispatch }) {
+      dispatch(
+        `http/${GET}`,
+        { url: 'auth/google_oauth2' },
+        { root: true }
+      )
     },
     [DESTROY]({ commit, dispatch }) {
       dispatch(
