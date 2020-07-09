@@ -40,6 +40,14 @@ Vue.use(VueRouter)
       isPublic: true,
       forGuest: true
     }
+  },
+  {
+    path: '/oauth',
+    name: 'Oauth',
+    component: () => import('@/views/Oauth.vue'),
+    meta: {
+      isPublic: true
+    }
   }
 ]
 
