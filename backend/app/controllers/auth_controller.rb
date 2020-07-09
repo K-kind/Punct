@@ -1,5 +1,13 @@
 class AuthController < ApplicationController
-  skip_before_action :require_login, only: [:create, :name]
+  skip_before_action :require_login, only: [:create, :name, :success, :failure]
+
+  def name
+    name = ''
+    if (user = User.find_by(id: session[:user_id]))
+      name = user.name
+    end
+    render json: { name: name }
+  end
 
   def create
     user = User.find_by(email: params[:email])
@@ -19,11 +27,10 @@ class AuthController < ApplicationController
     render json: { message: 'ログアウトしました。' }
   end
 
-  def name
-    name = ''
-    if (user = User.find_by(id: session[:user_id]))
-      name = user.name
-    end
-    render json: { name: name }
+  def success
+    logger debug auth = request.env['omniauth.auth']
+  end
+
+  def failure
   end
 end
