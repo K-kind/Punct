@@ -81,7 +81,8 @@
       width: 20px;
       a {
         padding-left: 6px;
-        color: $thin-gray;
+        // color: $thin-gray;
+        color: $theme-green;
         &:hover {
           color: $theme-gray;
         }

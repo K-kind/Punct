@@ -31,7 +31,8 @@
         draggable=".draggable"
       >
         <li v-show="!currentTask" class="drop-guide">
-          ここにドロップ
+          ここにドロップまたは
+          <i class="el-icon-upload2"></i>
         </li>
         <li
           v-for="task of tasks"
@@ -325,5 +326,8 @@ export default {
   color: $theme-gray;
   padding: 1px 6px;
   margin-left: 4px;
+}
+.el-icon-upload2 {
+  font-weight: bold;
 }
 </style>

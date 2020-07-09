@@ -3,14 +3,9 @@
     <AuthForm
       @on-submit="onSubmit"
       :fields="fields"
+      :buttonText="'ログイン'"
     >
       <template #heading>ログイン</template>
-      <template #button>ログイン</template>
-      <template #checkbox>
-        <el-checkbox>
-          ログインしたままにする
-        </el-checkbox>
-      </template>
       <template #switch-link>
         <router-link to="/signup">
           <i class="el-icon-caret-right"></i>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="board">
-      <h2 class="board__heading"><slot name="heading"></slot></h2>
+      <h2 class="board__heading">ユーザー情報</h2>
       <UserForm
         @on-submit="$emit('on-submit', $event)"
         :fields="fields"
@@ -35,7 +35,7 @@
 import UserForm from '@/components/UserForm.vue'
 
 export default {
-  name: 'AuthForm',
+  name: 'MyPage',
   components: {
     UserForm
   },
@@ -47,6 +47,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 32px;
+}
 .board {
   width: 340px;
   background-color: $light-gray;

@@ -3,9 +3,9 @@
     <AuthForm
       @on-submit="onSubmit"
       :fields="fields"
+      :buttonText="'登録する'"
     >
       <template #heading>新規登録</template>
-      <template #button>登録する</template>
       <template #switch-link>
         <router-link to="/login">
           <i class="el-icon-caret-right"></i>
