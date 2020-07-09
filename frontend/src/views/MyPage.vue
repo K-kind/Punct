@@ -56,7 +56,7 @@
 
 <script>
 import UserForm from '@/components/UserForm.vue'
-import { GET, UPDATE } from '@/store/mutation-types'
+import { GET, UPDATE, DESTROY } from '@/store/mutation-types'
 
 export default {
   name: 'MyPage',
@@ -116,13 +116,25 @@ export default {
     },
     closeForm() {
       this.partialForm = false
+      this.closePassword()
     },
     openPassword() {
       this.fields.push(...this.passwordFields)
       this.fullForm = true
     },
+    closePassword() {
+      this.fields.splice(2, 2)
+      this.fullForm = false
+    },
     onSubmit(params) {
-      this.$store.dispatch(`user/${UPDATE}`, params)
+      this.$store.dispatch(`user/${UPDATE}`, params).then(() => {
+        let flash = this.$store.state.message.flash
+        if (flash) {
+          this.closeForm()
+          this.$notify({ message: flash, duration: 2500 })
+          this.$store.dispatch(`message/${DESTROY}`)
+        }
+      })
     },
   },
   created() {

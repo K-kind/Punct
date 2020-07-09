@@ -5,8 +5,10 @@ import {
   // DESTROY,
   SET_NAME,
   CLEAR,
+  UPDATE,
   GET,
   POST,
+  PATCH,
   // DELETE,
 } from '../mutation-types'
 
@@ -59,6 +61,29 @@ export default {
     },
     [CLEAR]({ commit }) {
       commit(CLEAR)
+    },
+    [UPDATE]({ commit, dispatch }, params) {
+      return dispatch(
+        `http/${PATCH}`,
+        { url: 'user', data: { user: params } },
+        { root: true }
+      ).then(res => { // res.data = { message, user } or { errors }
+        let user = res.data.user
+        if (user) {
+          commit(GET, user)
+          dispatch(
+            `message/${CREATE}`,
+            { flash: res.data.message },
+            { root: true }
+          )
+        } else {
+          dispatch(
+            `message/${CREATE}`,
+            { errors: res.data.errors },
+            { root: true }
+          )
+        }
+      }).catch(err => err)
     },
     // [DESTROY]({ commit, dispatch }) {
     //   dispatch(

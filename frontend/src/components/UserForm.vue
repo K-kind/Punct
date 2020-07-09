@@ -79,11 +79,11 @@ export default {
   data() {
     return {
       models: {
-        name: null,
-        email: null,
-        email_confirmation: null,
-        password: null,
-        password_confirmation: null,
+        name: '',
+        email: '',
+        email_confirmation: '',
+        password: '',
+        password_confirmation: '',
       },
     }
   },

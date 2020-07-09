@@ -76,12 +76,6 @@ export default {
       this.$store.dispatch(`user/${CREATE}`, params)
     }
   },
-  created() {
-    let flash = this.$store.state.message.flash
-    if (flash) {
-      this.$notify({ message: flash, duration: 2500 })
-    }
-  },
 }
 </script>
 
