@@ -12,7 +12,9 @@ class UsersController < ApplicationController
     render json: payload
   end
 
-  def show; end
+  def show
+    render json: { user: @current_user }
+  end
 
   private
 

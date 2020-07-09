@@ -4,7 +4,7 @@ import {
   CREATE,
   // DESTROY,
   SET_NAME,
-  // GET,
+  GET,
   POST,
   // DELETE,
 } from '../mutation-types'
@@ -12,12 +12,12 @@ import {
 export default {
   namespaced: true,
   state: {
-    user: []
+    user: {}
   },
   mutations: {
-    // [DESTROY](state) {
-    //   state.userName = ''
-    // }
+    [GET](state, user) {
+      state.user = user
+    }
   },
   actions: {
     [CREATE]({ commit, dispatch }, params) {
@@ -42,6 +42,15 @@ export default {
             { root: true }
           )
         }
+      }).catch(err => err)
+    },
+    [GET]({ commit, dispatch }) {
+      return dispatch(
+        `http/${GET}`,
+        { url: 'user' },
+        { root: true }
+      ).then(res => { // res.data = { user }
+        commit(GET, res.data.user)
       }).catch(err => err)
     },
     // [DESTROY]({ commit, dispatch }) {

@@ -18,6 +18,6 @@ Rails.application.routes.draw do
       post :order, on: :collection
     end
 
-    resource :user, only: [:create, :show]
+    resource :user, only: [:create, :show, :update, :destroy]
   end
 end

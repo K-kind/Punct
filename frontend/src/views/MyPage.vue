@@ -3,9 +3,9 @@
     <section class="board">
       <h2 class="board__heading">ユーザー情報</h2>
       <UserForm
-        @on-submit="$emit('on-submit', $event)"
+        @on-submit="onSubmit"
         :fields="fields"
-        :buttonText="buttonText"
+        :buttonText="'更新する'"
       />
       <el-divider>または</el-divider>
       <div class="board__bottom">
@@ -33,16 +33,43 @@
 
 <script>
 import UserForm from '@/components/UserForm.vue'
+import { GET, UPDATE } from '@/store/mutation-types'
 
 export default {
   name: 'MyPage',
   components: {
     UserForm
   },
-  props: {
-    fields: Array,
-    buttonText: String
+  data() {
+    return {
+      fields: [
+        {
+          name: 'email',
+          nameJa: 'メールアドレス',
+          first: true,
+          type: 'email',
+          icon: 'el-icon-message',
+          rules: 'required|email'
+        },
+        {
+          name: 'password',
+          nameJa: 'パスワード',
+          first: false,
+          type: 'password',
+          icon: 'el-icon-unlock',
+          rules: 'required|min:6|max:20'
+        }
+      ]
+    }
   },
+  methods: {
+    // onSubmit(params) {
+    //   this.$store.dispatch(`auth/${CREATE}`, params)
+    // }
+  },
+  created() {
+    this.$store.dispatch(`user/${GET}`)
+  }
 }
 </script>
 
