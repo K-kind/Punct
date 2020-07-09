@@ -4,6 +4,7 @@ import {
   CREATE,
   // DESTROY,
   SET_NAME,
+  CLEAR,
   GET,
   POST,
   // DELETE,
@@ -17,7 +18,10 @@ export default {
   mutations: {
     [GET](state, user) {
       state.user = user
-    }
+    },
+    [CLEAR](state) {
+      state.user = {}
+    },
   },
   actions: {
     [CREATE]({ commit, dispatch }, params) {
@@ -52,6 +56,9 @@ export default {
       ).then(res => { // res.data = { user }
         commit(GET, res.data.user)
       }).catch(err => err)
+    },
+    [CLEAR]({ commit }) {
+      commit(CLEAR)
     },
     // [DESTROY]({ commit, dispatch }) {
     //   dispatch(

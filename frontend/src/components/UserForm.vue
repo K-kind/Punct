@@ -81,7 +81,7 @@ export default {
     }
   },
   computed: {
-    errorMessages () {
+    errorMessages() {
       return this.$store.state.message.errors
     },
   },
@@ -99,6 +99,11 @@ export default {
   },
   created() {
     this.$store.dispatch(`message/${DESTROY}`)
+    let user = this.$store.state.user.user
+    if (user) {
+      this.models.name = user.name
+      this.models.email = user.email
+    }
   },
 }
 </script>

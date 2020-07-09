@@ -2,11 +2,42 @@
   <div class="container">
     <section class="board">
       <h2 class="board__heading">ユーザー情報</h2>
+      <div v-if="!partialForm">
+        <div>
+          <span>ユーザー名</span>
+          <span>{{ user.name }}</span>
+        </div>
+        <div>
+          <span>メールアドレス</span>
+          <span>{{ user.email }}</span>
+        </div>
+      </div>
       <UserForm
+        v-else
         @on-submit="onSubmit"
         :fields="fields"
         :buttonText="'更新する'"
       />
+      <div>
+        <el-button
+          v-if="!partialForm"
+          @click.prevent="openForm"
+          class=""
+          size="small"
+          native-type="submit"
+        >
+          編集する
+        </el-button>
+        <el-button
+          v-else
+          @click.prevent="closeForm"
+          class=""
+          size="small"
+          native-type="submit"
+        >
+          キャンセル
+        </el-button>
+      </div>
     </section>
   </div>
 </template>
@@ -22,11 +53,21 @@ export default {
   },
   data() {
     return {
+      partialForm: false,
+      fullForm: false,
       fields: [
+        {
+          name: 'name',
+          nameJa: 'ユーザー名',
+          first: true,
+          type: 'text',
+          icon: 'el-icon-user',
+          rules: 'required|max:8'
+        },
         {
           name: 'email',
           nameJa: 'メールアドレス',
-          first: true,
+          first: false,
           type: 'email',
           icon: 'el-icon-message',
           rules: 'required|email'
@@ -38,14 +79,33 @@ export default {
           type: 'password',
           icon: 'el-icon-unlock',
           rules: 'required|min:6|max:20'
+        },
+        {
+          name: 'password_confirmation',
+          nameJa: 'パスワード（確認）',
+          first: false,
+          type: 'password',
+          icon: 'el-icon-unlock',
+          rules: 'required|min:6|max:20'
         }
       ]
     }
   },
+  computed: {
+    user() {
+      return this.$store.state.user.user
+    }
+  },
   methods: {
+    openForm() {
+      this.partialForm = true
+    },
+    closeForm() {
+      this.partialForm = false
+    },
     onSubmit(params) {
       this.$store.dispatch(`user/${UPDATE}`, params)
-    }
+    },
   },
   created() {
     this.$store.dispatch(`user/${GET}`)
@@ -67,38 +127,6 @@ export default {
   padding: 20px;
   &__heading {
     padding-bottom: 4px;
-  }
-  &__btn-wrapper {
-    text-align: center;
-    padding: 4px 0 8px;
-    &--top {
-      text-align: center;
-      padding: 16px 0 8px;
-    }
-  }
-  %__btn {
-    font-weight: bold;
-    min-width: 134px;
-  }
-  &__btn {
-    &--google {
-      @extend %__btn;
-      color: $google !important;
-      border-color: $google !important;
-      &:hover, &:focus {
-        background-color: $light-google !important;
-      }
-    }
-  }
-  &__links {
-    padding: 24px 0;
-  }
-  &__link {
-    line-height: 32px;
-    a {
-      @include green-link;
-      font-weight: bold;
-    }
   }
 }
 </style>

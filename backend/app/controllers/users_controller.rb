@@ -13,7 +13,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    render json: { user: @current_user }
+    user = { name: @current_user.name, email: @current_user.email }
+    render json: { user: user }
   end
 
   private

@@ -33,6 +33,7 @@
 
 <script>
 import UserForm from '@/components/UserForm.vue'
+import { CLEAR } from '@/store/mutation-types'
 
 export default {
   name: 'AuthForm',
@@ -42,6 +43,9 @@ export default {
   props: {
     fields: Array,
     buttonText: String
+  },
+  created() {
+    this.$store.dispatch(`user/${CLEAR}`)
   },
 }
 </script>
