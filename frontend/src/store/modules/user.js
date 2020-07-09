@@ -4,20 +4,26 @@ import {
   CREATE,
   // DESTROY,
   SET_NAME,
-  // GET,
+  CLEAR,
+  UPDATE,
+  GET,
   POST,
+  PATCH,
   // DELETE,
 } from '../mutation-types'
 
 export default {
   namespaced: true,
   state: {
-    user: []
+    user: {}
   },
   mutations: {
-    // [DESTROY](state) {
-    //   state.userName = ''
-    // }
+    [GET](state, user) {
+      state.user = user
+    },
+    [CLEAR](state) {
+      state.user = {}
+    },
   },
   actions: {
     [CREATE]({ commit, dispatch }, params) {
@@ -35,6 +41,41 @@ export default {
             { root: true }
           )
           router.push('/')
+        } else {
+          dispatch(
+            `message/${CREATE}`,
+            { errors: res.data.errors },
+            { root: true }
+          )
+        }
+      }).catch(err => err)
+    },
+    [GET]({ commit, dispatch }) {
+      return dispatch(
+        `http/${GET}`,
+        { url: 'user' },
+        { root: true }
+      ).then(res => { // res.data = { user }
+        commit(GET, res.data.user)
+      }).catch(err => err)
+    },
+    [CLEAR]({ commit }) {
+      commit(CLEAR)
+    },
+    [UPDATE]({ commit, dispatch }, params) {
+      return dispatch(
+        `http/${PATCH}`,
+        { url: 'user', data: { user: params } },
+        { root: true }
+      ).then(res => { // res.data = { message, user } or { errors }
+        let user = res.data.user
+        if (user) {
+          commit(GET, user)
+          dispatch(
+            `message/${CREATE}`,
+            { flash: res.data.message },
+            { root: true }
+          )
         } else {
           dispatch(
             `message/${CREATE}`,

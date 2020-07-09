@@ -3,9 +3,9 @@
     <AuthForm
       @on-submit="onSubmit"
       :fields="fields"
+      :buttonText="'登録する'"
     >
       <template #heading>新規登録</template>
-      <template #button>登録する</template>
       <template #switch-link>
         <router-link to="/login">
           <i class="el-icon-caret-right"></i>
@@ -74,12 +74,6 @@ export default {
   methods: {
     onSubmit(params) {
       this.$store.dispatch(`user/${CREATE}`, params)
-    }
-  },
-  created() {
-    let flash = this.$store.state.message.flash
-    if (flash) {
-      this.$notify({ message: flash, duration: 2500 })
     }
   },
 }

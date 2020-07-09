@@ -19,7 +19,12 @@
       </el-menu-item>
       <el-submenu v-show="userName" index="MyPage" :show-timeout="10">
         <template slot="title">{{ userName }}</template>
-        <el-menu-item>マイページ</el-menu-item>
+        <el-menu-item
+          index="/mypage"
+          :route="{ path: '/mypage' }"
+        >
+          マイページ
+        </el-menu-item>
         <el-menu-item>ヘルプ</el-menu-item>
         <el-menu-item><NavLeft /></el-menu-item>
       </el-submenu>
@@ -96,16 +101,6 @@ export default {
   background-color: $theme-gray!important;
   font-weight: bold!important;
   box-shadow: 0 0 3px 1px rgba(9, 30, 66, .25);
-  .is-active {
-    background-color: #fff!important;
-    color: $theme-gray!important;
-    border-bottom-color: $theme-green!important;
-    pointer-events: none;
-    cursor: default;
-    &:hover {
-      color: $theme-gray!important;
-    }
-  }
   &--popup {
     min-width: 110px !important;
     width: 110px !important;
@@ -124,6 +119,16 @@ export default {
     width: 110px;
     text-align: center;
   }
+  &.is-active {
+    background-color: #fff!important;
+    color: $theme-gray!important;
+    border-bottom-color: $theme-green!important;
+    pointer-events: none;
+    cursor: default;
+    &:hover {
+      color: $theme-gray!important;
+    }
+  }
 }
 .el-submenu {
   float: right!important;
@@ -135,6 +140,19 @@ export default {
       color: $theme-gray!important;
     }
   }
+  &.is-active {
+    .el-submenu__title {
+      border-bottom-color: $theme-green!important;
+      background-color: #fff!important;
+      color: $theme-gray!important;
+      &:hover {
+        color: $theme-gray!important;
+      }
+      i {
+        color: $theme-gray !important;
+      }
+    }
+  }
 }
 
 .el-submenu__title {
@@ -144,6 +162,7 @@ export default {
   min-width: 110px;
   padding: 0 16px !important;
   text-align: center;
+  cursor: default !important;
   &:hover {
     color: $theme-green!important;
   }

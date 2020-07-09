@@ -10,11 +10,10 @@ class User < ApplicationRecord
   validates :email, presence: true,
                     length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
-                    uniqueness: { case_sensitive: false },
-                    confirmation: true
-  validates :email_confirmation, presence: true
+                    uniqueness: { case_sensitive: false }
+  validates :email, confirmation: true, on: :signup
+  validates :email_confirmation, presence: true, on: :signup
   validates :password, presence: true,
                        length: { minimum: 6 },
                        allow_nil: true
-  validates :password_confirmation, presence: true
 end
