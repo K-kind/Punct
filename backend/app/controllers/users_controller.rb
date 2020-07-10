@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   def create
     user = User.new(user_params)
     if user.save(context: :signup)
-      session[:user_id] = user.id
+      log_in user
       payload = { message: '登録が完了しました。', name: user.name }
     else
       payload = { errors: user.errors.full_messages }
@@ -36,8 +36,8 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    log_out
     @current_user.destroy
-    session.delete(:user_id)
     render json: { message: '退会しました。' }
   end
 

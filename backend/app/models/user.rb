@@ -21,7 +21,20 @@ class User < ApplicationRecord
   validates :provider, presence: true, if: :uid?
   validates :uid, presence: true, if: :provider?
 
+  before_save :downcase_email
+  attr_accessor :remember_token, :reset_token
+
   class << self
+    def digest(string)
+      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                    BCrypt::Engine.cost
+      BCrypt::Password.create(string, cost: cost)
+    end
+
+    def new_token
+      SecureRandom.urlsafe_base64
+    end
+
     def find_or_create_from_auth(auth)
       provider = auth[:provider]
       uid = auth[:uid]
@@ -34,5 +47,27 @@ class User < ApplicationRecord
         user.password = SecureRandom.hex(9)
       end
     end
+  end
+
+  def remember
+    self.remember_token = User.new_token
+    update_attribute(:remember_digest, User.digest(remember_token))
+  end
+
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
+
+    BCrypt::Password.new(digest).is_password?(token)
+  end
+
+  def forget
+    update(remember_digest: nil)
+  end
+
+  private
+
+  def downcase_email
+    self.email = email.downcase
   end
 end

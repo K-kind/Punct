@@ -19,7 +19,7 @@
               :name="f.nameJa"
             >
               <el-input
-                v-model="models[f.name]"
+                v-model="params[f.name]"
                 :prefix-icon="f.icon"
                 :type="f.type"
                 :placeholder="f.nameJa"
@@ -36,7 +36,7 @@
           </div>
         </div>
         <div v-if="buttonText === 'ログイン'" class="board__check">
-          <el-checkbox>
+          <el-checkbox v-model="params.remember">
             ログインしたままにする
           </el-checkbox>
         </div>
@@ -78,12 +78,13 @@ export default {
   },
   data() {
     return {
-      models: {
+      params: {
         name: '',
         email: '',
         email_confirmation: '',
         password: '',
         password_confirmation: '',
+        remember: false
       },
     }
   },
@@ -94,22 +95,22 @@ export default {
   },
   methods: {
     InteractionMode(f) {
-      if (f.first && !this.models[f.name]) {
+      if (f.first && !this.params[f.name]) {
         return 'passive'
       } else {
         return 'eager'
       }
     },
     onSubmit() {
-      this.$emit('on-submit', this.models)
+      this.$emit('on-submit', this.params)
     }
   },
   created() {
     this.$store.dispatch(`message/${DESTROY}`)
     let user = this.$store.state.user.user
     if (user) {
-      this.models.name = user.name
-      this.models.email = user.email
+      this.params.name = user.name
+      this.params.email = user.email
     }
   },
 }
