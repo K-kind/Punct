@@ -17,14 +17,14 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @current_user.update(user_params)
-      payload = {
-        message: 'ユーザー情報を更新しました。',
-        user: user_json(@current_user)
-      }
-    else
-      payload = { errors: @current_user.errors.full_messages }
-    end
+    payload = if @current_user.update(user_params)
+                {
+                  message: 'ユーザー情報を更新しました。',
+                  user: user_json(@current_user)
+                }
+              else
+                { errors: @current_user.errors.full_messages }
+              end
     render json: payload
   end
 
