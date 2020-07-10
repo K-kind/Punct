@@ -15,7 +15,7 @@
 
 <script>
 import UserForm from '@/components/UserForm.vue'
-import { RESET, CHECK_TOKEN } from '@/store/mutation-types'
+import { UPDATE, CHECK_TOKEN } from '@/store/mutation-types'
 
 export default {
   name: 'Reset',
@@ -53,13 +53,13 @@ export default {
         email: this.email,
         token: this.token,
       }
-      this.$store.dispatch(`auth/${RESET}`, payload)
+      this.$store.dispatch(`reset/${UPDATE}`, payload)
     },
   },
   created() {
     this.email = this.$route.query.email
     this.token = this.$route.query.token
-    this.$store.dispatch(`auth/${CHECK_TOKEN}`, {
+    this.$store.dispatch(`reset/${CHECK_TOKEN}`, {
       email: this.email, token: this.token
     })
   }

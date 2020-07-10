@@ -159,7 +159,7 @@ export default {
         let flash = this.$store.state.message.flash
         if (flash) {
           this.closeForm()
-          this.$notify({ message: flash, duration: 2500 })
+          this.$notify({ message: flash, duration: 2500, offset: 20 })
           this.$store.dispatch(`message/${DESTROY}`)
         }
       })

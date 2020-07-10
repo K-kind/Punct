@@ -4,8 +4,6 @@ import {
   CREATE,
   DESTROY,
   SET_NAME,
-  CHECK_TOKEN,
-  // RESET,
   GET,
   POST,
   DELETE,
@@ -76,47 +74,5 @@ export default {
         if (userName) { commit(SET_NAME, userName) }
       }).catch(err => err)
     },
-    [CHECK_TOKEN]({ dispatch }, params) { // params = { email, token }
-      return dispatch(
-        `http/${GET}`,
-        { url: 'password_reset/check', params },
-        { root: true }
-      ).then(res => { // res.data = { error }
-        let message = res.data.error
-        if (message) {
-          dispatch(
-            `message/${CREATE}`,
-            { flash: message },
-            { root: true }
-          ).then(() => {
-            router.push('/login')
-          })
-        }
-      }).catch(err => err)
-    },
-    // [RESET]({ commit, dispatch }, data) { // data = { user, email, token }
-    //   dispatch(
-    //     `http/${PATCH}`,
-    //     { url: 'authpassword_reset' },
-    //     { root: true }
-    //   ).then(res => { // res.data = { message, name } or { errors }
-    //     let name = res.data.name
-    //     if (name) {
-    //       commit(SET_NAME, name)
-    //       dispatch(
-    //         `message/${CREATE}`,
-    //         { flash: res.data.message },
-    //         { root: true }
-    //       )
-    //       router.push('/')
-    //     } else {
-    //       dispatch(
-    //         `message/${CREATE}`,
-    //         { errors: res.data.errors },
-    //         { root: true }
-    //       )
-    //     }
-    //   }).catch(err => err)
-    // },
   }
 }

@@ -13,26 +13,39 @@
         </router-link>
       </template>
       <template #reset-link>
-        <a href="..">
+        <a @click="dialogVisible = true" href="javascript:">
           <i class="el-icon-caret-right"></i>
           パスワードを忘れた方はこちら
         </a>
       </template>
     </AuthForm>
+    <el-dialog
+        :visible.sync="dialogVisible"
+      >
+        <span>メールアドレスを入力してください</span>
+        <UserForm
+          @on-submit="onResetSubmit"
+          :fields="resetFields"
+          :buttonText="'送信する'"
+        />
+      </el-dialog>
   </div>
 </template>
 
 <script>
 import AuthForm from '@/components/AuthForm.vue'
-import { CREATE } from '@/store/mutation-types'
+import UserForm from '@/components/UserForm.vue'
+import { CREATE, DESTROY } from '@/store/mutation-types'
 
 export default {
   name: 'Login',
   components: {
-    AuthForm
+    AuthForm,
+    UserForm
   },
   data() {
     return {
+      dialogVisible: false,
       fields: [
         {
           name: 'email',
@@ -50,18 +63,39 @@ export default {
           icon: 'el-icon-unlock',
           rules: 'required|min:6|max:20'
         }
+      ],
+      resetFields: [
+        {
+          name: 'email',
+          nameJa: 'メールアドレス',
+          first: false,
+          type: 'email',
+          icon: 'el-icon-message',
+          rules: 'required|email'
+        }
       ]
     }
   },
   methods: {
     onSubmit(params) {
       this.$store.dispatch(`auth/${CREATE}`, params)
+    },
+    onResetSubmit(params) {
+      this.$store.dispatch(`reset/${CREATE}`, params).then(() => {
+        let flash = this.$store.state.message.flash
+        if (flash) {
+          this.dialogVisible = false
+          this.$notify({ message: flash, duration: 3500, offset: 20 })
+          this.$store.dispatch(`message/${DESTROY}`)
+        }
+      })
     }
   },
   created() {
     let flash = this.$store.state.message.flash
     if (flash) {
-      this.$notify({ message: flash, duration: 2500 })
+      this.$notify({ message: flash, duration: 2500, offset: 20 })
+      // this.$store.dispatch(`message/${DESTROY}`) // 子コンポーネントで行われる
     }
   },
 }
