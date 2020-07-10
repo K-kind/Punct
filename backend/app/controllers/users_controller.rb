@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   def create
     user = User.new(user_params)
     if user.save(context: :signup)
-      session[:user_id] = user.id
+      log_in user
       payload = { message: '登録が完了しました。', name: user.name }
     else
       payload = { errors: user.errors.full_messages }
@@ -13,26 +13,25 @@ class UsersController < ApplicationController
   end
 
   def show
-    user = {
-      name: @current_user.name,
-      email: @current_user.email,
-      provider: @current_user.provider
-    }
-    render json: { user: user }
+    render json: { user: user_json(@current_user) }
   end
 
   def update
-    if @current_user.update(user_params)
-      user = {
-        name: @current_user.name,
-        email: @current_user.email,
-        provider: @current_user.provider
-      }
-      payload = { message: 'ユーザー情報を更新しました。', user: user }
-    else
-      payload = { errors: @current_user.errors.full_messages }
-    end
+    payload = if @current_user.update(user_params)
+                {
+                  message: 'ユーザー情報を更新しました。',
+                  user: user_json(@current_user)
+                }
+              else
+                { errors: @current_user.errors.full_messages }
+              end
     render json: payload
+  end
+
+  def destroy
+    log_out
+    @current_user.destroy
+    render json: { message: '退会しました。' }
   end
 
   private

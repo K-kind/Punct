@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_09_183233) do
+ActiveRecord::Schema.define(version: 2020_07_10_033720) do
 
   create_table "long_tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "type", null: false
@@ -47,6 +47,10 @@ ActiveRecord::Schema.define(version: 2020_07_09_183233) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "uid"
     t.string "provider"
+    t.string "reset_digest"
+    t.string "remember_digest"
+    t.datetime "reset_sent_at"
+    t.boolean "is_test", default: false, null: false
   end
 
 end

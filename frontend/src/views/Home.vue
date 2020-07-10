@@ -20,10 +20,12 @@
         <template v-slot:head>週間タスク</template>
         <template v-slot:body><WeeklyColumn /></template>
       </Column>
-      <Column>
-        <template v-slot:head>月間タスク</template>
-        <template v-slot:body><MonthlyColumn /></template>
-      </Column>
+      <div class="monthly-column">
+        <Column>
+          <template v-slot:head>月間タスク</template>
+          <template v-slot:body><MonthlyColumn /></template>
+        </Column>
+      </div>
     </div>
   </div>
 </template>
@@ -62,14 +64,14 @@ export default {
     })
     let flash = this.$store.state.message.flash
     if (flash) {
-      this.$notify({ message: flash, duration: 2500 })
+      this.$notify({ message: flash, duration: 2500, offset: 20 })
       this.$store.dispatch(`message/${DESTROY}`)
     }
   },
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .working {
   display: flex;
   justify-content: center;
@@ -77,5 +79,12 @@ export default {
 .columns {
   display: flex;
   margin-top: 16px;
+}
+.monthly-column {
+  padding-right: 8px;
+  height: auto;
+  .column {
+    height: 100%;
+  }
 }
 </style>

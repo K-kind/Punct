@@ -1,62 +1,81 @@
 <template>
   <div class="container">
-    <section class="board">
-      <h2 class="board__heading">ユーザー情報</h2>
-      <div v-if="!partialForm" class="board__info">
-        <div class="board__each-info">
-          <div>
-            <strong>ユーザー名</strong>
+    <div>
+      <section class="board">
+        <h2 class="board__heading">ユーザー情報</h2>
+        <div v-if="!partialForm" class="board__info">
+          <div class="board__each-info">
+            <div>
+              <strong>ユーザー名</strong>
+            </div>
+            <div class="board__info-text">
+              <span>{{ user.name }}</span>
+            </div>
           </div>
-          <div class="board__info-text">
-            <span>{{ user.name }}</span>
+          <div class="board__each-info">
+            <div>
+              <strong>メールアドレス</strong>
+            </div>
+            <div class="board__info-text">
+              <span>{{ user.email }}</span>
+            </div>
+          </div>
+          <div v-if="user.provider" class="board__each-info">
+            <div>
+              <strong>ログイン方法</strong>
+            </div>
+            <div class="board__info-text">
+              <span>Googleアカウント</span>
+            </div>
           </div>
         </div>
-        <div class="board__each-info">
-          <div>
-            <strong>メールアドレス</strong>
-          </div>
-          <div class="board__info-text">
-            <span>{{ user.email }}</span>
-          </div>
-        </div>
-        <div v-if="user.provider" class="board__each-info">
-          <div>
-            <strong>ログイン方法</strong>
-          </div>
-          <div class="board__info-text">
-            <span>Googleアカウント</span>
-          </div>
-        </div>
-      </div>
-      <UserForm
-        v-else
-        @on-submit="onSubmit"
-        @open-password="openPassword"
-        :fields="fields"
-        :buttonText="'更新する'"
-        :passwordOpen="!fullForm"
-      />
-      <div class="board__btn-wrapper">
-        <el-button
-          v-if="!partialForm"
-          @click.prevent="openForm"
-          class=""
-          size="small"
-          native-type="submit"
-        >
-          編集する
-        </el-button>
-        <el-button
+        <UserForm
           v-else
-          @click.prevent="closeForm"
-          class=""
-          size="small"
-          native-type="submit"
-        >
-          キャンセル
-        </el-button>
-      </div>
-    </section>
+          @on-submit="onSubmit"
+          @open-password="openPassword"
+          :fields="fields"
+          :buttonText="'更新する'"
+          :passwordOpen="!fullForm"
+        />
+        <div class="board__btn-wrapper">
+          <el-button
+            v-if="!partialForm"
+            @click.prevent="openForm"
+            class=""
+            size="small"
+            native-type="submit"
+          >
+            編集する
+          </el-button>
+          <el-button
+            v-else
+            @click.prevent="closeForm"
+            class=""
+            size="small"
+            native-type="submit"
+          >
+            キャンセル
+          </el-button>
+        </div>
+      </section>
+      <ul class="board__links">
+        <li class="board__link">
+          <a @click="dialogVisible = true" href="javascript:">
+            退会する
+          </a>
+        </li>
+      </ul>
+      <el-dialog
+        title="確認"
+        :visible.sync="dialogVisible"
+      >
+        <span>退会すると全てのデータが削除されます。よろしいですか？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">キャンセル</el-button>
+          <el-button type="primary" @click="withdraw">退会</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -73,6 +92,7 @@ export default {
     return {
       partialForm: false,
       fullForm: false,
+      dialogVisible: false,
       fields: [
         {
           name: 'name',
@@ -139,11 +159,14 @@ export default {
         let flash = this.$store.state.message.flash
         if (flash) {
           this.closeForm()
-          this.$notify({ message: flash, duration: 2500 })
+          this.$notify({ message: flash, duration: 2500, offset: 20 })
           this.$store.dispatch(`message/${DESTROY}`)
         }
       })
     },
+    withdraw() {
+      this.$store.dispatch(`user/${DESTROY}`)
+    }
   },
   created() {
     this.$store.dispatch(`user/${GET}`).then(() => {
@@ -182,6 +205,16 @@ export default {
   &__btn-wrapper {
     padding-top: 4px;
     text-align: center;
+  }
+  &__links {
+    padding: 24px 0;
+    text-align: right;
+  }
+  &__link {
+    line-height: 32px;
+    a {
+      @include gray-link;
+    }
   }
 }
 </style>

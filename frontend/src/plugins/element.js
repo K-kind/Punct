@@ -5,6 +5,7 @@ import {
   InputNumber,
   Checkbox,
   Divider,
+  Dialog,
   Menu,
   Submenu,
   MenuItem,
@@ -20,6 +21,7 @@ Vue.use(Input)
 Vue.use(InputNumber)
 Vue.use(Checkbox)
 Vue.use(Divider)
+Vue.use(Dialog)
 Vue.use(Menu)
 Vue.use(Submenu)
 Vue.use(MenuItem)

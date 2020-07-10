@@ -23,3 +23,12 @@
     text-decoration: underline;
   }
 }
+
+@mixin gray-link {
+  color: $theme-gray;
+  text-decoration: none;
+  &:hover {
+    color: $theme-green;
+    text-decoration: underline;
+  }
+}

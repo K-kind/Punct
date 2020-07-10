@@ -2,14 +2,14 @@ import router from '@/router/index.js'
 
 import {
   CREATE,
-  // DESTROY,
+  DESTROY,
   SET_NAME,
   CLEAR,
   UPDATE,
   GET,
   POST,
   PATCH,
-  // DELETE,
+  DELETE,
 } from '../mutation-types'
 
 export default {
@@ -39,8 +39,9 @@ export default {
             `message/${CREATE}`,
             { flash: res.data.message },
             { root: true }
-          )
-          router.push('/')
+          ).then(() => {
+            router.push('/')
+          })
         } else {
           dispatch(
             `message/${CREATE}`,
@@ -86,21 +87,22 @@ export default {
         }
       }).catch(err => err)
     },
-    // [DESTROY]({ commit, dispatch }) {
-    //   dispatch(
-    //     `http/${DELETE}`,
-    //     { url: 'auth' },
-    //     { root: true }
-    //   ).then(res => {
-    //     commit(DESTROY)
-    //     dispatch(
-    //       `message/${CREATE}`,
-    //       { flash: res.data.message },
-    //       { root: true }
-    //     )
-    //     router.push('/login')
-    //   })
-    //    .catch(err => err)
-    // },
+    [DESTROY]({ commit, dispatch }) {
+      return dispatch(
+        `http/${DELETE}`,
+        { url: 'user' },
+        { root: true }
+      ).then(res => {
+        commit(`auth/${DESTROY}`, null, { root: true })
+        commit(CLEAR)
+        dispatch(
+          `message/${CREATE}`,
+          { flash: res.data.message },
+          { root: true }
+        ).then(() => {
+          router.push('/login')
+        })
+      }).catch(err => err)
+    },
   }
 }

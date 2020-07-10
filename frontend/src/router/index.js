@@ -48,6 +48,15 @@ const routes = [
     meta: {
       isPublic: true
     }
+  },
+  {
+    path: '/reset',
+    name: 'Reset',
+    component: () => import('@/views/Reset.vue'),
+    meta: {
+      isPublic: true,
+      forGuest: true
+    }
   }
 ]
 

@@ -22,5 +22,9 @@ Rails.application.routes.draw do
     end
 
     resource :user, only: [:create, :show, :update, :destroy]
+
+    resource :password_reset, only: [:create, :update] do
+      get :check
+    end
   end
 end

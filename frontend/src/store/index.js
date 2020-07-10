@@ -5,6 +5,7 @@ import WeeklyTasks from './modules/WeeklyTasks'
 import MonthlyTasks from './modules/MonthlyTasks'
 import user from './modules/user'
 import auth from './modules/auth'
+import reset from './modules/reset'
 import http from './modules/http'
 import message from './modules/message'
 import { SET_TASKS, GET } from './mutation-types'
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     monthly: MonthlyTasks,
     auth,
     user,
+    reset,
     http,
     message
   },
