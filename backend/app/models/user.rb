@@ -65,6 +65,15 @@ class User < ApplicationRecord
     update(remember_digest: nil)
   end
 
+  def create_reset_digest
+    self.reset_token = User.new_token
+    update!(reset_digest: User.digest(reset_token), reset_sent_at: Time.zone.now)
+  end
+
+  def send_password_reset_email
+    UserMailer.password_reset(user: self, user_reset_token: reset_token).deliver_later
+  end
+
   private
 
   def downcase_email
