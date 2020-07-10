@@ -7,7 +7,7 @@ class AuthController < ApplicationController
   end
 
   def create
-    user = User.find_by(email: params[:email].downcase, provider: nil)
+    user = User.find_by(email: params[:email]&.downcase, provider: nil)
     if user&.authenticate(params[:password])
       log_in user
       params[:remember] ? remember(user) : forget(user)

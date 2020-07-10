@@ -1,7 +1,7 @@
 class PasswordResetsController < ApplicationController
-  before_action :get_user, only: [:create, :edit, :update]
-  before_action :valid_user, only: [:edit, :update]
-  before_action :check_expiration, only: [:edit, :update]
+  skip_before_action :require_login
+  before_action :get_user
+  before_action :check_token, only: [:check, :update]
 
   def create
     if @user
@@ -14,9 +14,14 @@ class PasswordResetsController < ApplicationController
     render json: payload
   end
 
-  def edit; end
+  def check
+    head :no_content
+  end
 
   def update
+    if !@user&.authenticated?(:reset, params[:id])
+      message = '無効なリンクです'
+    end
     if params[:user][:password].empty?
       @user.errors.add(:password, :blank)
       render 'error'
@@ -39,20 +44,16 @@ class PasswordResetsController < ApplicationController
   end
 
   def get_user
-    @user = User.find_by(email: params[:email].downcase, provider: nil)
+    @user = User.find_by(email: params[:email]&.downcase, provider: nil)
   end
 
-  def valid_user
-    return if @user&.activated? && @user&.authenticated?(:reset, params[:id])
+  def check_token
+    if !@user&.authenticated?(:reset, params[:token])
+      message = '無効なリンクです。'
+    elsif @user.password_reset_expired?
+      message = 'リンクが有効期限切れです。'
+    end
 
-    flash[:danger] = '無効なリンクです。'
-    redirect_to about_url
-  end
-
-  def check_expiration
-    return unless @user.password_reset_expired?
-
-    flash[:danger] = 'パスワードリセットリンクが有効期限切れです。'
-    redirect_to about_url
+    render json: { error: message } if message
   end
 end

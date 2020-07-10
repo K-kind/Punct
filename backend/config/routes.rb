@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
     resource :user, only: [:create, :show, :update, :destroy]
 
-    resources :password_resets, only: [:create, :edit, :update]
+    resource :password_reset, only: [:create, :update] do
+      get :check
+    end
   end
 end

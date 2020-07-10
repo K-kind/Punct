@@ -16,8 +16,9 @@ class User < ApplicationRecord
   validates :email_confirmation, presence: true, on: :signup
   validates :password, presence: true,
                        length: { minimum: 6 },
+                       confirmation: true,
                        allow_nil: true
-  validates :password_confirmation, presence: true, on: :signup
+  validates :password, presence: true, on: :reset
   validates :provider, presence: true, if: :uid?
   validates :uid, presence: true, if: :provider?
 
@@ -72,6 +73,10 @@ class User < ApplicationRecord
 
   def send_password_reset_email
     UserMailer.password_reset(user: self, user_reset_token: reset_token).deliver_later
+  end
+
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
   end
 
   private

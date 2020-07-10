@@ -39,8 +39,9 @@ export default {
             `message/${CREATE}`,
             { flash: res.data.message },
             { root: true }
-          )
-          router.push('/')
+          ).then(() => {
+            router.push('/')
+          })
         } else {
           dispatch(
             `message/${CREATE}`,
@@ -98,8 +99,9 @@ export default {
           `message/${CREATE}`,
           { flash: res.data.message },
           { root: true }
-        )
-        router.push('/login')
+        ).then(() => {
+          router.push('/login')
+        })
       }).catch(err => err)
     },
   }
