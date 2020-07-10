@@ -2,11 +2,12 @@ import router from '@/router/index.js'
 
 import {
   CREATE,
-  // SET_NAME,
+  SET_NAME,
   CHECK_TOKEN,
-  // UPDATE,
+  UPDATE,
   GET,
   POST,
+  PATCH,
 } from '../mutation-types'
 
 export default {
@@ -52,29 +53,37 @@ export default {
         }
       }).catch(err => err)
     },
-    // [RESET]({ commit, dispatch }, data) { // data = { user, email, token }
-    //   dispatch(
-    //     `http/${PATCH}`,
-    //     { url: 'authpassword_reset' },
-    //     { root: true }
-    //   ).then(res => { // res.data = { message, name } or { errors }
-    //     let name = res.data.name
-    //     if (name) {
-    //       commit(SET_NAME, name)
-    //       dispatch(
-    //         `message/${CREATE}`,
-    //         { flash: res.data.message },
-    //         { root: true }
-    //       )
-    //       router.push('/')
-    //     } else {
-    //       dispatch(
-    //         `message/${CREATE}`,
-    //         { errors: res.data.errors },
-    //         { root: true }
-    //       )
-    //     }
-    //   }).catch(err => err)
-    // },
+    [UPDATE]({ commit, dispatch }, data) { // data = { user, email, token }
+      dispatch(
+        `http/${PATCH}`,
+        { url: 'password_reset', data },
+        { root: true }
+      ).then(res => { // res.data = { message, name } or { errors } or { error }
+        if (res.data.name) {
+          commit(`auth/${SET_NAME}`, res.data.name, { root: true })
+          dispatch(
+            `message/${CREATE}`,
+            { flash: res.data.message },
+            { root: true }
+          ).then(() => {
+            router.push('/')
+          })
+        } else if (res.data.errors) {
+          dispatch(
+            `message/${CREATE}`,
+            { errors: res.data.errors },
+            { root: true }
+          )
+        } else if (res.data.error) {
+          dispatch(
+            `message/${CREATE}`,
+            { flash: res.data.error },
+            { root: true }
+          ).then(() => {
+            router.push('/login')
+          })
+        }
+      }).catch(err => err)
+    },
   }
 }
