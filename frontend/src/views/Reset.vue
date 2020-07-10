@@ -50,8 +50,8 @@ export default {
     onSubmit(params) {
       let payload = {
         user: params,
-        email: this.$route.query.email,
-        token: this.$route.query.token,
+        email: this.email,
+        token: this.token,
       }
       this.$store.dispatch(`auth/${RESET}`, payload)
     },
@@ -63,20 +63,6 @@ export default {
       email: this.email, token: this.token
     })
   }
-  // created() {
-  //   let message = 'ログインしました。'
-  //   let path = '/'
-  //   if (!this.$store.state.auth.userName) {
-  //     message = '認証に失敗しました。'
-  //     path = '/login'
-  //   }
-  //   this.$store.dispatch(
-  //     `message/${CREATE}`,
-  //     { flash: message }
-  //   ).then(() => {
-  //     this.$router.push(path)
-  //   })
-  // }
 }
 </script>
 

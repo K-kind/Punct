@@ -11,6 +11,7 @@ class PasswordResetsController < ApplicationController
     else
       payload = { errors: ['メールアドレスが見つかりません。'] }
     end
+
     render json: payload
   end
 
@@ -19,22 +20,15 @@ class PasswordResetsController < ApplicationController
   end
 
   def update
-    if !@user&.authenticated?(:reset, params[:id])
-      message = '無効なリンクです'
-    end
-    if params[:user][:password].empty?
-      @user.errors.add(:password, :blank)
-      render 'error'
-    elsif @user.update(user_params)
+    if @user.update(user_params)
       log_in @user
-      flash[:notice] = 'パスワードが再設定されました。'
-      @user.update(reset_digest: nil)
-      respond_to do |format|
-        format.html { redirect_to root_url }
-      end
+      @user.update!(reset_digest: nil)
+      payload = { message: 'パスワードが再設定されました。', name: @user.name }
     else
-      render 'error'
+      payload = { errors: @user.errors.full_messages }
     end
+
+    render json: payload
   end
 
   private

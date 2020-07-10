@@ -21,6 +21,14 @@ module SessionsHelper
     end
   end
 
+  def user_json(user)
+    {
+      name: user.name,
+      email: user.email,
+      provider: user.provider
+    }
+  end
+
   def forget(user)
     user.forget
     cookies.delete(:user_id)
