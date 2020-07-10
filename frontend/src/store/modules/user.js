@@ -71,6 +71,7 @@ export default {
         let user = res.data.user
         if (user) {
           commit(GET, user)
+          commit(`auth/${SET_NAME}`, user.name, { root: true })
           dispatch(
             `message/${CREATE}`,
             { flash: res.data.message },

@@ -13,12 +13,18 @@
         </div>
         <div class="board__each-info">
           <div>
-            <strong v-if="user.email">メールアドレス</strong>
-            <strong v-else>ログイン方法</strong>
+            <strong>メールアドレス</strong>
           </div>
           <div class="board__info-text">
-            <span v-if="user.email">{{ user.email }}</span>
-            <span v-else>Googleアカウント</span>
+            <span>{{ user.email }}</span>
+          </div>
+        </div>
+        <div v-if="user.provider" class="board__each-info">
+          <div>
+            <strong>ログイン方法</strong>
+          </div>
+          <div class="board__info-text">
+            <span>Googleアカウント</span>
           </div>
         </div>
       </div>
@@ -124,7 +130,9 @@ export default {
     },
     closePassword() {
       this.fields.splice(2, 2)
-      this.fullForm = false
+      if (!this.user.provider) {
+        this.fullForm = false
+      }
     },
     onSubmit(params) {
       this.$store.dispatch(`user/${UPDATE}`, params).then(() => {
@@ -139,8 +147,7 @@ export default {
   },
   created() {
     this.$store.dispatch(`user/${GET}`).then(() => {
-      if (!this.user.email) {
-        this.fields.pop()
+      if (this.user.provider) {
         this.fullForm = true
       }
     })

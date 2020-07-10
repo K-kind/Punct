@@ -7,7 +7,7 @@ import { SET_NAME } from '@/store/mutation-types'
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',
@@ -39,6 +39,14 @@ Vue.use(VueRouter)
     meta: {
       isPublic: true,
       forGuest: true
+    }
+  },
+  {
+    path: '/oauth',
+    name: 'Oauth',
+    component: () => import('@/views/Oauth.vue'),
+    meta: {
+      isPublic: true
     }
   }
 ]

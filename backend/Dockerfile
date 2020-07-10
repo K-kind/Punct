@@ -9,6 +9,8 @@ COPY Gemfile Gemfile.lock /myapp/
 RUN bundle config path ".cache/bundle"
 
 FROM base as develop
+ENV FRONTEND_URL http://localhost:8080
+
 RUN --mount=type=cache,target=/myapp/.cache/bundle \
     bundle install && \
     mkdir -p vendor && \
@@ -23,6 +25,7 @@ FROM base as production
 ARG KEY
 ENV RAILS_MASTER_KEY $KEY
 ENV RAILS_ENV production
+ENV FRONTEND_URL https://punct.work
 
 RUN bundle config without "development test"
 RUN bundle config path "vendor/bundle"

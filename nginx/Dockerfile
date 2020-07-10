@@ -5,6 +5,9 @@ CMD /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
 
 FROM node:12.18.0-alpine as build-stage
 WORKDIR /myapp
+ENV TZ Asia/Tokyo
+ENV VUE_APP_API_URL https://punct.work/api/
+
 RUN yarn global add @vue/cli
 COPY frontend/package.json frontend/yarn.lock /myapp/
 RUN yarn install
