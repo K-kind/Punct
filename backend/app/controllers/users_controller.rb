@@ -35,6 +35,12 @@ class UsersController < ApplicationController
     render json: payload
   end
 
+  def destroy
+    @current_user.destroy
+    session.delete(:user_id)
+    render json: { message: '退会しました。' }
+  end
+
   private
 
   def user_params
