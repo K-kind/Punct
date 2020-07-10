@@ -7,7 +7,7 @@ import { SET_NAME } from '@/store/mutation-types'
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',

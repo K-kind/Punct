@@ -13,13 +13,21 @@ class UsersController < ApplicationController
   end
 
   def show
-    user = { name: @current_user.name, email: @current_user.email }
+    user = {
+      name: @current_user.name,
+      email: @current_user.email,
+      provider: @current_user.provider
+    }
     render json: { user: user }
   end
 
   def update
     if @current_user.update(user_params)
-      user = { name: @current_user.name, email: @current_user.email }
+      user = {
+        name: @current_user.name,
+        email: @current_user.email,
+        provider: @current_user.provider
+      }
       payload = { message: 'ユーザー情報を更新しました。', user: user }
     else
       payload = { errors: @current_user.errors.full_messages }
