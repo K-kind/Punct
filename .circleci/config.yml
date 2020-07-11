@@ -4,7 +4,8 @@ commands:
   bundle-installation:
     description: "checkout and bundle installation and caching"
     steps:
-      - checkout
+      - checkout:
+          path: backend/
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "Gemfile.lock" }}
