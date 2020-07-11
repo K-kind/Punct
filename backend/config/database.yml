@@ -51,6 +51,3 @@ test:
 production:
   <<: *default
   database: myapp_production
-  host:     <%= ENV.fetch('DB_HOST_PRODUCTION') { 'db' } %>
-  username: <%= ENV.fetch('DB_USERNAME_PRODUCTION') { 'root' } %>
-  password: <%= ENV.fetch('DB_PASSWORD_PRODUCTION') { 'password' } %>
