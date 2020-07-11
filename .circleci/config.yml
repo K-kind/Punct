@@ -4,19 +4,21 @@ commands:
   bundle-installation:
     description: "checkout and bundle installation and caching"
     steps:
-      - checkout:
-          path: backend/
+      - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            - v1-dependencies-{{ checksum "backend/Gemfile.lock" }}
             - v1-dependencies-
-      - run: ls -la
-      - run: bundle config set path 'vendor/bundle'
-      - run: bundle install --jobs=4 --retry=3
+      - run:
+          name: bundle installation
+          working_directory: backend
+          command: |
+            bundle config set path 'vendor/bundle'
+            bundle install --jobs=4 --retry=3
       - save_cache:
           paths:
-            - ./vendor/bundle
-          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+            - backend/vendor/bundle
+          key: v1-dependencies-{{ checksum "backend/Gemfile.lock" }}
 
   # yarn-installation:
   #   description: "yarn installation and caching"
@@ -40,11 +42,12 @@ jobs:
   rubocop:
     docker:
       - image: circleci/ruby:2.7.1-node-browsers-legacy
-    working_directory: ~/myapp/backend
+    working_directory: ~/myapp
     steps:
       - bundle-installation
       - run:
           name: Rubocop
+          working_directory: backend
           command: bundle exec rubocop
 
   rspec:
@@ -63,14 +66,13 @@ jobs:
     steps:
       - bundle-installation
       - run:
-          name: Wait for DB
+          name: Wait for DB and run RSpec
+          working_directory: backend
           command: |
             dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
             bin/rails db:create
             bin/rails db:schema:load
-      - run:
-          name: Rspec
-          command: bundle exec rspec
+            bundle exec rspec
 
   # # 環境変数のAWS_ECR_ACCOUNT_URL、AWS_ACCESS_KEY_ID、AWS_SECRET_ACCESS_KEYはデフォルトで使われる
   # deploy-service-update:
