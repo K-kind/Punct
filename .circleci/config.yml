@@ -57,6 +57,7 @@ jobs:
           RAILS_ENV: test
           MYSQL_PASSWORD: ''
           MYSQL_HOST: 127.0.0.1
+          FRONTEND_URL: http://localhost
       - image: circleci/mysql:5.7
         environment:
           MYSQL_DATABASE: myapp_test
