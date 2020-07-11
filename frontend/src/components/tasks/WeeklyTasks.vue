@@ -29,7 +29,13 @@
         @end="onDragEnd"
         draggable=".draggable"
       >
-        <li v-for="task of weeklyTasks(weekRange.monday)" :key="task.id"  class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
+        <li
+          v-for="task of weeklyTasks(weekRange.monday)"
+          :key="task.id"
+          class="task-board__li"
+          :class="{ draggable: !onUpdatedTaskId }"
+          :data-task_id="task.id"
+        >
           <div
             v-if="onUpdatedTaskId !== task.id"
             class="task-board__task"
@@ -207,9 +213,9 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS, SET_START_
 </script>
 
 <style scoped>
-.task-board {
+/* .task-board { */
   /* background-color: rgb(242, 255, 240); */
-}
+/* } */
 .task-board__header {
   display: block;
   text-align: center;
