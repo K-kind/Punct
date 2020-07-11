@@ -8,5 +8,5 @@ module.exports = {
         data: '@import "./src/assets/sass/prepends.scss";'
       }
     }
-  }
+  },
 }

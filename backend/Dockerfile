@@ -33,4 +33,4 @@ RUN bundle install
 
 COPY . /myapp
 
-# CMD ["./docker-startup.sh"]
+CMD ["./docker-startup.sh"]
