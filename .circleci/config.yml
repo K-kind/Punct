@@ -10,7 +10,8 @@ commands:
           keys:
             - v1-dependencies-{{ checksum "Gemfile.lock" }}
             - v1-dependencies-
-      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - run: bundle config set path 'vendor/bundle'
+      - run: bundle install --jobs=4 --retry=3
       - save_cache:
           paths:
             - ./vendor/bundle
@@ -38,7 +39,7 @@ jobs:
   rubocop:
     docker:
       - image: circleci/ruby:2.7.1-node-browsers-legacy
-    working_directory: ~/myapp
+    working_directory: ~/myapp/backend
     steps:
       - bundle-installation
       - run:
