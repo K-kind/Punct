@@ -10,8 +10,7 @@ class User < ApplicationRecord
   validates :email, presence: true,
                     length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
-                    uniqueness: { case_sensitive: false },
-                    unless: :uid?
+                    uniqueness: { case_sensitive: false }
   validates :email, confirmation: true, on: :signup
   validates :email_confirmation, presence: true, on: :signup
   validates :password, presence: true,
@@ -47,7 +46,7 @@ class User < ApplicationRecord
 
       find_or_create_by!(provider: provider, uid: uid) do |user|
         user.name = name[0..7]
-        user.email = email || 'not registered'
+        user.email = email
         user.password = SecureRandom.hex(9)
       end
     end
@@ -85,6 +84,6 @@ class User < ApplicationRecord
   private
 
   def downcase_email
-    self.email = email.downcase
+    self.email = email&.downcase
   end
 end
