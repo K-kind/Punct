@@ -23,7 +23,7 @@
             <div @click="openUpdateForm(task.id)" class="task-board__task handle">
               <p class="task-board__p">
                 {{ task.content }}
-                <span class="task-board__time">{{ toMinutes(task.expected_time) }}分</span>
+                <span class="task-board__time">{{ taskTimes(task) }}分</span>
               </p>
             </div>
             <div v-show="draggingId !== task.id" class="task-board__with-icon--left">
@@ -93,6 +93,11 @@ export default {
     ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, START_TASK]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
+    },
+    taskTimes(task) {
+      let elapsed = task.elapsed_time
+      let elapsedString = (elapsed ? `${this.toMinutes(elapsed)}/` : '')
+      return `${elapsedString}${this.toMinutes(task.expected_time)}`
     },
     closeForm() {
       let self = this

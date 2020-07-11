@@ -101,9 +101,9 @@ export default {
       return Math.ceil(time / (1000 * 60))
     },
     taskTimes(task) {
-      let elapsed = task.elapsed_time
-      let elapsedString = (elapsed ? `${this.toMinutes(elapsed)}/` : '')
-      return `${elapsedString}${this.toMinutes(task.expected_time)}`
+      let elapsed = this.toMinutes(task.elapsed_time)
+      let expected = this.toMinutes(task.expected_time)
+      return `${elapsed}/${expected}`
     },
     closeForm() {
       this.newFormIsOpen = false
