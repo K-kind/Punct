@@ -1,0 +1,126 @@
+version: 2.1
+
+commands:
+  bundle-installation:
+    description: "checkout and bundle installation and caching"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            - v1-dependencies-
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+  # yarn-installation:
+  #   description: "yarn installation and caching"
+  #   steps:
+  #     - restore_cache:
+  #         keys:
+  #           - v1-yarn-{{ checksum "yarn.lock" }}
+  #           - v1-yarn-
+  #     - run: yarn install
+  #     - save_cache:
+  #         key: v1-yarn-{{ checksum "yarn.lock" }}
+  #         paths:
+  #           - ./node_modules
+
+# orbs:
+#   aws-cli: circleci/aws-cli@1.0.0
+#   aws-ecr: circleci/aws-ecr@6.8.2
+#   aws-ecs: circleci/aws-ecs@1.1.0
+
+jobs:
+  rubocop:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers-legacy
+    working_directory: ~/myapp
+    steps:
+      - bundle-installation
+      - run:
+          name: Rubocop
+          command: bundle exec rubocop
+
+  rspec:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers-legacy
+        environment:
+          RAILS_ENV: test
+          MYSQL_PASSWORD: ''
+          MYSQL_HOST: 127.0.0.1
+      - image: circleci/mysql:5.7
+        environment:
+          MYSQL_DATABASE: myapp_test
+          MYSQL_ROOT_HOST: '%'
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+    working_directory: ~/myapp
+    steps:
+      - bundle-installation
+      - run:
+          name: Wait for DB
+          command: |
+            dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+            bin/rails db:create
+            bin/rails db:schema:load
+      - run:
+          name: Rspec
+          command: bundle exec rspec
+
+  # # 環境変数のAWS_ECR_ACCOUNT_URL、AWS_ACCESS_KEY_ID、AWS_SECRET_ACCESS_KEYはデフォルトで使われる
+  # deploy-service-update:
+  #   executor: aws-cli/default
+  #   steps:
+  #     - aws-cli/setup:
+  #         aws-region: AWS_REGION
+  #     - aws-ecs/update-task-definition:
+  #         family: "memorizer-task"
+  #         container-image-name-updates: "container=web,tag=${CIRCLE_SHA1}"
+  #     - aws-ecs/update-task-definition:
+  #         family: "memorizer-task"
+  #         container-image-name-updates: "container=app,tag=${CIRCLE_SHA1}"
+  #     - aws-ecs/update-task-definition:
+  #         family: "memorizer-cron-task"
+  #         container-image-name-updates: "container=cron-worker,tag=${CIRCLE_SHA1}"
+  #     - aws-ecs/update-service:
+  #         family: "memorizer-task"
+  #         cluster-name: "memorizer-cluster"
+  #         service-name: "memorizer-service"
+  #         container-image-name-updates: "container=sidekiq,tag=${CIRCLE_SHA1}"
+
+workflows:
+  version: 2.1
+  check-and-deploy:
+    jobs:
+      - rubocop
+      - rspec:
+          requires:
+            - rubocop
+      # - aws-ecr/build-and-push-image:
+      #     name: build-and-push-image1
+      #     create-repo: true
+      #     path: ./containers/nginx/
+      #     repo: memorizer_web
+      #     tag: "${CIRCLE_SHA1}"
+      #     requires:
+      #       - rspec
+      #     filters:
+      #       branches:
+      #         only: master
+      # - aws-ecr/build-and-push-image:
+      #     name: build-and-push-image2
+      #     create-repo: true
+      #     extra-build-args: --target production --build-arg KEY=$RAILS_MASTER_KEY
+      #     repo: memorizer_app
+      #     tag: "${CIRCLE_SHA1}"
+      #     requires:
+      #       - rspec
+      #     filters:
+      #       branches:
+      #         only: master
+      # - deploy-service-update:
+      #     requires:
+      #       - build-and-push-image1
+      #       - build-and-push-image2
