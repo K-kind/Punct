@@ -1,7 +1,7 @@
 .sortable-ghost {
   color: #aaa;
   .task-board__task {
-    background-color: #efefef;
+    background-color: #ddd;
   }
   .task-board__with-icon--left {
     display: none;
@@ -9,6 +9,7 @@
 }
 .sortable-drag {
   .task-board__task {
+    transform: rotate(2deg);
     background-color: #fff;
   }
   .task-board__with-icon--left {

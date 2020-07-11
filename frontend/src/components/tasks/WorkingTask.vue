@@ -25,6 +25,7 @@
         class="task-board__ul"
         :group="dragGroup"
         :data-working="true"
+        :animation="200"
         @add="onAdd"
         @clone="onClone"
         @end="onDragEnd"

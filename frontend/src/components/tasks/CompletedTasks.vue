@@ -5,8 +5,22 @@
       <span v-if="totalTime">{{ totalTime }}</span>
     </div>
     <div class="task-board__body">
-      <draggable tag="ul" group="TASKS" @end="onDragEnd" :data-completed="true" :data-date="separatedDate" draggable=".draggable">
-        <li v-for="task of completedTasks(date)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
+      <draggable
+        tag="ul"
+        group="TASKS"
+        :animation="200"
+        @end="onDragEnd"
+        :data-completed="true"
+        :data-date="separatedDate"
+        draggable=".draggable"
+      >
+        <li
+          v-for="task of completedTasks(date)"
+          :key="task.id"
+          class="task-board__li"
+          :class="{ draggable: !onUpdatedTaskId }"
+          :data-task_id="task.id"
+        >
           <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
             <p class="task-board__p">
               {{ task.content }}

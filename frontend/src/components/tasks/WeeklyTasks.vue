@@ -22,7 +22,13 @@
       </a>
     </div>
     <div class="task-board__body">
-      <draggable tag="ul" group="WEEK" @end="onDragEnd" draggable=".draggable">
+      <draggable
+        tag="ul"
+        group="WEEK"
+        :animation="200"
+        @end="onDragEnd"
+        draggable=".draggable"
+      >
         <li v-for="task of weeklyTasks(weekRange.monday)" :key="task.id"  class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
           <div
             v-if="onUpdatedTaskId !== task.id"

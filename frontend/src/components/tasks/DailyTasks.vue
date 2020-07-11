@@ -8,6 +8,7 @@
       <draggable
         tag="ul"
         group="TASKS"
+        :animation="200"
         @end="onDragEnd"
         :data-date="separatedDate"
         handle=".handle"

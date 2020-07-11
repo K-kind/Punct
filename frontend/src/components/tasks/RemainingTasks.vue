@@ -8,6 +8,7 @@
       <draggable
         tag="ul"
         :group="dragGroup"
+        :animation="200"
         @end="onDragEnd"
         @clone="onClone"
         data-remaining="true"
