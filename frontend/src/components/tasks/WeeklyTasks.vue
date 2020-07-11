@@ -115,8 +115,8 @@ export default {
       let month = today.getMonth()
       let date = today.getDate() + this.daysFromToday
       let day_num = today.getDay()
-      let mondayDate = date - day_num + 1
-      let sundayDate = mondayDate + 6
+      let sundayDate = date - day_num
+      let mondayDate = sundayDate - 6
       let monday = new Date(year, month, mondayDate)
       let sunday = new Date(year, month, sundayDate)
       return { monday, sunday }
