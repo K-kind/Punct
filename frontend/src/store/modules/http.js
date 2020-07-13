@@ -4,7 +4,6 @@ import {
   POST,
   PATCH,
   DELETE,
-  // CREATE
 } from '../mutation-types'
 import axios from 'axios'
 
