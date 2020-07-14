@@ -32,13 +32,12 @@ export default {
         let name = res.data.name
         if (name) {
           commit(SET_NAME, name)
-          dispatch(
+          await dispatch(
             `message/${CREATE}`,
             { flash: res.data.message },
             { root: true }
-          ).then(() => {
-            router.push('/')
-          })
+          )
+          router.push('/')
         } else {
           dispatch(
             `message/${CREATE}`,

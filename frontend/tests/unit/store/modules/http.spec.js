@@ -38,7 +38,6 @@ describe('REQUEST actions', () => {
   })
 
   it('calls axios and throw error', async () => {
-    // jest.spyOn(window, 'alert').mockImplementation(() => {});
     mockError = true
     await http.actions[REQUEST](null, requests)
 
