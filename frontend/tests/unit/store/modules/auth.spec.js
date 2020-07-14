@@ -9,44 +9,21 @@ import {
 } from '@/store/mutation-types'
 
 import router from '@/router/index.js'
-let redirectedPath = ''
 jest.mock('@/router/index.js')
-// router.push.mockImplementation(() => {})
-// jest.mock('@/router/index.js', () => {
-//   return {
-//     push: (_path) => {
-//       redirectedPath = _path
-//     }
-//   }
-// })
-// jest.mock('@/router/index.js', () => {
-//   return {
-//     push: jest.fn()
-//   }
-// })
-// import router from '@/router/index.js'
-// jest.mock('@/router/index.js', () => {
-//   return {
-//     router: jest.fn().mockImplementation(() => {
-//       return {
-//         push: jest.fn()
-//       }
-//     }),
-//   };
-// })
-// let options = {}
-// let mockError = false
 
-// jest.mock('axios', () => {
-//   return (_options) => {
-//     return new Promise(resolve => {
-//       if (mockError) throw Error();
+const dispatchWithRes = res => {
+  return jest.fn(() => {
+    return new Promise(resolve => {
+      resolve(res)
+    })
+  })
+}
+const commit = jest.fn()
 
-//       options = _options
-//       resolve(true)
-//     })
-//   }
-// })
+afterEach(() => {
+  router.push.mockClear()
+  commit.mockClear()
+})
 
 describe('SET_NAME mutation', () => {
   it('updates the userName state', () => {
@@ -70,21 +47,9 @@ describe('DESTROY mutation', () => {
 })
 
 describe('CREATE action', () => {
-  const dispatchWithRes = res => {
-    return jest.fn(() => {
-      return new Promise(resolve => {
-        resolve(res)
-      })
-    })
-  }
-  const commit = jest.fn()
-  // jest.spyOn(router, 'push').mockImplementation(() => {})
-  // const pushSpy = jest.spyOn(router, 'push').mockImplementation(() => {})
-  // jest.spyOn(router, 'push')
-
-  it('commits SET_NAME, creates flash and redirects', async () => {
+  it('calls POST, commits SET_NAME, creates flash and redirects successfully', async () => {
     const dispatch = dispatchWithRes({
-      data: { message: 'success', name: 'tester' }
+      data: { message: 'login', name: 'tester' }
     })
     const authData = { email: 'email' }
     await auth.actions[CREATE]({ commit, dispatch }, authData)
@@ -99,13 +64,68 @@ describe('CREATE action', () => {
     )
     expect(dispatch).toHaveBeenCalledWith(
       `message/${CREATE}`,
-      { flash: 'success' },
+      { flash: 'login' },
       { root: true }
     )
-    // expect(redirectedPath).toBe('/')
-    expect(router.push).toHaveBeenCalled()
-    // expect(router).toHaveBeenCalled()
-    // console.log(router)
+    expect(router.push).toHaveBeenCalledWith('/')
   })
 
+  it('calls POST and creates errors when data is invalid', async () => {
+    const dispatch = dispatchWithRes({
+      data: { errors: ['invalid'] }
+    })
+    const authData = { email: 'invalid email' }
+    await auth.actions[CREATE]({ commit, dispatch }, authData)
+
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${POST}`,
+      { url: 'auth', data: authData },
+      { root: true }
+    )
+    expect(commit).not.toHaveBeenCalledWith(SET_NAME, 'tester')
+    expect(dispatch).toHaveBeenCalledWith(
+      `message/${CREATE}`,
+      { errors: ['invalid'] },
+      { root: true }
+    )
+    expect(router.push).not.toHaveBeenCalledWith('/')
+  })
+})
+
+describe('DESTROY action', () => {
+  it('calls DELETE, commits DESTROY, creates flash and redirects successfully', async () => {
+    const dispatch = dispatchWithRes({
+      data: { message: 'logout' }
+    })
+    await auth.actions[DESTROY]({ commit, dispatch })
+
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${DELETE}`,
+      { url: 'auth' },
+      { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(DESTROY)
+    expect(dispatch).toHaveBeenCalledWith(
+      `message/${CREATE}`,
+      { flash: 'logout' },
+      { root: true }
+    )
+    expect(router.push).toHaveBeenCalledWith('/login')
+  })
+})
+
+describe('SET_NAME action', () => {
+  it('calls GET and commits SET_NAME', async () => {
+    const dispatch = dispatchWithRes({
+      data: { name: 'tester' }
+    })
+    await auth.actions[SET_NAME]({ commit, dispatch })
+
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${GET}`,
+      { url: 'auth/name' },
+      { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(SET_NAME, 'tester')
+  })
 })

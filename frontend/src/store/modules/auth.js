@@ -32,7 +32,7 @@ export default {
         let name = res.data.name
         if (name) {
           commit(SET_NAME, name)
-          await dispatch(
+          dispatch(
             `message/${CREATE}`,
             { flash: res.data.message },
             { root: true }
