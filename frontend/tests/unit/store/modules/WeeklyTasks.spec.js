@@ -138,182 +138,207 @@ describe('UPDATE_TASK_CONTENT mutation', () => {
   })
 })
 
-// describe('SET_UPDATED_TASK mutation', () => {
-//   it('updates times of a task', () => {
-//     const updatedTimes = {
-//       id: 10,
-//       elapsed_time: '7000',
-//       started_time: '70000000',
-//       stopped_time: '70050000',
-//       on_progress: true
-//     }
-//     const updatedTask = {
-//       id: 10,
-//       content: 'タスク10',
-//       date: '2020-07-14',
-//       order: 0,
-//       is_current: true,
-//       is_completed: false,
-//       elapsed_time: '7000',
-//       started_time: '70000000',
-//       stopped_time: '70050000',
-//       on_progress: true
-//     }
+describe('UPDATE_TASK_ORDER mutation', () => {
+  it('updates task orders', () => {
+    const start_date = '2020-07-13'
+    const sortedTasks = [
+      {
+        id: 1,
+        content: 'タスク1',
+        start_date: '2020-07-13',
+        order: 0,
+        is_checked: false,
+      },
+      {
+        id: 2,
+        content: 'タスク2',
+        start_date: '2020-07-13',
+        order: 2,
+        is_checked: false,
+      },
+      {
+        id: 3,
+        content: 'タスク3',
+        start_date: '2020-07-13',
+        order: 1,
+        is_checked: false,
+      }
+    ]
+    const actual = [state.tasks[3]].concat(sortedTasks)
 
-//     weeklyStore.mutations[SET_UPDATED_TASK](state, { task: updatedTimes })
+    weeklyStore.mutations[UPDATE_TASK_ORDER](
+      state, { tasks: sortedTasks, start_date }
+    )
 
-//     expect(state.tasks[9]).toEqual(updatedTask)
-//   })
-// })
+    expect(state.tasks).toEqual(actual)
+  })
+})
 
-// describe('ADD_NEW_TASK action', () => {
-//   it('calls POST and commits ADD_NEW_TASK successfully', async () => {
-//     const dispatch = dispatchWithRes({
-//       data: { task: { content: 'new task' } }
-//     })
-//     const taskData = {}
-//     await weeklyStore.actions[ADD_NEW_TASK]({ commit, dispatch }, taskData)
+describe('SET_START_DATE mutation', () => {
+  it('updates start_date, fromToday and weekString', () => {
+    const startDate = new Date('2020-07-13')
+    const weekString = '7/13(月) - 7/19(日)'
+    const updatedTimes = {
+      fromToday: 7,
+      startDate,
+      weekString
+    }
 
-//     expect(dispatch).toHaveBeenCalledWith(
-//       `http/${POST}`,
-//       { url: 'tasks', data: { task: taskData } },
-//       { root: true }
-//     )
-//     expect(commit).toHaveBeenCalledWith(ADD_NEW_TASK, { content: 'new task' })
-//   })
+    weeklyStore.mutations[SET_START_DATE](state, updatedTimes)
 
-//   it('calls POST and alerts error with invalid data', async () => {
-//     jest.spyOn(window, 'alert').mockImplementation(() => {});
-//     const dispatch = dispatchWithRes({
-//       data: { error: 'invalid' }
-//     })
-//     const taskData = {}
-//     await weeklyStore.actions[ADD_NEW_TASK]({ commit, dispatch }, taskData)
+    expect(state.fromToday).toBe(7)
+    expect(state.startDate).toBe(startDate)
+    expect(state.weekString).toBe(weekString) // clearしていない
+  })
+})
 
-//     expect(dispatch).toHaveBeenCalledWith(
-//       `http/${POST}`,
-//       { url: 'tasks', data: { task: taskData } },
-//       { root: true }
-//     )
-//     expect(window.alert).toHaveBeenCalledWith('invalid')
-//     expect(commit).not.toHaveBeenCalled()
-//   })
-// })
+describe('ADD_NEW_TASK action', () => {
+  it('calls POST and commits ADD_NEW_TASK successfully', async () => {
+    const dispatch = dispatchWithRes({
+      data: { task: { content: 'new task' } }
+    })
+    const taskData = {}
+    await weeklyStore.actions[ADD_NEW_TASK]({ commit, dispatch }, taskData)
 
-// describe('DELETE_TASK_BY_ID action', () => {
-//   it('calls DELETE and commits SET_TASKS successfully', async () => {
-//     const dispatch = dispatchWithRes({
-//       data: { tasks: [{ content: 'updated task' }] }
-//     })
-//     const taskId = 1
-//     await weeklyStore.actions[DELETE_TASK_BY_ID](
-//       { commit, dispatch, rootState }, taskId
-//     )
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${POST}`,
+      { url: 'weekly_tasks', data: { task: taskData } },
+      { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(ADD_NEW_TASK, { content: 'new task' })
+  })
 
-//     expect(dispatch).toHaveBeenCalledWith(
-//       `http/${DELETE}`,
-//       { url: `tasks/${taskId}`,
-//         data: { fromToday: rootState.weekly.fromToday } },
-//       { root: true }
-//     )
-//     expect(commit).toHaveBeenCalledWith(
-//       SET_TASKS, [{ content: 'updated task' }]
-//     )
-//   })
-// })
+  it('calls POST and alerts error with invalid data', async () => {
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    const dispatch = dispatchWithRes({
+      data: { error: 'invalid' }
+    })
+    const taskData = {}
+    await weeklyStore.actions[ADD_NEW_TASK]({ commit, dispatch }, taskData)
 
-// describe('UPDATE_TASK_ORDER action', () => {
-//   it('calls POST and commits SET_TASKS', async () => {
-//     const dispatch = dispatchWithRes({
-//       data: { tasks: [{ content: 'updated task' }] }
-//     })
-//     const dragData = {
-//       fromDate: '2020-07-14',
-//       toDate: '2020-07-15',
-//       oldIndex: 1,
-//       newIndex: 1,
-//       fromCompleted: true,
-//       toCompleted: true,
-//     }
-//     const fromToday = rootState.weekly.fromToday
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${POST}`,
+      { url: 'weekly_tasks', data: { task: taskData } },
+      { root: true }
+    )
+    expect(window.alert).toHaveBeenCalled()
+    expect(commit).not.toHaveBeenCalled()
+  })
+})
 
-//     await weeklyStore.actions[UPDATE_TASK_ORDER](
-//       { commit, dispatch, rootState }, dragData
-//     )
+describe('UPDATE_TASK_CONTENT action', () => {
+  it('calls PATCH and commits UPDATE_TASK_CONTENT successfully', async () => {
+    const dispatch = dispatchWithRes({ data: {} })
+    const taskData = { id: 1, task: {} }
+    await weeklyStore.actions[UPDATE_TASK_CONTENT](
+      { commit, dispatch }, taskData
+    )
 
-//     expect(dispatch).toHaveBeenCalledWith(
-//       `http/${POST}`,
-//       { url: 'tasks/order',
-//         data: Object.assign(dragData, { fromToday }) },
-//       { root: true }
-//     )
-//     expect(commit).toHaveBeenCalledWith(
-//       SET_TASKS, [{ content: 'updated task' }]
-//     )
-//   })
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${PATCH}`,
+      { url: `weekly_tasks/${taskData.id}`, data: { task: taskData.task } },
+      { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(
+      UPDATE_TASK_CONTENT, taskData
+    )
+  })
 
-//   it('does not call POST when tasks are not sorted', async () => {
-//     const dispatch = dispatchWithRes({
-//       data: { tasks: [{ content: 'updated task' }] }
-//     })
-//     const dragData = {
-//       fromDate: '2020-07-14',
-//       toDate: '2020-07-14',
-//       oldIndex: 1,
-//       newIndex: 1,
-//       fromCompleted: true,
-//       toCompleted: true,
-//     }
+  it('calls PATCH and alerts error with invalid data', async () => {
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    const dispatch = dispatchWithRes({
+      data: { error: 'invalid' }
+    })
+    const taskData = { id: 1, task: {} }
+    await weeklyStore.actions[UPDATE_TASK_CONTENT](
+      { commit, dispatch }, taskData
+    )
 
-//     await weeklyStore.actions[UPDATE_TASK_ORDER](
-//       { commit, dispatch, rootState }, dragData
-//     )
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${PATCH}`,
+      { url: `weekly_tasks/${taskData.id}`, data: { task: taskData.task } },
+      { root: true }
+    )
+    expect(window.alert).toHaveBeenCalled()
+    expect(commit).not.toHaveBeenCalled()
+  })
+})
 
-//     expect(dispatch).not.toHaveBeenCalled()
-//     expect(commit).not.toHaveBeenCalled()
-//   })
-// })
+describe('DELETE_TASK_BY_ID action', () => {
+  it('calls DELETE and commits UPDATE_TASK_ORDER', async () => {
+    const dispatch = dispatchWithRes({
+      data: { tasks: [], start_date: '' }
+    })
+    const taskId = 1
+    await weeklyStore.actions[DELETE_TASK_BY_ID](
+      { commit, dispatch }, taskId
+    )
 
-// describe('START_TASK action', () => {
-//   it('calls PATCH and commits SET_UPDATED_TASK', async () => {
-//     const dispatch = dispatchWithRes({
-//       data: { task: { content: 'updated task' } }
-//     })
-//     const taskId = 10
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${DELETE}`,
+      { url: `weekly_tasks/${taskId}` },
+      { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(
+      UPDATE_TASK_ORDER, { tasks: [], start_date: '' }
+    )
+  })
+})
 
-//     await weeklyStore.actions[START_TASK](
-//       { commit, dispatch }, { taskId }
-//     )
+describe('UPDATE_TASK_ORDER action', () => {
+  it('calls POST and commits UPDATE_TASK_ORDER', async () => {
+    const dispatch = dispatchWithRes({
+      data: { tasks: [], start_date: '' }
+    })
+    const dragData = {}
 
-//     expect(dispatch).toHaveBeenCalledWith(
-//       `http/${PATCH}`,
-//       { url: `tasks/${taskId}/start` },
-//       { root: true }
-//     )
-//     expect(commit).toHaveBeenCalledWith(
-//       SET_UPDATED_TASK, { task: { content: 'updated task' } }
-//     )
-//   })
-// })
+    await weeklyStore.actions[UPDATE_TASK_ORDER](
+      { commit, dispatch }, dragData
+    )
 
-// describe('STOP_TASK action', () => {
-//   it('calls PATCH and commits SET_UPDATED_TASK', async () => {
-//     const dispatch = dispatchWithRes({
-//       data: { task: { content: 'updated task' } }
-//     })
-//     const taskId = 10
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${POST}`,
+      { url: 'weekly_tasks/order', data: dragData },
+      { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(
+      UPDATE_TASK_ORDER, { tasks: [], start_date: '' }
+    )
+  })
+})
 
-//     await weeklyStore.actions[STOP_TASK](
-//       { commit, dispatch }, { taskId }
-//     )
+describe('SET_TASKS action', () => {
+  it('calls GET and commits SET_TASKS', async () => {
+    const dispatch = dispatchWithRes({
+      data: { tasks: { daily: ['daily'], weekly: ['weekly'] } }
+    })
+    const fromToday = 7
 
-//     expect(dispatch).toHaveBeenCalledWith(
-//       `http/${PATCH}`,
-//       { url: `tasks/${taskId}/stop` },
-//       { root: true }
-//     )
-//     expect(commit).toHaveBeenCalledWith(
-//       SET_UPDATED_TASK, { task: { content: 'updated task' } }
-//     )
-//   })
-// })
+    await weeklyStore.actions[SET_TASKS](
+      { commit, dispatch }, fromToday
+    )
+
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${GET}`,
+      { url: 'weekly_tasks', params: { fromToday } },
+      { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(
+      `daily/${SET_TASKS}`, ['daily'], { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(SET_TASKS, ['weekly'])
+  })
+})
+
+describe('SET_START_DATE action', () => {
+  it('commits SET_START_DATE', async () => {
+    const dispatch = dispatchWithRes({ data: {} })
+    const startDate = '2020-07-14'
+
+    await weeklyStore.actions[SET_START_DATE]({ commit }, startDate)
+
+    expect(commit).toHaveBeenCalledWith(
+      SET_START_DATE, startDate
+    )
+  })
+})
