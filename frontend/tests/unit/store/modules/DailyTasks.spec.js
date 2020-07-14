@@ -179,7 +179,7 @@ describe('ADD_NEW_TASK mutation', () => {
 })
 
 describe('UPDATE_TASK_CONTENT mutation', () => {
-  it('adds new task', () => {
+  it('updates a task content', () => {
     const updatedContents = {
       content: '変更済みタスク',
       expected_time: '6000',
@@ -259,6 +259,46 @@ describe('ADD_NEW_TASK action', () => {
     expect(dispatch).toHaveBeenCalledWith(
       `http/${POST}`,
       { url: 'tasks', data: { task: taskData } },
+      { root: true }
+    )
+    expect(window.alert).toHaveBeenCalledWith('invalid')
+    expect(commit).not.toHaveBeenCalled()
+  })
+})
+
+describe('UPDATE_TASK_CONTENT action', () => {
+  it('calls PATCH and commits UPDATE_TASK_CONTENT successfully', async () => {
+    const dispatch = dispatchWithRes({
+      data: {}
+    })
+    const taskData = { id: 1, task: {} }
+    await dailyStore.actions[UPDATE_TASK_CONTENT](
+      { commit, dispatch }, taskData
+    )
+
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${PATCH}`,
+      { url: `tasks/${taskData.id}`, data: { task: taskData.task } },
+      { root: true }
+    )
+    expect(commit).toHaveBeenCalledWith(
+      UPDATE_TASK_CONTENT, taskData
+    )
+  })
+
+  it('calls PATCH and alerts error with invalid data', async () => {
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    const dispatch = dispatchWithRes({
+      data: { error: 'invalid' }
+    })
+    const taskData = { id: 1, task: {} }
+    await dailyStore.actions[UPDATE_TASK_CONTENT](
+      { commit, dispatch }, taskData
+    )
+
+    expect(dispatch).toHaveBeenCalledWith(
+      `http/${PATCH}`,
+      { url: `tasks/${taskData.id}`, data: { task: taskData.task } },
       { root: true }
     )
     expect(window.alert).toHaveBeenCalledWith('invalid')
