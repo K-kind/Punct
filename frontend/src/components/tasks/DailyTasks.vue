@@ -95,11 +95,7 @@ export default {
   computed: {
     ...mapGetters('daily', ['dailyTasks', 'currentTask']),
     dateString() {
-      let weekDay = ['日', '月', '火', '水', '木', '金', '土']
-      let month =  this.date.getMonth() + 1
-      let date =  this.date.getDate()
-      let day = weekDay[this.date.getDay()]
-      return `${month}/${date}(${day})`
+      return this.$dayjs(this.date).format('M/D(ddd)')
     },
     separatedDate() {
       return this.date.toLocaleDateString() // '2020/6/28'

@@ -110,22 +110,16 @@ export default {
   computed: {
     ...mapGetters('weekly', ['weeklyTasks']),
     weekRange() {
-      let today = new Date()
-      let year = today.getFullYear()
-      let month = today.getMonth()
-      let date = today.getDate() + this.daysFromToday
-      let day_num = today.getDay()
-      let sundayDate = day_num ? date - day_num + 7 : date
-      let mondayDate = sundayDate - 6
-      let monday = new Date(year, month, mondayDate)
-      let sunday = new Date(year, month, sundayDate)
+      const today = this.$dayjs().add(this.daysFromToday, 'day')
+      const monday = today.weekday(0).$d
+      const sunday = today.weekday(6).$d
       return { monday, sunday }
     },
     weekString() {
-      let monday = this.weekRange.monday
-      let sunday = this.weekRange.sunday
-      let mondayString = `${monday.getMonth() + 1}/${monday.getDate()}(月)`
-      let sundayString = `${sunday.getMonth() + 1}/${sunday.getDate()}(日)`
+      const monday = this.$dayjs(this.weekRange.monday)
+      const sunday = this.$dayjs(this.weekRange.sunday)
+      const mondayString = monday.format('M/D(ddd)')
+      const sundayString = sunday.format('M/D(ddd)')
       return `${mondayString} - ${sundayString}`
     },
     leftDisabled() {
