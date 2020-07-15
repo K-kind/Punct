@@ -249,7 +249,7 @@ describe('ADD_NEW_TASK action', () => {
   })
 
   it('calls POST and alerts error with invalid data', async () => {
-    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    jest.spyOn(window, 'alert').mockImplementation(() => {})
     const dispatch = dispatchWithRes({
       data: { error: 'invalid' }
     })

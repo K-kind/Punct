@@ -1,34 +1,36 @@
-import { beforeEach } from "@/router/index.js"
-import mockModule from "@/bust-cache.js"
+import { beforeEach } from '@/router/index.js'
+import { SET_NAME } from '@/store/mutation-types'
+import Store from '@/store/index.js'
+jest.mock('@/store/index.js')
 
-jest.mock("@/bust-cache.js", () => ({ bustCache: jest.fn() }))
-
-describe("beforeEach", () => {
-  afterEach(() => {
-    mockModule.bustCache.mockClear()
+const next = jest.fn()
+jest.spyOn(Store, 'dispatch').mockImplementation(() => {
+  return new Promise(resolve => {
+    resolve()
   })
+})
 
-  it("busts the cache when going to /user", () => {
-    const to = {
-      matched: [{ meta: { shouldBustCache: true } }]
-    }
-    const next = jest.fn()
+afterEach(() => {
+  next.mockClear()
+  Store.dispatch.mockClear()
+})
 
-    beforeEach(to, undefined, next)
+describe('beforeEach', () => {
+  it('dispatches SET_NAME when visited directly', async () => {
+    const from = { name: null }
 
-    expect(mockModule.bustCache).toHaveBeenCalled()
+    await beforeEach(undefined, from, next)
+
+    expect(Store.dispatch).toHaveBeenCalledWith(`auth/${SET_NAME}`)
     expect(next).toHaveBeenCalled()
   })
 
-  it("does not bust the cache when going to /user", () => {
-    const to = {
-      matched: [{ meta: { shouldBustCache: false } }]
-    }
-    const next = jest.fn()
+  it('does not dispatch SET_NAME when visited via router', async () => {
+    const from = { name: 'Login' }
 
-    beforeEach(to, undefined, next)
+    await beforeEach(undefined, from, next)
 
-    expect(mockModule.bustCache).not.toHaveBeenCalled()
+    expect(Store.dispatch).not.toHaveBeenCalled()
     expect(next).toHaveBeenCalled()
   })
 })
