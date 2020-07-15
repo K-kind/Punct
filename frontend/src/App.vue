@@ -52,7 +52,6 @@
 </template>
 
 <script>
-import 'normalize.css'
 import NavLeft from '@/components/NavLeft.vue'
 
 export default {
@@ -69,9 +68,6 @@ export default {
     userName() {
       return this.$store.state.auth.userName
     }
-  },
-  mounted() {
-    this.activeIndex = location.pathname
   },
   watch: {
     $route(to) {

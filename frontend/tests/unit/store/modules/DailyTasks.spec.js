@@ -66,7 +66,7 @@ const tasks = [
   {
     id: 7,
     content: 'タスク7',
-    date: '2020-07-13',
+    date: '2100-01-01',
     order: 3,
     is_current: false,
     is_completed: false
@@ -74,7 +74,7 @@ const tasks = [
   {
     id: 8,
     content: 'タスク8',
-    date: '2020-07-13',
+    date: '2100-01-01',
     order: 2,
     is_current: false,
     is_completed: false
@@ -82,7 +82,7 @@ const tasks = [
   {
     id: 9,
     content: 'タスク9',
-    date: '2020-07-13',
+    date: '2100-01-01',
     order: 1,
     is_current: false,
     is_completed: false
@@ -139,7 +139,7 @@ describe('remainingTasks getter', () => {
   it('returns remaining tasks', () => {
     const actual = dailyStore.getters.remainingTasks(state)
 
-    expect(actual).toEqual([ tasks[6], tasks[7], tasks[8] ])
+    expect(actual).toEqual([ tasks[0], tasks[1], tasks[2] ])
   })
 })
 
