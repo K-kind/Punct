@@ -1,11 +1,42 @@
+import {
+  // ADD_NEW_TASK,
+  // UPDATE_TASK_CONTENT,
+  // DELETE_TASK_BY_ID,
+  // UPDATE_TASK_ORDER,
+  SET_TASKS,
+  SET_START_DATE
+} from '@/store/mutation-types'
+import { Checkbox } from 'element-ui'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import WeeklyTasks from '@/components/tasks/WeeklyTasks.vue'
+import dayjs from '@/plugins/dayjs.js'
 
 const localVue = createLocalVue()
-localVue.use(Vuex)
+localVue.use(Vuex, Checkbox)
+localVue.prototype.$dayjs = dayjs
 
-// const weekRange()
+const tasks = [
+  {
+    id: 1,
+    content: 'タスク1',
+    start_date: '2020-07-13',
+    order: 0,
+    is_checked: false,
+  },
+  {
+    id: 2,
+    content: 'タスク2',
+    start_date: '2020-07-13',
+    order: 1,
+    is_checked: false,
+  },
+]
+const today = dayjs(new Date)
+const getDateString = ({ fromToday, weekday }) => {
+  return today.add(fromToday, 'day').weekday(weekday).format('M/D(ddd)')
+}
+
 describe('WeeklyTasks.vue', () => {
   let store
   let weeklyStoreMock
@@ -15,39 +46,11 @@ describe('WeeklyTasks.vue', () => {
     weeklyStoreMock = {
       namespaced: true,
       state: {
-        tasks: [
-          {
-            id: 1,
-            content: 'タスク今週1',
-            start_date: '2020-07-13',
-            order: 0,
-            is_checked: false,
-          },
-          {
-            id: 2,
-            content: 'タスク今週2',
-            start_date: '2020-07-13',
-            order: 1,
-            is_checked: false,
-          },
-          {
-            id: 3,
-            content: 'タスク来週1',
-            start_date: '2020-07-13',
-            order: 0,
-            is_checked: false,
-          },
-          {
-            id: 4,
-            content: 'タスク来週2',
-            start_date: '2020-07-13',
-            order: 2,
-            is_checked: false,
-          },
-        ]
+        tasks: tasks
       },
       actions : {
-        increment: jest.fn(),
+        [SET_TASKS]: jest.fn(),
+        [SET_START_DATE]: jest.fn(),
       },
       getters : {
         weeklyTasks: (state) => {
@@ -63,27 +66,79 @@ describe('WeeklyTasks.vue', () => {
       }
     })
     wrapper = shallowMount(WeeklyTasks, {
-      stubs: {
-        elCheckbox: true
-      },
+      // stubs: {
+      //   elCheckbox: true
+      // },
       store, localVue
     })
   })
 
-  it('renders the correct markup', () => {
-      console.log(wrapper.html())
-  //   expect(wrapper.html()).toContain('<span class="count">0</span>')
+  it('has tasks', () => {
+    console.log(wrapper.html())
+    expect(wrapper.findAll('.task-board__task').at(0).text())
+      .toMatch(tasks[0].content)
+    expect(wrapper.findAll('.task-board__task').at(1).text())
+      .toMatch(tasks[1].content)
   })
 
-  // it('has a count label', () => {
-  //   expect(wrapper.contains('.count')).toBe(true)
-  // })
+  it('shows this week', () => {
+    const monday = getDateString({ fromToday: 0, weekday: 0 })
+    const sunday = getDateString({ fromToday: 0, weekday: 6 })
+    const expected = wrapper.find('.task-board__heading').text()
 
-  // it('button click should increment call', () => {
-  //   expect(countStoreMock.actions.increment).not.toBeCalled()
-  //   const button = wrapper.find('button')
-  //   button.trigger('click')
-  //   expect(countStoreMock.actions.increment).toBeCalled()
-  // })
+    expect(expected).toMatch(monday)
+    expect(expected).toMatch(sunday)
+  })
 
+  it('only the right caret is visible initialy', async () => {
+    const leftCaret = wrapper.findAll('.task-board__caret').at(0)
+    const rightCaret = wrapper.findAll('.task-board__caret').at(1)
+
+    expect(leftCaret.classes()).toContain('disabled')
+    expect(rightCaret.classes()).not.toContain('disabled')
+
+    wrapper.setData({ daysFromToday: 7 })
+    await wrapper.vm.$nextTick()
+
+    expect(leftCaret.classes()).not.toContain('disabled')
+    expect(rightCaret.classes()).not.toContain('disabled')
+  })
+
+  it('caret button click dispatches actions and changes the week string', async () => {
+    const rightCaret = wrapper.findAll('.task-board__caret').at(1)
+    const newFromToday = 7
+    const nextMonday = getDateString({ fromToday: newFromToday, weekday: 0 })
+    const nextSunday = getDateString({ fromToday: newFromToday, weekday: 6 })
+    const nextString = `${nextMonday} - ${nextSunday}`
+
+    rightCaret.trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(weeklyStoreMock.actions[SET_TASKS]).toBeCalledWith(
+      expect.any(Object), newFromToday
+    )
+    expect(weeklyStoreMock.actions[SET_START_DATE]).toBeCalledWith(
+      expect.any(Object),
+      {
+        fromToday: newFromToday,
+        // startDate: today.add(newFromToday, 'day').weekday(0).$d,
+        startDate: expect.any(Object),
+        weekString: nextString
+      }
+    )
+    expect(wrapper.find('.task-board__heading').text()).toMatch(nextString)
+  })
+
+  it('does not have LongTermForm initialy', async () => {
+    const firstTask = wrapper.findAll('.task-board__p').at(0)
+
+    expect(wrapper.findAllComponents({ name: 'LongTermForm' }).length)
+      .toBe(1) // newFormのみ
+
+    firstTask.trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.findAllComponents({ name: 'LongTermForm' }).length)
+      .toBe(2)
+  })
 })
