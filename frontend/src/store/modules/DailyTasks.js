@@ -11,6 +11,7 @@ import {
   PATCH,
   DELETE
 } from '../mutation-types'
+import dayjs from '@/plugins/dayjs.js'
 
 export default {
   namespaced: true,
@@ -20,9 +21,11 @@ export default {
   getters: {
     dailyTasks(state) {
       return date => {
+        const dateString = dayjs(date).format('YYYY-MM-DD')
         return state.tasks.filter(task =>
-          (new Date(task.date)).toDateString() === date.toDateString() &&
-          !task.is_current && !task.is_completed
+          task.date === dateString &&
+          !task.is_current &&
+          !task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
           if (a.order > b.order) return 1;
@@ -32,8 +35,9 @@ export default {
     },
     completedTasks(state) {
       return date => {
+        const dateString = dayjs(date).format('YYYY-MM-DD')
         return state.tasks.filter(task =>
-          (new Date(task.date)).toDateString() === date.toDateString() &&
+          task.date === dateString &&
           task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
