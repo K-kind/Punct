@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { cloneDeep } from 'lodash'
 import weeklyStore from '@/store/modules/WeeklyTasks.js'
 import {
   SET_TASKS,
@@ -45,7 +45,7 @@ const tasks = [
 ]
 const state = { tasks: [] }
 const duplicateTasks = () => {
-  state.tasks = tasks.map(task => _.cloneDeep(task))
+  state.tasks = tasks.map(task => cloneDeep(task))
 }
 
 const dispatchWithRes = res => {

@@ -1,19 +1,21 @@
 import {
   // ADD_NEW_TASK,
-  // UPDATE_TASK_CONTENT,
+  UPDATE_TASK_CONTENT,
   // DELETE_TASK_BY_ID,
   // UPDATE_TASK_ORDER,
   SET_TASKS,
   SET_START_DATE
 } from '@/store/mutation-types'
 import { Checkbox } from 'element-ui'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { cloneDeep } from 'lodash'
+import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import WeeklyTasks from '@/components/tasks/WeeklyTasks.vue'
 import dayjs from '@/plugins/dayjs.js'
 
 const localVue = createLocalVue()
-localVue.use(Vuex, Checkbox)
+localVue.use(Vuex)
+localVue.use(Checkbox)
 localVue.prototype.$dayjs = dayjs
 
 const tasks = [
@@ -46,11 +48,12 @@ describe('WeeklyTasks.vue', () => {
     weeklyStoreMock = {
       namespaced: true,
       state: {
-        tasks: tasks
+        tasks: cloneDeep(tasks)
       },
       actions : {
         [SET_TASKS]: jest.fn(),
         [SET_START_DATE]: jest.fn(),
+        [UPDATE_TASK_CONTENT]: jest.fn(),
       },
       getters : {
         weeklyTasks: (state) => {
@@ -65,16 +68,16 @@ describe('WeeklyTasks.vue', () => {
         weekly: weeklyStoreMock
       }
     })
-    wrapper = shallowMount(WeeklyTasks, {
-      // stubs: {
-      //   elCheckbox: true
-      // },
+    wrapper = mount(WeeklyTasks, {
+      stubs: {
+        draggable: true,
+        LongTermForm: true
+      },
       store, localVue
     })
   })
 
   it('has tasks', () => {
-    console.log(wrapper.html())
     expect(wrapper.findAll('.task-board__task').at(0).text())
       .toMatch(tasks[0].content)
     expect(wrapper.findAll('.task-board__task').at(1).text())
@@ -140,5 +143,22 @@ describe('WeeklyTasks.vue', () => {
 
     expect(wrapper.findAllComponents({ name: 'LongTermForm' }).length)
       .toBe(2)
+  })
+
+  it('a checkbox dispatches UPDATE_TASK_CONTENT', async () => {
+    let firstCheckbox = wrapper.find('.el-checkbox')
+
+    expect(firstCheckbox.classes()).not.toContain('is-checked')
+
+    firstCheckbox.trigger('click')
+    await wrapper.vm.$nextTick()
+    firstCheckbox = wrapper.find('.el-checkbox')
+
+    expect(firstCheckbox.classes()).toContain('is-checked')
+    expect(weeklyStoreMock.actions[UPDATE_TASK_CONTENT]).toBeCalledWith(
+      expect.any(Object),
+      { id: tasks[0].id, task: { is_checked: true } }
+    )
+    expect(weeklyStoreMock.state.tasks[0].is_checked).toBe(true)
   })
 })

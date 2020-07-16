@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { cloneDeep } from 'lodash'
 import dailyStore from '@/store/modules/DailyTasks.js'
 import {
   SET_TASKS,
@@ -98,7 +98,7 @@ const tasks = [
 ]
 const state = { tasks: [] }
 const duplicateTasks = () => {
-  state.tasks = tasks.map(task => _.cloneDeep(task))
+  state.tasks = tasks.map(task => cloneDeep(task))
 }
 const rootState = { weekly: { fromToday: 0 } }
 

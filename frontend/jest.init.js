@@ -3,10 +3,6 @@
 // config.stubs['el-menu-item'] = '<div><slot /></div>'
 // config.stubs['el-submenu'] = '<div><slot /></div>'
 
-// import Vue from 'vue'
-// import Element from 'element-ui'
-// Vue.use(Element, {})
-
 // import translations from "./src/translations.js"
 
 // const locale = "en"
@@ -22,3 +18,5 @@
 //   toBeVisible
 // })
 // import '@testing-library/jest-dom/extend-expect'
+
+import '@/plugins/element.js'

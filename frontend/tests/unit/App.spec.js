@@ -10,13 +10,11 @@ describe('App.vue', () => {
     },
     stubs: {
       routerView: true,
-      elMenuItem: true,
-      elMenu: true,
-      elSubmenu: true
     }
   })
 
   it('shows userName', () => {
     expect(wrapper.text()).toMatch('山田太郎')
+    console.log(wrapper.html())
   })
 })
