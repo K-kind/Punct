@@ -1,164 +1,171 @@
 import {
   // ADD_NEW_TASK,
-  UPDATE_TASK_CONTENT,
-  // DELETE_TASK_BY_ID,
-  // UPDATE_TASK_ORDER,
-  SET_TASKS,
-  SET_START_DATE
+  // UPDATE_TASK_CONTENT,
+  UPDATE_TASK_ORDER,
+  START_TASK,
 } from '@/store/mutation-types'
-import { Checkbox } from 'element-ui'
 import { cloneDeep } from 'lodash'
-import { mount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
-import WeeklyTasks from '@/components/tasks/WeeklyTasks.vue'
+import DailyTasks from '@/components/tasks/DailyTasks.vue'
 import dayjs from '@/plugins/dayjs.js'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
-localVue.use(Checkbox)
 localVue.prototype.$dayjs = dayjs
 
 const tasks = [
   {
     id: 1,
     content: 'タスク1',
-    start_date: '2020-07-13',
+    expected_time: 30 * 60 * 1000,
+    elapsed_time: 0,
     order: 0,
-    is_checked: false,
+    started_time: 1594077139298,
+    stopped_time: 1594078221735,
+    date: '2020-07-12',
+    on_progress: false,
+    is_current: false,
+    is_completed: false
   },
   {
     id: 2,
     content: 'タスク2',
-    start_date: '2020-07-13',
+    expected_time: 45 * 60 * 1000,
+    elapsed_time: 0,
     order: 1,
-    is_checked: false,
+    started_time: 1594077139298,
+    stopped_time: 1594078221735,
+    date: '2020-07-12',
+    on_progress: false,
+    is_current: false,
+    is_completed: false
   },
 ]
-const today = dayjs(new Date)
-const getDateString = ({ fromToday, weekday }) => {
-  return today.add(fromToday, 'day').weekday(weekday).format('M/D(ddd)')
-}
 
-describe('WeeklyTasks.vue', () => {
+describe('DailyTasks.vue', () => {
   let store
-  let weeklyStoreMock
+  let dailyStoreMock
   let wrapper
 
   beforeEach(() => {
-    weeklyStoreMock = {
+    dailyStoreMock = {
       namespaced: true,
       state: {
         tasks: cloneDeep(tasks)
       },
       actions : {
-        [SET_TASKS]: jest.fn(),
-        [SET_START_DATE]: jest.fn(),
-        [UPDATE_TASK_CONTENT]: jest.fn(),
+        [UPDATE_TASK_ORDER]: jest.fn(),
+        [START_TASK]: jest.fn(),
       },
       getters : {
-        weeklyTasks: (state) => {
+        dailyTasks: state => {
           return date => {
             return state.tasks
           }
         },
+        currentTask: state => {
+          return null
+        }
       },
     }
     store = new Vuex.Store({
       modules: {
-        weekly: weeklyStoreMock
+        daily: dailyStoreMock
       }
     })
-    wrapper = mount(WeeklyTasks, {
-      stubs: {
-        draggable: true,
-        LongTermForm: true
+    wrapper = shallowMount(DailyTasks, {
+      propsData: {
+        date: new Date,
+        forToday: false
       },
       store, localVue
     })
   })
 
   it('has tasks', () => {
-    expect(wrapper.findAll('.task-board__task').at(0).text())
-      .toMatch(tasks[0].content)
-    expect(wrapper.findAll('.task-board__task').at(1).text())
-      .toMatch(tasks[1].content)
+    console.log(wrapper.html())
+    const firstTask = wrapper.findAll('.task-board__task').at(0)
+    const secondTask = wrapper.findAll('.task-board__task').at(1)
+
+    expect(firstTask.text()).toMatch(tasks[0].content)
+    expect(firstTask.text()).toMatch('30分')
+    expect(secondTask.text()).toMatch(tasks[1].content)
+    expect(secondTask.text()).toMatch('45分')
   })
 
-  it('shows this week', () => {
-    const monday = getDateString({ fromToday: 0, weekday: 0 })
-    const sunday = getDateString({ fromToday: 0, weekday: 6 })
-    const expected = wrapper.find('.task-board__heading').text()
+  it('shows date and total time', () => {
+    const today = dayjs().format('M/D(ddd)')
+    const header = wrapper.find('.task-board__header')
 
-    expect(expected).toMatch(monday)
-    expect(expected).toMatch(sunday)
+    expect(header.text()).toMatch(today)
+    expect(header.text()).toMatch('1時間15分')
   })
 
-  it('only the right caret is visible initialy', async () => {
-    const leftCaret = wrapper.findAll('.task-board__caret').at(0)
-    const rightCaret = wrapper.findAll('.task-board__caret').at(1)
+  it('does not have taskUpdateForm initialy', async () => {
+    const firstTask = wrapper.findAll('.task-board__task').at(0)
 
-    expect(leftCaret.classes()).toContain('disabled')
-    expect(rightCaret.classes()).not.toContain('disabled')
-
-    wrapper.setData({ daysFromToday: 7 })
-    await wrapper.vm.$nextTick()
-
-    expect(leftCaret.classes()).not.toContain('disabled')
-    expect(rightCaret.classes()).not.toContain('disabled')
-  })
-
-  it('caret button click dispatches actions and changes the week string', async () => {
-    const rightCaret = wrapper.findAll('.task-board__caret').at(1)
-    const newFromToday = 7
-    const nextMonday = getDateString({ fromToday: newFromToday, weekday: 0 })
-    const nextSunday = getDateString({ fromToday: newFromToday, weekday: 6 })
-    const nextString = `${nextMonday} - ${nextSunday}`
-
-    rightCaret.trigger('click')
-    await wrapper.vm.$nextTick()
-
-    expect(weeklyStoreMock.actions[SET_TASKS]).toBeCalledWith(
-      expect.any(Object), newFromToday
-    )
-    expect(weeklyStoreMock.actions[SET_START_DATE]).toBeCalledWith(
-      expect.any(Object),
-      {
-        fromToday: newFromToday,
-        // startDate: today.add(newFromToday, 'day').weekday(0).$d,
-        startDate: expect.any(Object),
-        weekString: nextString
-      }
-    )
-    expect(wrapper.find('.task-board__heading').text()).toMatch(nextString)
-  })
-
-  it('does not have LongTermForm initialy', async () => {
-    const firstTask = wrapper.findAll('.task-board__p').at(0)
-
-    expect(wrapper.findAllComponents({ name: 'LongTermForm' }).length)
+    expect(wrapper.findAllComponents({ name: 'TaskForm' }).length)
       .toBe(1) // newFormのみ
 
     firstTask.trigger('click')
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.findAllComponents({ name: 'LongTermForm' }).length)
+    expect(wrapper.findAllComponents({ name: 'TaskForm' }).length)
       .toBe(2)
   })
 
-  it('a checkbox dispatches UPDATE_TASK_CONTENT', async () => {
-    let firstCheckbox = wrapper.find('.el-checkbox')
+  it('task-update icons appear when forToday prop is given', async () => {
+    const taskClass = '.task-board__task'
+    const iconClass = '.task-board__with-icon--left'
 
-    expect(firstCheckbox.classes()).not.toContain('is-checked')
+    expect(wrapper.find(taskClass).classes()).not.toContain('todayTask')
+    expect(wrapper.find(iconClass).exists()).toBe(false)
 
-    firstCheckbox.trigger('click')
+    wrapper.setProps({ forToday: true })
     await wrapper.vm.$nextTick()
-    firstCheckbox = wrapper.find('.el-checkbox')
 
-    expect(weeklyStoreMock.state.tasks[0].is_checked).toBe(true)
-    expect(firstCheckbox.classes()).toContain('is-checked')
-    expect(weeklyStoreMock.actions[UPDATE_TASK_CONTENT]).toBeCalledWith(
+    expect(wrapper.find(taskClass).classes()).toContain('todayTask')
+    expect(wrapper.findAll(iconClass).length).toBe(2)
+  })
+
+  it('task-upload icons appear when forToday prop is given', async () => {
+    const taskClass = '.task-board__task'
+    const iconClass = '.task-board__with-icon--left'
+
+    expect(wrapper.find(taskClass).classes()).not.toContain('todayTask')
+    expect(wrapper.find(iconClass).exists()).toBe(false)
+
+    wrapper.setProps({ forToday: true })
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find(taskClass).classes()).toContain('todayTask')
+    expect(wrapper.findAll(iconClass).length).toBe(2)
+
+    expect(wrapper.find(iconClass).find('a.disabled').exists()).toBe(false)
+  })
+
+  it('task-upload icons dispatch UPDATE_TASK_ORDER and START_TASK', async () => {
+    wrapper.setProps({ forToday: true })
+    await wrapper.vm.$nextTick()
+    const firstIcon = wrapper.find('.task-board__with-icon--left a')
+    firstIcon.trigger('click')
+
+    expect(dailyStoreMock.actions[UPDATE_TASK_ORDER]).toBeCalledWith(
       expect.any(Object),
-      { id: tasks[0].id, task: { is_checked: true } }
+      {
+        fromDate: tasks[0].date,
+        oldIndex: tasks[0].order,
+        newIndex: 0,
+        fromCompleted: false,
+        toCompleted: false,
+        taskId: tasks[0].id,
+        isCurrent: true
+      }
+    )
+    expect(dailyStoreMock.actions[START_TASK]).toBeCalledWith(
+      expect.any(Object),
+      { taskId: tasks[0].id }
     )
   })
 })

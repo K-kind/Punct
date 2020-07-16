@@ -195,9 +195,7 @@ export default {
         isCurrent: true
       }
       this[UPDATE_TASK_ORDER](payload)
-        .then(() => {
-          this[START_TASK]({ taskId })
-        })
+      this[START_TASK]({ taskId })
     },
   },
 }
