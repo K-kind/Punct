@@ -8,13 +8,14 @@
       <draggable
         tag="ul"
         group="TASKS"
+        :list="taskList"
         :animation="200"
         @end="onDragEnd"
         :data-date="separatedDate"
         handle=".handle"
       >
         <li
-          v-for="task of dailyTasks(date)"
+          v-for="task of taskList"
           :key="task.id"
           :data-task_id="task.id"
           class="task-board__li"
@@ -82,6 +83,7 @@ export default {
       newFormIsOpen: false,
       onUpdatedTaskId: '',
       draggingId: null,
+      taskList: []
     }
   },
   props: {
@@ -94,6 +96,9 @@ export default {
   },
   computed: {
     ...mapGetters('daily', ['dailyTasks', 'currentTask']),
+    computedTasks() {
+      return this.dailyTasks(this.date)
+    },
     dateString() {
       return this.$dayjs(this.date).format('M/D(ddd)')
     },
@@ -101,7 +106,7 @@ export default {
       return this.date.toLocaleDateString() // '2020/6/28'
     },
     totalTime() {
-      let times = this.dailyTasks(this.date).map(task => task.expected_time)
+      let times = this.computedTasks.map(task => task.expected_time)
       if (!times.length) return null;
       let total = times.reduce((prev, current) => prev + current)
       let m = this.toMinutes(total)
@@ -137,7 +142,7 @@ export default {
       setTimeout(() => self.$refs.updateForm[0].focusForm())
     },
     addTask(e) {
-      let tasks = this.dailyTasks(this.date)
+      let tasks = this.computedTasks
       let newOrder = tasks.length
       let newTask = {
         content: e.content,
@@ -198,6 +203,11 @@ export default {
       this[UPDATE_TASK_ORDER](payload)
     },
   },
+  watch: {
+    computedTasks(tasks) {
+      this.taskList = tasks
+    }
+  }
 }
 </script>
 

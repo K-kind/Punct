@@ -24,6 +24,7 @@
         tag="ul"
         class="task-board__ul"
         :group="dragGroup"
+        :list="taskList"
         :data-working="true"
         :animation="200"
         @add="onAdd"
@@ -36,7 +37,7 @@
           <i class="el-icon-upload2"></i>
         </li>
         <li
-          v-for="task of tasks"
+          v-for="task of taskList"
           class="task-board__li"
           :class="{ draggable: !formIsOpen }"
           :key="task.id"
@@ -92,7 +93,7 @@ export default {
       timerId: null,
       elapsedTime: null,
       dragGroup: 'TASKS',
-      tasks: []
+      taskList: []
     }
   },
   components: {
@@ -176,6 +177,7 @@ export default {
         this.stop()
       }
 
+      this.taskList = []
       if (!payload) {
         let toDate = (new Date).toLocaleDateString()
         let newIndex = this.completedTasks(new Date).length
@@ -233,12 +235,12 @@ export default {
   watch: {
     currentTask(task) {
       if (task) {
-        this.tasks = [task]
+        this.taskList = [task]
         this.disableDrag(true)
         this.computeElapsedTime()
         this.setTimer()
       } else {
-        this.tasks = []
+        this.taskList = []
         this.disableDrag(false)
       }
     }

@@ -8,6 +8,7 @@
       <draggable
         tag="ul"
         :group="dragGroup"
+        :list="taskList"
         :animation="200"
         @end="onDragEnd"
         @clone="onClone"
@@ -15,7 +16,7 @@
         handle=".handle"
       >
         <li
-          v-for="task of remainingTasks"
+          v-for="task of taskList"
           :key="task.id"
           :data-task_id="task.id"
           class="task-board__li"
@@ -71,6 +72,7 @@ export default {
       onUpdatedTaskId: '',
       dragGroup: 'REMAINING',
       draggingId: null,
+      taskList: []
     }
   },
   components: {
@@ -162,6 +164,14 @@ export default {
       this.dragGroup = (boolean ? 'REMAINING' : 'TASKS')
     }
   },
+  watch: {
+    remainingTasks: {
+      immediate: true,
+      handler(tasks) {
+        this.taskList = tasks
+      }
+    }
+  }
 }
 </script>
 

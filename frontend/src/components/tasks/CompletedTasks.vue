@@ -8,6 +8,7 @@
       <draggable
         tag="ul"
         group="TASKS"
+        :list="taskList"
         :animation="200"
         @end="onDragEnd"
         :data-completed="true"
@@ -15,7 +16,7 @@
         draggable=".draggable"
       >
         <li
-          v-for="task of completedTasks(date)"
+          v-for="task of taskList"
           :key="task.id"
           class="task-board__li"
           :class="{ draggable: !onUpdatedTaskId }"
@@ -77,6 +78,7 @@ export default {
     return {
       newFormIsOpen: false,
       onUpdatedTaskId: '',
+      taskList: []
     }
   },
   props: {
@@ -88,6 +90,9 @@ export default {
   },
   computed: {
     ...mapGetters('daily', ['completedTasks']),
+    computedTasks() {
+      return this.completedTasks(this.date)
+    },
     dateString() {
       let weekDay = ['日', '月', '火', '水', '木', '金', '土']
       let month =  this.date.getMonth() + 1
@@ -99,7 +104,7 @@ export default {
       return this.date.toLocaleDateString()
     },
     totalTime() {
-      let times = this.completedTasks(this.date).map(task => task.elapsed_time)
+      let times = this.computedTasks.map(task => task.elapsed_time)
       if (!times.length) return null;
       let total = times.reduce((prev, current) => prev + current)
       let m = this.toMinutes(total)
@@ -135,7 +140,7 @@ export default {
       setTimeout(() => self.$refs.updateForm[0].focusForm())
     },
     addTask(e) {
-      let tasks = this.completedTasks(this.date)
+      let tasks = this.computedTasks
       let newOrder = tasks.length
       let newTask = {
         content: e.content,
@@ -170,6 +175,11 @@ export default {
       }
     },
   },
+  watch: {
+    computedTasks(tasks) {
+      this.taskList = tasks
+    }
+  }
 }
 </script>
 
