@@ -57,7 +57,7 @@ describe('WeeklyTasks.vue', () => {
       },
       getters : {
         weeklyTasks: (state) => {
-          return date => {
+          return () => {
             return state.tasks
           }
         },

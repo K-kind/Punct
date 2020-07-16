@@ -60,11 +60,11 @@ describe('DailyTasks.vue', () => {
       },
       getters : {
         dailyTasks: state => {
-          return date => {
+          return () => {
             return state.tasks
           }
         },
-        currentTask: state => {
+        currentTask: () => {
           return null
         }
       },

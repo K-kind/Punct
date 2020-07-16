@@ -332,7 +332,6 @@ describe('SET_TASKS action', () => {
 
 describe('SET_START_DATE action', () => {
   it('commits SET_START_DATE', async () => {
-    const dispatch = dispatchWithRes({ data: {} })
     const startDate = '2020-07-14'
 
     await weeklyStore.actions[SET_START_DATE]({ commit }, startDate)
