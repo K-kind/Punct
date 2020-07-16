@@ -24,6 +24,10 @@ commands:
     description: "checkout and bundle installation and caching"
     steps:
       - checkout
+      - run:
+          name: install vue-cli
+          working_directory: frontend
+          command: yarn global add @vue/cli
       - restore_cache:
           keys:
             - v1-yarn-{{ checksum "frontend/yarn.lock" }}
