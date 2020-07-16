@@ -6,7 +6,6 @@ WORKDIR /myapp
 ENV TZ Asia/Tokyo
 ENV VUE_APP_API_URL http://localhost/api/
 
-RUN yarn global add @vue/cli
 COPY package.json yarn.lock /myapp/
 
 RUN --mount=type=cache,target=/myapp/.cache/node_modules \
