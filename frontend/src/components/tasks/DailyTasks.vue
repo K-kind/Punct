@@ -181,7 +181,7 @@ export default {
         })
       }
     },
-    upload(task) {
+    async upload(task) {
       if (this.currentTask) return false;
 
       let taskId = task.id
@@ -194,8 +194,8 @@ export default {
         taskId,
         isCurrent: true
       }
+      await this[START_TASK]({ taskId })
       this[UPDATE_TASK_ORDER](payload)
-      this[START_TASK]({ taskId })
     },
   },
 }

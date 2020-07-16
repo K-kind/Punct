@@ -236,11 +236,7 @@ export default {
         this.tasks = [task]
         this.disableDrag(true)
         this.computeElapsedTime()
-        let self = this
-        setTimeout(() => {
-          self.computeElapsedTime()
-          self.setTimer()
-        }, 1000)
+        this.setTimer()
       } else {
         this.tasks = []
         this.disableDrag(false)
