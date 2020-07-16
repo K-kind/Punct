@@ -176,15 +176,18 @@ export default {
     },
   },
   watch: {
-    computedTasks(tasks) {
-      this.taskList = tasks
+    computedTasks: {
+      immediate: true,
+      handler(tasks) {
+        this.taskList = tasks
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-.task-board {
+/* .task-board { */
   /* background-color: rgb(253, 242, 219); */
-}
+/* } */
 </style>

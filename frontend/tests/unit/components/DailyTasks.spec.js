@@ -84,7 +84,6 @@ describe('DailyTasks.vue', () => {
   })
 
   it('has tasks', () => {
-    console.log(wrapper.html())
     const firstTask = wrapper.findAll('.task-board__task').at(0)
     const secondTask = wrapper.findAll('.task-board__task').at(1)
 
@@ -149,7 +148,12 @@ describe('DailyTasks.vue', () => {
     wrapper.setProps({ forToday: true })
     await wrapper.vm.$nextTick()
     const firstIcon = wrapper.find('.task-board__with-icon--left a')
-    firstIcon.trigger('click')
+    await firstIcon.trigger('click')
+
+    expect(dailyStoreMock.actions[START_TASK]).toBeCalledWith(
+      expect.any(Object),
+      { taskId: tasks[0].id }
+    )
 
     expect(dailyStoreMock.actions[UPDATE_TASK_ORDER]).toBeCalledWith(
       expect.any(Object),
@@ -162,10 +166,6 @@ describe('DailyTasks.vue', () => {
         taskId: tasks[0].id,
         isCurrent: true
       }
-    )
-    expect(dailyStoreMock.actions[START_TASK]).toBeCalledWith(
-      expect.any(Object),
-      { taskId: tasks[0].id }
     )
   })
 })

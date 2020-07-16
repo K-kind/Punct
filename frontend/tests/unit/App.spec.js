@@ -15,6 +15,5 @@ describe('App.vue', () => {
 
   it('shows userName', () => {
     expect(wrapper.text()).toMatch('山田太郎')
-    console.log(wrapper.html())
   })
 })

@@ -233,15 +233,18 @@ export default {
     }
   },
   watch: {
-    currentTask(task) {
-      if (task) {
+    currentTask: {
+      immediate: true,
+      handler(task) {
+        if (task) {
         this.taskList = [task]
         this.disableDrag(true)
         this.computeElapsedTime()
         this.setTimer()
-      } else {
-        this.taskList = []
-        this.disableDrag(false)
+        } else {
+          this.taskList = []
+          this.disableDrag(false)
+        }
       }
     }
   }

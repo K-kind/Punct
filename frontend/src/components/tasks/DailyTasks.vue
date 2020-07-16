@@ -204,8 +204,11 @@ export default {
     },
   },
   watch: {
-    computedTasks(tasks) {
-      this.taskList = tasks
+    computedTasks: {
+      immediate: true,
+      handler(tasks) {
+        this.taskList = tasks
+      }
     }
   }
 }
