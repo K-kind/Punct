@@ -20,6 +20,23 @@ commands:
             - backend/vendor/bundle
           key: v1-dependencies-{{ checksum "backend/Gemfile.lock" }}
 
+  vue-installation:
+    description: "checkout and bundle installation and caching"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-yarn-{{ checksum "frontend/yarn.lock" }}
+            - v1-yarn-
+      - run:
+          name: yarn installation
+          working_directory: frontend
+          command: yarn install
+      - save_cache:
+          key: v1-yarn-{{ checksum "frontend/yarn.lock" }}
+          paths:
+            - frontend/node_modules
+
   # yarn-installation:
   #   description: "yarn installation and caching"
   #   steps:
@@ -75,6 +92,19 @@ jobs:
             bin/rails db:schema:load
             bundle exec rspec
 
+  jest:
+    docker:
+      - image: node:12.18.0-alpine
+        environment:
+          TZ: Asia/Tokyo
+          VUE_APP_API_URL: http://localhost/api/
+    working_directory: ~/myapp
+    steps:
+      - vue-installation
+      - run:
+          working_directory: frontend
+          command: yarn test:unit
+
   # # 環境変数のAWS_ECR_ACCOUNT_URL、AWS_ACCESS_KEY_ID、AWS_SECRET_ACCESS_KEYはデフォルトで使われる
   # deploy-service-update:
   #   executor: aws-cli/default
@@ -104,6 +134,7 @@ workflows:
       - rspec:
           requires:
             - rubocop
+      - jest
       # - aws-ecr/build-and-push-image:
       #     name: build-and-push-image1
       #     create-repo: true
