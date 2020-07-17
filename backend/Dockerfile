@@ -34,3 +34,23 @@ RUN bundle install
 COPY . /myapp
 
 CMD ["./docker-startup.sh"]
+
+FROM ruby:2.7.1 AS e2e
+RUN mkdir /myapp
+WORKDIR /myapp
+ENV TZ Asia/Tokyo
+ENV DOCKERIZE_URL https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/dockerize-latest.tar.gz
+RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/dockerize-linux-amd64.tar.gz $DOCKERIZE_URL && \
+    tar -C /usr/local/bin -xzvf /tmp/dockerize-linux-amd64.tar.gz && \
+    rm -rf /tmp/dockerize-linux-amd64.tar.gz && \
+    dockerize --version
+
+COPY Gemfile Gemfile.lock /myapp/
+
+RUN bundle config without "development test"
+RUN bundle config path "vendor/bundle"
+RUN bundle install
+
+COPY . /myapp
+
+CMD ["./e2e-startup.sh"]

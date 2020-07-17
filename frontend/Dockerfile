@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:experimental
 
-FROM node:12.18.0-alpine
+FROM node:12.18.0-alpine as develop
 
 WORKDIR /myapp
 ENV TZ Asia/Tokyo
@@ -16,3 +16,14 @@ RUN --mount=type=cache,target=/myapp/.cache/node_modules \
 COPY . /myapp
 
 CMD ["yarn", "serve"]
+
+# FROM cypress/browsers:node12.18.0-chrome83-ff77 as cypress
+FROM cypress/base:12.18.0 as cypress
+
+WORKDIR /myapp
+ENV TZ Asia/Tokyo
+
+COPY package.json yarn.lock /myapp/
+RUN yarn install
+
+COPY . /myapp
