@@ -1,7 +1,7 @@
 describe('Login', () => {
   it('shows error messages with invalid input', () => {
     cy.visit('/login')
-    cy.contains('ログイン')
+    cy.contains('h2', 'ログイン')
 
     cy.get('input[name="email"]')
       .type('invalid@example.com')
