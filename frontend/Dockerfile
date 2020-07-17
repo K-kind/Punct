@@ -17,7 +17,6 @@ COPY . /myapp
 
 CMD ["yarn", "serve"]
 
-# FROM cypress/browsers:node12.18.0-chrome83-ff77 as cypress
 FROM cypress/base:12.18.0 as cypress
 
 WORKDIR /myapp
