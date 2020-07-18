@@ -1,0 +1,166 @@
+version: 2.1
+
+commands:
+  bundle-installation:
+    description: "checkout and bundle installation and caching"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "backend/Gemfile.lock" }}
+            - v1-dependencies-
+      - run:
+          name: bundle installation
+          working_directory: backend
+          command: |
+            bundle config set path 'vendor/bundle'
+            bundle install --jobs=4 --retry=3
+      - save_cache:
+          paths:
+            - backend/vendor/bundle
+          key: v1-dependencies-{{ checksum "backend/Gemfile.lock" }}
+
+  vue-installation:
+    description: "checkout and bundle installation and caching"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-yarn-{{ checksum "frontend/yarn.lock" }}
+            - v1-yarn-
+      - run:
+          name: yarn installation
+          working_directory: frontend
+          command: yarn install
+      - save_cache:
+          key: v1-yarn-{{ checksum "frontend/yarn.lock" }}
+          paths:
+            - frontend/node_modules
+
+orbs:
+  aws-cli: circleci/aws-cli@1.2.1
+  aws-ecr: circleci/aws-ecr@6.10.0
+  aws-ecs: circleci/aws-ecs@1.2.0
+
+jobs:
+  rubocop:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers-legacy
+    working_directory: ~/myapp
+    steps:
+      - bundle-installation
+      - run:
+          name: Rubocop
+          working_directory: backend
+          command: bundle exec rubocop
+
+  rspec:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers-legacy
+        environment:
+          RAILS_ENV: test
+          MYSQL_PASSWORD: ''
+          MYSQL_HOST: 127.0.0.1
+          FRONTEND_URL: http://localhost
+      - image: circleci/mysql:5.7
+        environment:
+          MYSQL_DATABASE: myapp_test
+          MYSQL_ROOT_HOST: '%'
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+    working_directory: ~/myapp
+    steps:
+      - bundle-installation
+      - run:
+          name: Wait for DB and run RSpec
+          working_directory: backend
+          command: |
+            dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+            bin/rails db:create
+            bin/rails db:schema:load
+            bundle exec rspec
+
+  jest:
+    docker:
+      - image: node:12.18.0-alpine
+        environment:
+          TZ: Asia/Tokyo
+          VUE_APP_API_URL: http://localhost/api/
+    working_directory: ~/myapp
+    steps:
+      - vue-installation
+      - run:
+          working_directory: frontend
+          command: yarn test:unit
+
+  cypress:
+    machine:
+      image: circleci/classic:edge
+      docker_layer_caching: false
+    steps:
+      - checkout
+      # env RAILS_MASTER_KEY
+      - run: docker-compose -f e2e-compose.yml build
+      - run: docker-compose -f e2e-compose.yml up -d
+      - run: docker-compose -f e2e-compose.yml exec cypress wait-on --interval 1000 http://web/api/auth/name
+      - run: docker-compose -f e2e-compose.yml exec cypress yarn run cypress run
+      - run: docker-compose -f e2e-compose.yml down
+      - store_artifacts:
+          path: frontend/tests/e2e/videos
+
+  # 環境変数のAWS_ECR_ACCOUNT_URL、AWS_ACCESS_KEY_ID、AWS_SECRET_ACCESS_KEYはデフォルトで使われる
+  deploy-service-update:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/setup:
+          aws-region: AWS_REGION
+      - aws-ecs/update-task-definition:
+          family: "punct-task"
+          container-image-name-updates: "container=web,tag=${CIRCLE_SHA1}"
+      - aws-ecs/update-service:
+          family: "punct-task"
+          cluster-name: "punct-cluster"
+          service-name: "punct-service"
+          container-image-name-updates: "container=app,tag=${CIRCLE_SHA1}"
+
+workflows:
+  version: 2.1
+  check-and-deploy:
+    jobs:
+      - rubocop
+      - rspec:
+          requires:
+            - rubocop
+      - jest
+      - cypress
+      - aws-ecr/build-and-push-image:
+          name: build-and-push-image-web
+          create-repo: true
+          dockerfile: nginx/Dockerfile
+          extra-build-args: --target production
+          repo: web
+          tag: "${CIRCLE_SHA1}"
+          requires:
+            - rspec
+            - jest
+            - cypress
+          filters:
+            branches:
+              only: master
+      - aws-ecr/build-and-push-image:
+          name: build-and-push-image-app
+          create-repo: true
+          path: backend
+          extra-build-args: --target production --build-arg KEY=$RAILS_MASTER_KEY
+          repo: app
+          tag: "${CIRCLE_SHA1}"
+          requires:
+            - rspec
+            - jest
+            - cypress
+          filters:
+            branches:
+              only: master
+      - deploy-service-update:
+          requires:
+            - build-and-push-image-web
+            - build-and-push-image-app

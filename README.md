@@ -7,7 +7,6 @@
 - Ruby on Rails 6.0.3
 - MySQL 5.7
 - Nginx 1.19.0
-- Redis 5.0.9
 
 ### フロントエンド
 - Vue.js 2.6.11

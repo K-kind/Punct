@@ -1,0 +1,23 @@
+@import 'element.scss';
+@import 'BEM/task-board.scss';
+@import 'BEM/sortable.scss';
+
+html {
+  font-size: 62.5%;
+}
+body {
+  font-size: 1.4rem;
+}
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+ul {
+  list-style: none;
+}
+.clearfix {
+  clear: both;
+  display: block;
+  content: '';
+}
