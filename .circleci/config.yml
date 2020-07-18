@@ -107,6 +107,7 @@ jobs:
 
   cypress:
     machine:
+      image: circleci/classic:edge
       docker_layer_caching: false
     steps:
       - checkout
