@@ -8,7 +8,7 @@
 // import { SET_TASKS, SET_START_DATE } from '@/store/mutation-types'
 
 export default {
-  name: 'Chart',
+  name: 'TasksChart',
   // computed: {
   //   weekString() {
   //     let range = this.$store.state.weekly.weekString || '今週'

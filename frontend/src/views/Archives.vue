@@ -1,7 +1,7 @@
 <template>
   <div class="archives">
     <div class="chart">
-      <Chart />
+      <TasksChart />
     </div>
     <div class="columns">
       <Column>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Chart from '@/components/archives/Chart.vue'
+import TasksChart from '@/components/archives/TasksChart.vue'
 import ThisWeekColumn from '@/components/archives/ThisWeekColumn.vue'
 import WeeklyColumn from '@/components/archives/WeeklyColumn.vue'
 import MonthlyColumn from '@/components/archives/MonthlyColumn.vue'
@@ -31,7 +31,7 @@ import { SET_TASKS, SET_START_DATE } from '@/store/mutation-types'
 export default {
   name: 'Archives',
   components: {
-    Chart,
+    TasksChart,
     ThisWeekColumn,
     WeeklyColumn,
     MonthlyColumn,
