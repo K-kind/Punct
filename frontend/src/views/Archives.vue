@@ -1,21 +1,27 @@
 <template>
   <div class="archives">
-    <Column>
-      <template v-slot:head>{{ weekString }}</template>
-      <template v-slot:body><ThisWeekColumn /></template>
-    </Column>
-    <Column>
-      <template v-slot:head>週間タスク</template>
-      <template v-slot:body><WeeklyColumn /></template>
-    </Column>
-    <Column>
-      <template v-slot:head>月間タスク</template>
-      <template v-slot:body><MonthlyColumn /></template>
-    </Column>
+    <div class="chart">
+      <Chart />
+    </div>
+    <div class="columns">
+      <Column>
+        <template v-slot:head>{{ weekString }}</template>
+        <template v-slot:body><ThisWeekColumn /></template>
+      </Column>
+      <Column>
+        <template v-slot:head>週間タスク</template>
+        <template v-slot:body><WeeklyColumn /></template>
+      </Column>
+      <Column>
+        <template v-slot:head>月間タスク</template>
+        <template v-slot:body><MonthlyColumn /></template>
+      </Column>
+    </div>
   </div>
 </template>
 
 <script>
+import Chart from '@/components/archives/Chart.vue'
 import ThisWeekColumn from '@/components/archives/ThisWeekColumn.vue'
 import WeeklyColumn from '@/components/archives/WeeklyColumn.vue'
 import MonthlyColumn from '@/components/archives/MonthlyColumn.vue'
@@ -25,6 +31,7 @@ import { SET_TASKS, SET_START_DATE } from '@/store/mutation-types'
 export default {
   name: 'Archives',
   components: {
+    Chart,
     ThisWeekColumn,
     WeeklyColumn,
     MonthlyColumn,
@@ -46,7 +53,7 @@ export default {
 </script>
 
 <style scoped>
-.archives {
+.columns {
   display: flex;
   justify-content: center;
 }
