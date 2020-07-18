@@ -5,8 +5,23 @@
       <span v-if="totalTime">{{ totalTime }}</span>
     </div>
     <div class="task-board__body">
-      <draggable tag="ul" group="TASKS" @end="onDragEnd" :data-completed="true" :data-date="separatedDate" draggable=".draggable">
-        <li v-for="task of completedTasks(date)" :key="task.id" class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
+      <draggable
+        tag="ul"
+        group="TASKS"
+        :list="taskList"
+        :animation="200"
+        @end="onDragEnd"
+        :data-completed="true"
+        :data-date="separatedDate"
+        draggable=".draggable"
+      >
+        <li
+          v-for="task of taskList"
+          :key="task.id"
+          class="task-board__li"
+          :class="{ draggable: !onUpdatedTaskId }"
+          :data-task_id="task.id"
+        >
           <div v-if="onUpdatedTaskId !== task.id" @click="openUpdateForm(task.id)" class="task-board__task">
             <p class="task-board__p">
               {{ task.content }}
@@ -63,10 +78,11 @@ export default {
     return {
       newFormIsOpen: false,
       onUpdatedTaskId: '',
+      taskList: []
     }
   },
   props: {
-    date: Date
+    date: Object
   },
   components: {
     draggable,
@@ -74,18 +90,17 @@ export default {
   },
   computed: {
     ...mapGetters('daily', ['completedTasks']),
+    computedTasks() {
+      return this.completedTasks(this.date)
+    },
     dateString() {
-      let weekDay = ['日', '月', '火', '水', '木', '金', '土']
-      let month =  this.date.getMonth() + 1
-      let date =  this.date.getDate()
-      let day = weekDay[this.date.getDay()]
-      return `${month}/${date}(${day})`
+      return this.date.format('M/D(ddd)')
     },
     separatedDate() {
-      return this.date.toLocaleDateString()
+      return this.date.format('YYYY-MM-DD')
     },
     totalTime() {
-      let times = this.completedTasks(this.date).map(task => task.elapsed_time)
+      let times = this.computedTasks.map(task => task.elapsed_time)
       if (!times.length) return null;
       let total = times.reduce((prev, current) => prev + current)
       let m = this.toMinutes(total)
@@ -121,14 +136,14 @@ export default {
       setTimeout(() => self.$refs.updateForm[0].focusForm())
     },
     addTask(e) {
-      let tasks = this.completedTasks(this.date)
+      let tasks = this.computedTasks
       let newOrder = tasks.length
       let newTask = {
         content: e.content,
         expected_time: e.expected_time,
         elapsed_time: e.elapsed_time,
         is_completed: true,
-        date: this.date.toLocaleDateString(),
+        date: this.date.format('YYYY-MM-DD'),
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)
@@ -156,11 +171,19 @@ export default {
       }
     },
   },
+  watch: {
+    computedTasks: {
+      immediate: true,
+      handler(tasks) {
+        this.taskList = tasks
+      }
+    }
+  }
 }
 </script>
 
 <style scoped>
-.task-board {
+/* .task-board { */
   /* background-color: rgb(253, 242, 219); */
-}
+/* } */
 </style>

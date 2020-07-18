@@ -8,12 +8,14 @@
       <draggable
         tag="ul"
         group="TASKS"
+        :list="taskList"
+        :animation="200"
         @end="onDragEnd"
         :data-date="separatedDate"
         handle=".handle"
       >
         <li
-          v-for="task of dailyTasks(date)"
+          v-for="task of taskList"
           :key="task.id"
           :data-task_id="task.id"
           class="task-board__li"
@@ -81,10 +83,11 @@ export default {
       newFormIsOpen: false,
       onUpdatedTaskId: '',
       draggingId: null,
+      taskList: []
     }
   },
   props: {
-    date: Date,
+    date: Object,
     forToday: Boolean
   },
   components: {
@@ -93,18 +96,17 @@ export default {
   },
   computed: {
     ...mapGetters('daily', ['dailyTasks', 'currentTask']),
+    computedTasks() {
+      return this.dailyTasks(this.date)
+    },
     dateString() {
-      let weekDay = ['日', '月', '火', '水', '木', '金', '土']
-      let month =  this.date.getMonth() + 1
-      let date =  this.date.getDate()
-      let day = weekDay[this.date.getDay()]
-      return `${month}/${date}(${day})`
+      return this.date.format('M/D(ddd)')
     },
     separatedDate() {
-      return this.date.toLocaleDateString() // '2020/6/28'
+      return this.date.format('YYYY-MM-DD')
     },
     totalTime() {
-      let times = this.dailyTasks(this.date).map(task => task.expected_time)
+      let times = this.computedTasks.map(task => task.expected_time)
       if (!times.length) return null;
       let total = times.reduce((prev, current) => prev + current)
       let m = this.toMinutes(total)
@@ -140,14 +142,14 @@ export default {
       setTimeout(() => self.$refs.updateForm[0].focusForm())
     },
     addTask(e) {
-      let tasks = this.dailyTasks(this.date)
+      let tasks = this.computedTasks
       let newOrder = tasks.length
       let newTask = {
         content: e.content,
         expected_time: e.expected_time,
         is_completed: false,
         elapsed_time: 0,
-        date: this.date.toLocaleDateString(),
+        date: this.separatedDate,
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)
@@ -184,7 +186,7 @@ export default {
         })
       }
     },
-    upload(task) {
+    async upload(task) {
       if (this.currentTask) return false;
 
       let taskId = task.id
@@ -197,12 +199,18 @@ export default {
         taskId,
         isCurrent: true
       }
+      await this[START_TASK]({ taskId })
       this[UPDATE_TASK_ORDER](payload)
-        .then(() => {
-          this[START_TASK]({ taskId })
-        })
     },
   },
+  watch: {
+    computedTasks: {
+      immediate: true,
+      handler(tasks) {
+        this.taskList = tasks
+      }
+    }
+  }
 }
 </script>
 

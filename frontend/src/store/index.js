@@ -12,7 +12,7 @@ import { SET_TASKS, GET } from './mutation-types'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+export const index = {
   modules: {
     daily: DailyTasks,
     weekly: WeeklyTasks,
@@ -35,4 +35,6 @@ export default new Vuex.Store({
       }).catch(err => err)
     },
   }
-})
+}
+
+export default new Vuex.Store(index)

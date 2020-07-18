@@ -10,6 +10,7 @@ import {
   PATCH,
   DELETE
 } from '../mutation-types'
+import dayjs from '@/plugins/dayjs.js'
 
 export default {
   namespaced: true,
@@ -28,8 +29,9 @@ export default {
   getters: {
     weeklyTasks(state) {
       return date => {
+        const dateString = dayjs(date).format('YYYY-MM-DD')
         return state.tasks.filter(task =>
-          (new Date(task.start_date)).toDateString() === date.toDateString()
+          task.start_date === dateString
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
           if (a.order > b.order) return 1;

@@ -1,6 +1,6 @@
 <template>
   <div class="this-week-column">
-    <CompletedTasks v-for="date in dates" :date="date" :key="date.toString()"></CompletedTasks>
+    <CompletedTasks v-for="(date, index) in dates" :date="date" :key="`completed_${index}`"></CompletedTasks>
   </div>
 </template>
 
@@ -17,20 +17,16 @@ export default {
       return this.$store.state.weekly.startDate
     },
     dates() {
-      let dates = []
+      const dates = []
       if (this.startDate) {
         for (let i = 0; i < 7; i++) {
-          let date = new Date(this.startDate.getTime())
-          date.setDate(date.getDate() + i)
+          const date = this.$dayjs(this.startDate).add(i, 'day')
           dates.push(date)
         }
       } else {
-        let today = new Date
-        let day = today.getDay()
-        day = day || 7 // 月(1)〜日(7)
-        for (let i = day - 1; i >= 0; i--) {
-          let date = new Date
-          date.setDate(date.getDate() - i)
+        const weekday = this.$dayjs().weekday() // 月(0)〜日(6)
+        for (let i = weekday; i >= 0; i--) {
+          const date = this.$dayjs().subtract(i, 'day')
           dates.push(date)
         }
       }

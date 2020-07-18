@@ -34,8 +34,9 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # 追加
-  config.action_mailer.default_url_options = { host: 'punct.work', protocol: 'https' }
-  config.action_mailer.delivery_method = :ses
+  # config.action_mailer.default_url_options = { host: 'punct.work', protocol: 'https' }
+  # config.action_mailer.delivery_method = :ses
+  config.action_mailer.delivery_method = :aws_sdk
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

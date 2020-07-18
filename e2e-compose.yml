@@ -1,0 +1,45 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3306:3306"
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.e2e
+    environment:
+      FRONTEND_URL: http://localhost
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      RAILS_ENV: production
+    volumes:
+      - e2e-socket-data:/myapp/tmp/sockets
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile.e2e
+    volumes:
+      - e2e-socket-data:/myapp/tmp/sockets
+    ports:
+      - 80:80
+    depends_on:
+      - app
+
+  cypress:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.e2e
+    command: tail -f /dev/null
+    volumes:
+      - ./frontend/tests/e2e:/myapp/tests/e2e
+    depends_on:
+      - web
+
+volumes:
+  e2e-socket-data:

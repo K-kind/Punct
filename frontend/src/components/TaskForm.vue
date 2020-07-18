@@ -47,7 +47,6 @@
     <div class="buttons">
       <el-button
         @click.prevent="changeTask"
-        ref="submitButton"
         size="mini"
         type="primary"
         native-type="submit"
@@ -59,7 +58,6 @@
         v-if="!isNewTask"
         class="delete-btn"
         @click.prevent="deleteTask"
-        ref="deleteButton"
         type="danger"
         icon="el-icon-delete"
         size="mini"
@@ -106,9 +104,8 @@ export default {
           self.taskExpectedTimeData == self.taskExpectedTime &&
           self.taskElapsedTimeData == self.taskElapsedTime &&
           activeElement.className !== 'el-input__inner' &&
-          activeElement !== self.$refs.submitButton &&
-          activeElement !== self.$refs.deleteButton
-          ) {
+          activeElement.className !== 'el-button'
+        ) {
           self.$emit('close-form')
         }
       }, 100)

@@ -22,8 +22,20 @@
       </a>
     </div>
     <div class="task-board__body">
-      <draggable tag="ul" group="WEEK" @end="onDragEnd" draggable=".draggable">
-        <li v-for="task of weeklyTasks(weekRange.monday)" :key="task.id"  class="task-board__li" :class="{ draggable: !onUpdatedTaskId }" :data-task_id="task.id">
+      <draggable
+        tag="ul"
+        group="WEEK"
+        :animation="200"
+        @end="onDragEnd"
+        draggable=".draggable"
+      >
+        <li
+          v-for="task of weeklyTasks(weekRange.monday)"
+          :key="task.id"
+          class="task-board__li"
+          :class="{ draggable: !onUpdatedTaskId }"
+          :data-task_id="task.id"
+        >
           <div
             v-if="onUpdatedTaskId !== task.id"
             class="task-board__task"
@@ -98,22 +110,16 @@ export default {
   computed: {
     ...mapGetters('weekly', ['weeklyTasks']),
     weekRange() {
-      let today = new Date()
-      let year = today.getFullYear()
-      let month = today.getMonth()
-      let date = today.getDate() + this.daysFromToday
-      let day_num = today.getDay()
-      let mondayDate = date - day_num + 1
-      let sundayDate = mondayDate + 6
-      let monday = new Date(year, month, mondayDate)
-      let sunday = new Date(year, month, sundayDate)
+      const today = this.$dayjs().add(this.daysFromToday, 'day')
+      const monday = today.weekday(0).$d
+      const sunday = today.weekday(6).$d
       return { monday, sunday }
     },
     weekString() {
-      let monday = this.weekRange.monday
-      let sunday = this.weekRange.sunday
-      let mondayString = `${monday.getMonth() + 1}/${monday.getDate()}(月)`
-      let sundayString = `${sunday.getMonth() + 1}/${sunday.getDate()}(日)`
+      const monday = this.$dayjs(this.weekRange.monday)
+      const sunday = this.$dayjs(this.weekRange.sunday)
+      const mondayString = monday.format('M/D(ddd)')
+      const sundayString = sunday.format('M/D(ddd)')
       return `${mondayString} - ${sundayString}`
     },
     leftDisabled() {
@@ -201,9 +207,9 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS, SET_START_
 </script>
 
 <style scoped>
-.task-board {
+/* .task-board { */
   /* background-color: rgb(242, 255, 240); */
-}
+/* } */
 .task-board__header {
   display: block;
   text-align: center;

@@ -11,7 +11,7 @@ export default {
     CompletedTasks
   },
   computed: {
-    today() { return new Date },
+    today() { return this.$dayjs(new Date) },
   }
 }
 </script>

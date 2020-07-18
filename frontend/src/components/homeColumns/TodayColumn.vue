@@ -16,7 +16,7 @@ export default {
     RemainingTasks
   },
   computed: {
-    today() { return new Date },
+    today() { return this.$dayjs() },
     remainings() {
       return this.$store.getters['daily/remainingTasks']
     }

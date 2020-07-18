@@ -25,9 +25,8 @@ export default {
             `message/${CREATE}`,
             { flash: message },
             { root: true }
-          ).then(() => {
-            router.push('/login')
-          })
+          )
+          router.push('/login')
         }
       }).catch(err => err)
     },
@@ -65,9 +64,8 @@ export default {
             `message/${CREATE}`,
             { flash: res.data.message },
             { root: true }
-          ).then(() => {
-            router.push('/')
-          })
+          )
+          router.push('/')
         } else if (res.data.errors) {
           dispatch(
             `message/${CREATE}`,
@@ -79,9 +77,8 @@ export default {
             `message/${CREATE}`,
             { flash: res.data.error },
             { root: true }
-          ).then(() => {
-            router.push('/login')
-          })
+          )
+          router.push('/login')
         }
       }).catch(err => err)
     },

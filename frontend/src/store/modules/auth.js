@@ -36,9 +36,8 @@ export default {
             `message/${CREATE}`,
             { flash: res.data.message },
             { root: true }
-          ).then(() => {
-            router.push('/')
-          })
+          )
+          router.push('/')
         } else {
           dispatch(
             `message/${CREATE}`,
@@ -59,9 +58,8 @@ export default {
           `message/${CREATE}`,
           { flash: res.data.message },
           { root: true }
-        ).then(() => {
-          router.push('/login')
-        })
+        )
+        router.push('/login')
       }).catch(err => err)
     },
     [SET_NAME]({ commit, dispatch }) {

@@ -8,13 +8,15 @@
       <draggable
         tag="ul"
         :group="dragGroup"
+        :list="taskList"
+        :animation="200"
         @end="onDragEnd"
         @clone="onClone"
         data-remaining="true"
         handle=".handle"
       >
         <li
-          v-for="task of remainingTasks"
+          v-for="task of taskList"
           :key="task.id"
           :data-task_id="task.id"
           class="task-board__li"
@@ -61,7 +63,7 @@ import {
 } from '@/store/mutation-types'
 
 export default {
-  name: 'DailyTasks',
+  name: 'RemainingTasks',
   props: {
     remainingTasks: Array
   },
@@ -70,6 +72,7 @@ export default {
       onUpdatedTaskId: '',
       dragGroup: 'REMAINING',
       draggingId: null,
+      taskList: []
     }
   },
   components: {
@@ -140,7 +143,7 @@ export default {
         })
       }
     },
-    upload(task) {
+    async upload(task) {
       if (this.currentTask) return false;
 
       let taskId = task.id
@@ -151,10 +154,8 @@ export default {
         taskId,
         isCurrent: true
       }
+      await this[START_TASK]({ taskId })
       this[UPDATE_TASK_ORDER](payload)
-        .then(() => {
-          this[START_TASK]({ taskId })
-        })
     },
     onClone() {
       this.disableDrag(false)
@@ -163,6 +164,14 @@ export default {
       this.dragGroup = (boolean ? 'REMAINING' : 'TASKS')
     }
   },
+  watch: {
+    remainingTasks: {
+      immediate: true,
+      handler(tasks) {
+        this.taskList = tasks
+      }
+    }
+  }
 }
 </script>
 

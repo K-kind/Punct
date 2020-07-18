@@ -11,6 +11,7 @@ import {
   PATCH,
   DELETE
 } from '../mutation-types'
+import dayjs from '@/plugins/dayjs.js'
 
 export default {
   namespaced: true,
@@ -20,9 +21,11 @@ export default {
   getters: {
     dailyTasks(state) {
       return date => {
+        const dateString = date.format('YYYY-MM-DD')
         return state.tasks.filter(task =>
-          (new Date(task.date)).toDateString() === date.toDateString() &&
-          !task.is_current && !task.is_completed
+          task.date === dateString &&
+          !task.is_current &&
+          !task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
           if (a.order > b.order) return 1;
@@ -32,8 +35,9 @@ export default {
     },
     completedTasks(state) {
       return date => {
+        const dateString = date.format('YYYY-MM-DD')
         return state.tasks.filter(task =>
-          (new Date(task.date)).toDateString() === date.toDateString() &&
+          task.date === dateString &&
           task.is_completed
         ).sort((a, b) => {
           if (a.order < b.order) return -1;
@@ -43,12 +47,12 @@ export default {
       }
     },
     remainingTasks(state) {
-      let today = (new Date) - (1000 * 60 * 60 * 15) // 昨日の09:00以降
-      return state.tasks.filter(task => {
-        if (task.is_completed || task.is_current) return false;
-        let taskDate = new Date(task.date)
-        if (taskDate < today) return task;
-      })
+      const today = dayjs((new Date).toLocaleDateString())
+      return state.tasks.filter(task =>
+        !task.is_completed &&
+        !task.is_current &&
+        today.isAfter(task.date)
+      )
     },
     currentTask(state) {
       return state.tasks.find(task => task.is_current)
@@ -154,7 +158,5 @@ export default {
         commit(SET_UPDATED_TASK, { task: res.data.task })
       }).catch(err => err)
     },
-  },
-  modules: {
   },
 }
