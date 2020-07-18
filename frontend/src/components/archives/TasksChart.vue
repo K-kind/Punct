@@ -16,13 +16,32 @@ export default {
   },
   data () {
     return {
-      tasks: [],
-      chartData: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+      calendars: [],
+    }
+  },
+  computed: {
+    labelDates() {
+      return this.calendars.map(cal =>
+        this.$dayjs(cal.date).format('M/Dddd')
+      )
+    },
+    elapsedSums() {
+      return this.calendars.map(cal =>
+        this.toHours(cal.elapsed_sum)
+      )
+    },
+    expectedSums() {
+      return this.calendars.map(cal =>
+        this.toHours(cal.expected_sum)
+      )
+    },
+    chartData() {
+      return {
+        labels: this.labelDates,
         datasets: [
           {
-            label: 'Bar Dataset',
-            data: [10, 20, 30, 40, 50, 30],
+            label: '実測時間 (h)',
+            data: this.elapsedSums,
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
               'rgba(54, 162, 235, 0.2)',
@@ -42,43 +61,40 @@ export default {
             borderWidth: 1
           },
           {
-            label: 'Line Dataset',
-            data: [10, 50, 20, 30, 30, 40],
+            label: '予定時間 (h)',
+            data: this.expectedSums,
             borderColor: '#CFD8DC',
             fill: false,
             type: 'line',
             lineTension: 0.3,
           }
         ]
-      },
-      options: {
+      }
+    },
+    options() {
+      return {
         responsive: true,
-        maintainAspectRatio: false
-        // scales: {
-        //   xAxes: [{
-        //     scaleLabel: {
-        //       display: true,
-        //       labelString: 'Month'
-        //     }
-        //   }],
-        //   yAxes: [{
-        //     ticks: {
-        //       beginAtZero: true,
-        //       stepSize: 10,
-        //     }
-        //   }]
-        // }
+        maintainAspectRatio: false,
       }
     }
   },
-  created () {
+  methods: {
+    toHours(sum) {
+      if (!sum) return 0;
+
+      // const m = Math.ceil(sum / (1000 * 60))
+      // return Math.ceil(sum / (1000 * 60 * 60))
+      return Math.round(sum / (1000 * 60 * 60) * 10) / 10
+    }
+  },
+  created() {
     this.$store.dispatch(
       `http/${GET}`,
       { url: 'tasks/chart', params: { fromBase: this.fromBase } }
     ).then(res => {
-      this.tasks = res.data.tasks
+      this.calendars = res.data.calendars
     })
-  }
+  },
 }
 </script>
 

@@ -104,9 +104,10 @@ class TasksController < ApplicationController
   end
 
   def chart
-    start_date = Time.zone.today + (params[:fromBase].to_i * 30) - 27
-    tasks = Calendar.with_tasks(start_date, @current_user.id)
-    render json: { tasks: tasks }
+    range = 21
+    start_date = Time.zone.today + (params[:fromBase].to_i * range) - range
+    calendars = Calendar.with_tasks(start_date, start_date + range, @current_user.id)
+    render json: { calendars: calendars }
   end
 
   private
