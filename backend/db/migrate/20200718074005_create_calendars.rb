@@ -3,5 +3,6 @@ class CreateCalendars < ActiveRecord::Migration[6.0]
     create_table :calendars do |t|
       t.date :date
     end
+    add_index :calendars, :date
   end
 end
