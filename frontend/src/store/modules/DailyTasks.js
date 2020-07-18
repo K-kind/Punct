@@ -47,12 +47,12 @@ export default {
       }
     },
     remainingTasks(state) {
-      let today = (new Date) - (1000 * 60 * 60 * 15) // 昨日の09:00以降
-      return state.tasks.filter(task => {
-        if (task.is_completed || task.is_current) return false;
-        let taskDate = new Date(task.date)
-        if (taskDate < today) return task;
-      })
+      const today = dayjs((new Date).toLocaleDateString())
+      return state.tasks.filter(task =>
+        !task.is_completed &&
+        !task.is_current &&
+        today.isAfter(task.date)
+      )
     },
     currentTask(state) {
       return state.tasks.find(task => task.is_current)
