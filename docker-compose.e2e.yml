@@ -27,20 +27,13 @@ services:
     depends_on:
       - app
 
-  # cypress:
-  #   image: punct_cypress:latest
-  #   depends_on:
-  #     - web
-  #   environment:
-  #     CYPRESS_baseUrl: http://web
-  #     VUE_APP_API_URL: http://web/api/
-  #   command: yarn test:e2e --url http://web:80/ --headless
-  #   volumes:
-  #     - frontend/tests/e2e:/myapp/tests/e2e
-  #     # - ./e2e/cypress:/app/cypress
-  #     # - ./e2e/cypress.json:/app/cypress.json
+  cypress:
+    image: punct_cypress:e2e
+    command: tail -f /dev/null
+    volumes:
+      - ./frontend/tests/e2e:/myapp/tests/e2e
+    depends_on:
+      - web
 
 volumes:
   e2e-socket-data:
-
-# コマンド docker-compose -f docker-compose.e2e.yml up

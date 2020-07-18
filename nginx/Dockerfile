@@ -27,7 +27,7 @@ CMD /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
 FROM node:12.18.0-alpine as e2e-build-stage
 WORKDIR /myapp
 ENV TZ Asia/Tokyo
-ENV VUE_APP_API_URL http://localhost/api/
+ENV VUE_APP_API_URL http://web/api/
 
 COPY frontend/package.json frontend/yarn.lock /myapp/
 RUN yarn install

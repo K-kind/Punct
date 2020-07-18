@@ -13,7 +13,7 @@
 Cypress.Commands.add('login', () => {
   cy.request({
     method: 'POST',
-    url: 'http://localhost/api/auth',
+    url: `http://${Cypress.env('API_HOST')}/api/auth`,
     body: {
       email: 'test@example.com',
       password: 'password'

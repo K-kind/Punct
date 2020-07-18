@@ -17,10 +17,13 @@ COPY . /myapp
 
 CMD ["yarn", "serve"]
 
-FROM cypress/base:12.18.0 as cypress
+FROM cypress/base:12.18.0 as e2e
 
 WORKDIR /myapp
 ENV TZ Asia/Tokyo
+ENV CYPRESS_API_HOST web
+ENV CYPRESS_baseUrl http://web
+RUN npm install -g wait-on
 
 COPY package.json yarn.lock /myapp/
 RUN yarn install
