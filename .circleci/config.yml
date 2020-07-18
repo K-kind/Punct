@@ -110,19 +110,16 @@ jobs:
       docker_layer_caching: false
     steps:
       - checkout
-      - run: env
-      - run: export DOCKER_BUILDKIT=1
-      - run: export RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
-      - run: env
-      # - run: docker build -t punct_app:e2e --target e2e backend
-      # - run: docker build -t punct_cypress:e2e --target e2e frontend
-      # - run: docker build -t punct_web:e2e --target e2e -f nginx/Dockerfile .
-      # - run: docker-compose -f docker-compose.e2e.yml up -d
-      # - run: docker-compose -f docker-compose.e2e.yml exec cypress wait-on --interval 1000 http://web/api/auth/name
-      # - run: docker-compose -f docker-compose.e2e.yml exec cypress yarn run cypress run
-      # - run: docker-compose -f docker-compose.e2e.yml down
-      # - store_artifacts:
-      #     path: frontend/tests/e2e/videos
+      # env RAILS_MASTER_KEY
+      - run: DOCKER_BUILDKIT=1 docker build -t punct_app:e2e --target e2e backend
+      - run: DOCKER_BUILDKIT=1 docker build -t punct_cypress:e2e --target e2e frontend
+      - run: DOCKER_BUILDKIT=1 docker build -t punct_web:e2e --target e2e -f nginx/Dockerfile .
+      - run: docker-compose -f docker-compose.e2e.yml up -d
+      - run: docker-compose -f docker-compose.e2e.yml exec cypress wait-on --interval 1000 http://web/api/auth/name
+      - run: docker-compose -f docker-compose.e2e.yml exec cypress yarn run cypress run
+      - run: docker-compose -f docker-compose.e2e.yml down
+      - store_artifacts:
+          path: frontend/tests/e2e/videos
 
   # # 環境変数のAWS_ECR_ACCOUNT_URL、AWS_ACCESS_KEY_ID、AWS_SECRET_ACCESS_KEYはデフォルトで使われる
   # deploy-service-update:
