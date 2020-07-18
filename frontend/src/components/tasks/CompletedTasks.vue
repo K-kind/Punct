@@ -82,7 +82,7 @@ export default {
     }
   },
   props: {
-    date: Date
+    date: Object
   },
   components: {
     draggable,
@@ -94,14 +94,10 @@ export default {
       return this.completedTasks(this.date)
     },
     dateString() {
-      let weekDay = ['日', '月', '火', '水', '木', '金', '土']
-      let month =  this.date.getMonth() + 1
-      let date =  this.date.getDate()
-      let day = weekDay[this.date.getDay()]
-      return `${month}/${date}(${day})`
+      return this.date.format('M/D(ddd)')
     },
     separatedDate() {
-      return this.date.toLocaleDateString()
+      return this.date.format('YYYY-MM-DD')
     },
     totalTime() {
       let times = this.computedTasks.map(task => task.elapsed_time)
@@ -147,7 +143,7 @@ export default {
         expected_time: e.expected_time,
         elapsed_time: e.elapsed_time,
         is_completed: true,
-        date: this.date.toLocaleDateString(),
+        date: this.date.format('YYYY-MM-DD'),
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)

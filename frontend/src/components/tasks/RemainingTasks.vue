@@ -63,7 +63,7 @@ import {
 } from '@/store/mutation-types'
 
 export default {
-  name: 'DailyTasks',
+  name: 'RemainingTasks',
   props: {
     remainingTasks: Array
   },

@@ -87,7 +87,7 @@ export default {
     }
   },
   props: {
-    date: Date,
+    date: Object,
     forToday: Boolean
   },
   components: {
@@ -100,10 +100,10 @@ export default {
       return this.dailyTasks(this.date)
     },
     dateString() {
-      return this.$dayjs(this.date).format('M/D(ddd)')
+      return this.date.format('M/D(ddd)')
     },
     separatedDate() {
-      return this.date.toLocaleDateString() // '2020/6/28'
+      return this.date.format('YYYY-MM-DD')
     },
     totalTime() {
       let times = this.computedTasks.map(task => task.expected_time)
@@ -149,7 +149,7 @@ export default {
         expected_time: e.expected_time,
         is_completed: false,
         elapsed_time: 0,
-        date: this.date.toLocaleDateString(),
+        date: this.separatedDate,
         order: newOrder
       }
       this[ADD_NEW_TASK](newTask)

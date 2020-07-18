@@ -21,7 +21,7 @@ export default {
   getters: {
     dailyTasks(state) {
       return date => {
-        const dateString = dayjs(date).format('YYYY-MM-DD')
+        const dateString = date.format('YYYY-MM-DD')
         return state.tasks.filter(task =>
           task.date === dateString &&
           !task.is_current &&
@@ -35,7 +35,7 @@ export default {
     },
     completedTasks(state) {
       return date => {
-        const dateString = dayjs(date).format('YYYY-MM-DD')
+        const dateString = date.format('YYYY-MM-DD')
         return state.tasks.filter(task =>
           task.date === dateString &&
           task.is_completed
