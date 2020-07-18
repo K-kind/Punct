@@ -37,23 +37,10 @@ commands:
           paths:
             - frontend/node_modules
 
-  # yarn-installation:
-  #   description: "yarn installation and caching"
-  #   steps:
-  #     - restore_cache:
-  #         keys:
-  #           - v1-yarn-{{ checksum "yarn.lock" }}
-  #           - v1-yarn-
-  #     - run: yarn install
-  #     - save_cache:
-  #         key: v1-yarn-{{ checksum "yarn.lock" }}
-  #         paths:
-  #           - ./node_modules
-
-# orbs:
-#   aws-cli: circleci/aws-cli@1.0.0
-#   aws-ecr: circleci/aws-ecr@6.8.2
-#   aws-ecs: circleci/aws-ecs@1.1.0
+orbs:
+  aws-cli: circleci/aws-cli@1.2.1
+  aws-ecr: circleci/aws-ecr@6.10.0
+  aws-ecs: circleci/aws-ecs@1.2.0
 
 jobs:
   rubocop:
@@ -120,26 +107,20 @@ jobs:
       - store_artifacts:
           path: frontend/tests/e2e/videos
 
-  # # 環境変数のAWS_ECR_ACCOUNT_URL、AWS_ACCESS_KEY_ID、AWS_SECRET_ACCESS_KEYはデフォルトで使われる
-  # deploy-service-update:
-  #   executor: aws-cli/default
-  #   steps:
-  #     - aws-cli/setup:
-  #         aws-region: AWS_REGION
-  #     - aws-ecs/update-task-definition:
-  #         family: "memorizer-task"
-  #         container-image-name-updates: "container=web,tag=${CIRCLE_SHA1}"
-  #     - aws-ecs/update-task-definition:
-  #         family: "memorizer-task"
-  #         container-image-name-updates: "container=app,tag=${CIRCLE_SHA1}"
-  #     - aws-ecs/update-task-definition:
-  #         family: "memorizer-cron-task"
-  #         container-image-name-updates: "container=cron-worker,tag=${CIRCLE_SHA1}"
-  #     - aws-ecs/update-service:
-  #         family: "memorizer-task"
-  #         cluster-name: "memorizer-cluster"
-  #         service-name: "memorizer-service"
-  #         container-image-name-updates: "container=sidekiq,tag=${CIRCLE_SHA1}"
+  # 環境変数のAWS_ECR_ACCOUNT_URL、AWS_ACCESS_KEY_ID、AWS_SECRET_ACCESS_KEYはデフォルトで使われる
+  deploy-service-update:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/setup:
+          aws-region: AWS_REGION
+      - aws-ecs/update-task-definition:
+          family: "punct-task"
+          container-image-name-updates: "container=web,tag=${CIRCLE_SHA1}"
+      - aws-ecs/update-service:
+          family: "punct-task"
+          cluster-name: "punct-cluster"
+          service-name: "punct-service"
+          container-image-name-updates: "container=app,tag=${CIRCLE_SHA1}"
 
 workflows:
   version: 2.1
@@ -151,29 +132,35 @@ workflows:
             - rubocop
       - jest
       - cypress
-      # - aws-ecr/build-and-push-image:
-      #     name: build-and-push-image1
-      #     create-repo: true
-      #     path: ./containers/nginx/
-      #     repo: memorizer_web
-      #     tag: "${CIRCLE_SHA1}"
-      #     requires:
-      #       - rspec
-      #     filters:
-      #       branches:
-      #         only: master
-      # - aws-ecr/build-and-push-image:
-      #     name: build-and-push-image2
-      #     create-repo: true
-      #     extra-build-args: --target production --build-arg KEY=$RAILS_MASTER_KEY
-      #     repo: memorizer_app
-      #     tag: "${CIRCLE_SHA1}"
-      #     requires:
-      #       - rspec
-      #     filters:
-      #       branches:
-      #         only: master
-      # - deploy-service-update:
-      #     requires:
-      #       - build-and-push-image1
-      #       - build-and-push-image2
+      - aws-ecr/build-and-push-image:
+          name: build-and-push-image-web
+          create-repo: true
+          dockerfile: nginx/Dockerfile
+          extra-build-args: --target production
+          repo: web
+          tag: "${CIRCLE_SHA1}"
+          requires:
+            - rspec
+            - jest
+            - cypress
+          filters:
+            branches:
+              only: master
+      - aws-ecr/build-and-push-image:
+          name: build-and-push-image-app
+          create-repo: true
+          path: backend
+          extra-build-args: --target production --build-arg KEY=$RAILS_MASTER_KEY
+          repo: app
+          tag: "${CIRCLE_SHA1}"
+          requires:
+            - rspec
+            - jest
+            - cypress
+          filters:
+            branches:
+              only: master
+      - deploy-service-update:
+          requires:
+            - build-and-push-image-web
+            - build-and-push-image-app
