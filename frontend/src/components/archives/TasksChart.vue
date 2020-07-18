@@ -7,7 +7,7 @@
 </template>
 
 <script>
-// import { SET_TASKS, SET_START_DATE } from '@/store/mutation-types'
+import { GET } from '@/store/mutation-types'
 import Chart from '@/components/Chart.js'
 export default {
   name: 'TasksChart',
@@ -16,6 +16,7 @@ export default {
   },
   data () {
     return {
+      tasks: [],
       chartData: {
         labels: ['January', 'February', 'March', 'April', 'May', 'June'],
         datasets: [
@@ -70,10 +71,14 @@ export default {
       }
     }
   },
-  // extends: Line,
-  // mounted () {
-  //   this.renderChart(this.chartData, this.options)
-  // }
+  created () {
+    this.$store.dispatch(
+      `http/${GET}`,
+      { url: 'tasks/chart', params: { fromBase: this.fromBase } }
+    ).then(res => {
+      this.tasks = res.data.tasks
+    })
+  }
 }
 </script>
 

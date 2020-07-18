@@ -9,19 +9,6 @@ class Task < ApplicationRecord
   validates :order, presence: true,
                     numericality: { greater_than_or_equal_to: 0 }
 
-  scope :with_calendar, ->(start_date) {
-    where('calendars.date >= ? AND calendars.date <= ?', start_date, start_date + 30)
-    .joins(
-      'RIGHT OUTER JOIN calendars
-      ON calendars.date = tasks.date'
-    )
-    .select(
-      'calendars.date,
-      SUM(tasks.expected_time) AS expected_sum,
-      SUM(tasks.elapsed_time) AS elapsed_sum'
-    ).group('calendars.id')
-  }
-
   class << self
     def from_this_day(from_today = 0)
       today = Time.zone.today
