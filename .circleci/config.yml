@@ -112,13 +112,11 @@ jobs:
     steps:
       - checkout
       # env RAILS_MASTER_KEY
-      - run: DOCKER_BUILDKIT=1 docker build -t punct_app:e2e --target e2e backend
-      - run: DOCKER_BUILDKIT=1 docker build -t punct_cypress:e2e --target e2e frontend
-      - run: DOCKER_BUILDKIT=1 docker build -t punct_web:e2e --target e2e -f nginx/Dockerfile .
-      - run: docker-compose -f docker-compose.e2e.yml up -d
-      - run: docker-compose -f docker-compose.e2e.yml exec cypress wait-on --interval 1000 http://web/api/auth/name
-      - run: docker-compose -f docker-compose.e2e.yml exec cypress yarn run cypress run
-      - run: docker-compose -f docker-compose.e2e.yml down
+      - run: docker-compose -f e2e-compose.yml build
+      - run: docker-compose -f e2e-compose.yml up -d
+      - run: docker-compose -f e2e-compose.yml exec cypress wait-on --interval 1000 http://web/api/auth/name
+      - run: docker-compose -f e2e-compose.yml exec cypress yarn run cypress run
+      - run: docker-compose -f e2e-compose.yml down
       - store_artifacts:
           path: frontend/tests/e2e/videos
 

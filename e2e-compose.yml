@@ -8,7 +8,9 @@ services:
       - "3306:3306"
 
   app:
-    image: punct_app:e2e
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.e2e
     environment:
       FRONTEND_URL: http://localhost
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
@@ -19,7 +21,9 @@ services:
       - db
 
   web:
-    image: punct_web:e2e
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile.e2e
     volumes:
       - e2e-socket-data:/myapp/tmp/sockets
     ports:
@@ -28,7 +32,9 @@ services:
       - app
 
   cypress:
-    image: punct_cypress:e2e
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.e2e
     command: tail -f /dev/null
     volumes:
       - ./frontend/tests/e2e:/myapp/tests/e2e

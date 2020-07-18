@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:experimental
 
-FROM node:12.18.0-alpine as develop
+FROM node:12.18.0-alpine
 
 WORKDIR /myapp
 ENV TZ Asia/Tokyo
@@ -16,16 +16,3 @@ RUN --mount=type=cache,target=/myapp/.cache/node_modules \
 COPY . /myapp
 
 CMD ["yarn", "serve"]
-
-FROM cypress/base:12.18.0 as e2e
-
-WORKDIR /myapp
-ENV TZ Asia/Tokyo
-ENV CYPRESS_API_HOST web
-ENV CYPRESS_baseUrl http://web
-RUN npm install -g wait-on
-
-COPY package.json yarn.lock /myapp/
-RUN yarn install
-
-COPY . /myapp
