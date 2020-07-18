@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import dailyStore from '@/store/modules/DailyTasks.js'
+import dayjs from '@/plugins/dayjs.js'
 import {
   SET_TASKS,
   SET_UPDATED_TASK,
@@ -119,7 +120,7 @@ afterEach(() => {
 
 describe('dailyTasks getter', () => {
   it('returns sorted tasks of a date', () => {
-    const date = new Date('2020-07-14')
+    const date = dayjs('2020-07-14')
     const actual = dailyStore.getters.dailyTasks(state)(date)
 
     expect(actual).toEqual([ tasks[2], tasks[1], tasks[0] ])
@@ -128,7 +129,7 @@ describe('dailyTasks getter', () => {
 
 describe('completedTasks getter', () => {
   it('returns sorted completed tasks of a date', () => {
-    const date = new Date('2020-07-14')
+    const date = dayjs('2020-07-14')
     const actual = dailyStore.getters.completedTasks(state)(date)
 
     expect(actual).toEqual([ tasks[5], tasks[4], tasks[3] ])

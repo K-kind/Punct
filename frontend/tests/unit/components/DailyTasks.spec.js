@@ -76,7 +76,7 @@ describe('DailyTasks.vue', () => {
     })
     wrapper = shallowMount(DailyTasks, {
       propsData: {
-        date: new Date,
+        date: dayjs(new Date),
         forToday: false
       },
       store, localVue
