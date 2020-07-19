@@ -168,6 +168,9 @@ export default {
   &:hover {
     color: $theme-green!important;
   }
+  &.is-active {
+    color: $theme-green !important;
+  }
 }
 
 </style>

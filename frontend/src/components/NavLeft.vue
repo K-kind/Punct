@@ -1,6 +1,6 @@
 <template>
   <div class="nav-left">
-    <a @click="logOut" href="Javascript:void(0)">ログアウト</a>
+    <span @click="logOut">ログアウト</span>
   </div>
 </template>
 
