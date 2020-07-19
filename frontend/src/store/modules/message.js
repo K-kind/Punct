@@ -18,6 +18,7 @@ export default {
     },
     [DESTROY](state) {
       state.flash = ''
+      state.duration = 2500
       state.errors = []
     }
   },

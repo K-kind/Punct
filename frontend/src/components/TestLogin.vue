@@ -3,6 +3,7 @@
     <el-button
       @click.prevent="onClick"
       class="login-btn"
+      :class="{ disabled: nowLoading }"
       size="small"
       native-type="submit"
     >
@@ -38,6 +39,12 @@ export default {
   font-weight: bold;
   &:hover, &:focus {
     background-color: $light-primary !important;
+  }
+  & i {
+    font-weight: bold;
+  }
+  &.disabled {
+    pointer-events: none;
   }
 }
 </style>
