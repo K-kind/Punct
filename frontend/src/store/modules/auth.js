@@ -4,6 +4,7 @@ import {
   CREATE,
   DESTROY,
   SET_NAME,
+  TEST_LOGIN,
   GET,
   POST,
   DELETE,
@@ -15,8 +16,8 @@ export default {
     userName: '',
   },
   mutations: {
-    [SET_NAME](state, userName) {
-      state.userName = userName
+    [SET_NAME](state, name) {
+      state.userName = name
     },
     [DESTROY](state) {
       state.userName = ''
@@ -44,6 +45,24 @@ export default {
             { errors: res.data.errors },
             { root: true }
           )
+        }
+      }).catch(err => err)
+    },
+    [TEST_LOGIN]({ commit, dispatch }) {
+      dispatch(
+        `http/${POST}`,
+        { url: 'auth/test' },
+        { root: true }
+      ).then(res => { // res.data = { message, name }
+        let name = res.data.name
+        if (name) {
+          commit(SET_NAME, name)
+          dispatch(
+            `message/${CREATE}`,
+            { flash: res.data.message, duration: 4000 },
+            { root: true }
+          )
+          router.push('/')
         }
       }).catch(err => err)
     },

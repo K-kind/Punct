@@ -24,7 +24,7 @@
                 :type="f.type"
                 :placeholder="f.nameJa"
                 :name="f.name"
-                :autofocus="f.first"
+                :ref="f.first ? 'first' : null"
                 autocomplete="on"
                 size="small"
                 :maxlength="255"
@@ -113,6 +113,9 @@ export default {
       this.params.email = user.email
     }
   },
+  mounted() {
+    this.$refs.first[0].focus()
+  }
 }
 </script>
 

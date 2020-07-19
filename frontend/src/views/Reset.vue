@@ -30,7 +30,7 @@ export default {
         {
           name: 'password',
           nameJa: 'パスワード',
-          first: false,
+          first: true,
           type: 'password',
           icon: 'el-icon-unlock',
           rules: 'required|min:6|max:20'

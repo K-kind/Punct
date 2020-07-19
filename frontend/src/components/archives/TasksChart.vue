@@ -49,7 +49,7 @@ export default {
       )
     },
     gradient1() {
-      if (!this.canvas) return 'silver';
+      if (!this.canvas) return '#42b983';
 
       const gradient = this.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
       gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)')
@@ -58,7 +58,7 @@ export default {
       return gradient
     },
     gradient2() {
-      if (!this.canvas) return 'silver';
+      if (!this.canvas) return '#ea4335';
 
       const gradient = this.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
       gradient.addColorStop(0, 'rgb(66, 185, 131, 0.9)')

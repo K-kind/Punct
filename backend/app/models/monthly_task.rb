@@ -8,5 +8,25 @@ class MonthlyTask < LongTask
       end
       where(start_date: start_dates)
     end
+
+    def create_samples
+      start_date = Time.zone.today.beginning_of_month
+      create!(
+        content: 'ビジネス書を3冊読み切る',
+        order: 0,
+        start_date: start_date,
+        is_checked: true
+      )
+      create!(
+        content: '技術書を3冊読み切る',
+        order: 1,
+        start_date: start_date
+      )
+      create!(
+        content: '勉強会に3回参加する',
+        order: 2,
+        start_date: start_date
+      )
+    end
   end
 end

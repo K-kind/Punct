@@ -23,7 +23,7 @@ export default {
         if (message) {
           dispatch(
             `message/${CREATE}`,
-            { flash: message },
+            { flash: message, duration: 4000 },
             { root: true }
           )
           router.push('/login')
@@ -40,7 +40,7 @@ export default {
         if (message) {
           dispatch(
             `message/${CREATE}`,
-            { flash: message },
+            { flash: message, duration: 4000 },
             { root: true }
           )
         } else {
@@ -62,7 +62,7 @@ export default {
           commit(`auth/${SET_NAME}`, res.data.name, { root: true })
           dispatch(
             `message/${CREATE}`,
-            { flash: res.data.message },
+            { flash: res.data.message, duration: 4000 },
             { root: true }
           )
           router.push('/')
@@ -75,7 +75,7 @@ export default {
         } else if (res.data.error) {
           dispatch(
             `message/${CREATE}`,
-            { flash: res.data.error },
+            { flash: res.data.error, duration: 4000 },
             { root: true }
           )
           router.push('/login')

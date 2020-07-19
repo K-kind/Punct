@@ -1,5 +1,5 @@
 class AuthController < ApplicationController
-  skip_before_action :require_login, only: [:create, :name, :success, :failure]
+  skip_before_action :require_login, except: [:destroy]
 
   def name
     name = current_user&.name
@@ -32,5 +32,11 @@ class AuthController < ApplicationController
 
   def failure
     redirect_to ENV.fetch('FRONTEND_URL') + '/oauth'
+  end
+
+  def test
+    user = User.create_test
+    log_in user
+    render json: { message: 'テストログインしました。データは7日後に削除されます。', name: user.name }
   end
 end
