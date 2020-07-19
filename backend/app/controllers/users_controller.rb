@@ -5,7 +5,7 @@ class UsersController < ApplicationController
     user = User.new(user_params)
     if user.save(context: :signup)
       log_in user
-      payload = { message: '登録が完了しました。', name: user.name }
+      payload = { message: '登録が完了しました。', name: user.auth_json }
     else
       payload = { errors: user.errors.full_messages }
     end
@@ -20,7 +20,8 @@ class UsersController < ApplicationController
     payload = if @current_user.update(user_params)
                 {
                   message: 'ユーザー情報を更新しました。',
-                  user: @current_user.mypage_json
+                  user: @current_user.mypage_json,
+                  name: @current_user.auth_json
                 }
               else
                 { errors: @current_user.errors.full_messages }

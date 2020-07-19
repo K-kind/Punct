@@ -122,7 +122,7 @@ describe('CLEAR action', () => {
 describe('UPDATE action', () => {
   it('calls PATCH, commits GET & SET_NAME and creates flash successfully', async () => {
     const dispatch = dispatchWithRes({
-      data: { message: 'user updated', user: { name: 'tester' } }
+      data: { message: 'user updated', user: { name: 'tester' }, name: { name: 'tester' } }
     })
     const userParams = { email: 'email' }
     await userStore.actions[UPDATE]({ commit, dispatch }, userParams)
@@ -134,7 +134,7 @@ describe('UPDATE action', () => {
     )
     expect(commit).toHaveBeenCalledWith(GET, { name: 'tester' })
     expect(commit).toHaveBeenCalledWith(
-      `auth/${SET_NAME}`, 'tester', { root: true }
+      `auth/${SET_NAME}`, { name: 'tester' }, { root: true }
     )
     expect(dispatch).toHaveBeenCalledWith(
       `message/${CREATE}`,

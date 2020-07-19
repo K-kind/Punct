@@ -23,7 +23,7 @@ class PasswordResetsController < ApplicationController
     if @user.update(user_params)
       log_in @user
       @user.update!(reset_digest: nil)
-      payload = { message: 'パスワードが再設定されました。', name: @user.name }
+      payload = { message: 'パスワードが再設定されました。', name: @user.auth_json }
     else
       payload = { errors: @user.errors.full_messages }
     end
