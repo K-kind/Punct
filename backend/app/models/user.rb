@@ -58,6 +58,10 @@ class User < ApplicationRecord
         password: SecureRandom.hex(9),
         is_test: true
       )
+      user.weekly_tasks.create_samples
+      user.monthly_tasks.create_samples
+      user.tasks.create_samples
+      user
     end
   end
 
