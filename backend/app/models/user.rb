@@ -81,6 +81,10 @@ class User < ApplicationRecord
     reset_sent_at < 2.hours.ago
   end
 
+  def mypage_json
+    { name: name, email: email, provider: provider }
+  end
+
   private
 
   def downcase_email

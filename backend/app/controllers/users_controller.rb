@@ -13,14 +13,14 @@ class UsersController < ApplicationController
   end
 
   def show
-    render json: { user: user_json(@current_user) }
+    render json: { user: @current_user.mypage_json }
   end
 
   def update
     payload = if @current_user.update(user_params)
                 {
                   message: 'ユーザー情報を更新しました。',
-                  user: user_json(@current_user)
+                  user: @current_user.mypage_json
                 }
               else
                 { errors: @current_user.errors.full_messages }
