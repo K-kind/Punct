@@ -68,7 +68,7 @@ export default {
         {
           name: 'email',
           nameJa: 'メールアドレス',
-          first: false,
+          first: true,
           type: 'email',
           icon: 'el-icon-message',
           rules: 'required|email'
