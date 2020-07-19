@@ -87,8 +87,7 @@ export default {
         { url: 'auth/name' },
         { root: true }
       ).then(res => {
-        let userName = res.data.name
-        if (userName) { commit(SET_NAME, userName) }
+        commit(SET_NAME, res.data.name)
       }).catch(err => err)
     },
   }
