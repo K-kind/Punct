@@ -85,7 +85,7 @@ export default {
   color: $theme-gray;
 }
 .body {
-  padding: 50px 10px 0;
+  padding: 50px 10px 16px;
 }
 .el-menu {
   position: fixed!important;
@@ -167,6 +167,9 @@ export default {
   color: $theme-gray!important;
   &:hover {
     color: $theme-green!important;
+  }
+  &.is-active {
+    color: $theme-green !important;
   }
 }
 

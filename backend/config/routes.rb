@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     end
 
     resources :tasks, only: [:index, :create, :update, :destroy] do
+      get :chart, on: :collection
       post :order, on: :collection
       patch :start, on: :member
       patch :stop, on: :member
