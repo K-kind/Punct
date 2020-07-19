@@ -51,5 +51,14 @@ export default [
       isPublic: true,
       forGuest: true
     }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('@/views/About.vue'),
+    meta: {
+      isPublic: true,
+      forGuest: true
+    }
   }
 ]

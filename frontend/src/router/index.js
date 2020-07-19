@@ -26,7 +26,7 @@ export function beforeResolve(to, from, next) {
   } else if (to.meta.isPublic || userName) {
     next()
   } else {
-    next('/login')
+    next('/about')
   }
 }
 

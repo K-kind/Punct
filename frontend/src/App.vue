@@ -35,6 +35,13 @@
       </template>
       <template v-else>
         <el-menu-item
+          index="/about"
+          :route="{ path: '/about' }"
+          class="el-menu-item__left"
+        >
+          Punct
+        </el-menu-item>
+        <el-menu-item
           index="/login"
           :route="{ path: '/login' }"
           class="el-menu-item__left"
