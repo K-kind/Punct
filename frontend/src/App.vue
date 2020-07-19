@@ -66,7 +66,7 @@ export default {
   },
   computed: {
     userName() {
-      return this.$store.state.auth.userName
+      return this.$store.state.auth.userName.name
     }
   },
   watch: {

@@ -5,7 +5,7 @@ describe('App.vue', () => {
   const wrapper = shallowMount(App, {
     mocks: {
       $store: {
-        state: { auth: { userName: '山田太郎' } }
+        state: { auth: { userName: { name: '山田太郎', is_test: false } } }
       }
     },
     stubs: {
