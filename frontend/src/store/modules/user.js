@@ -37,7 +37,7 @@ export default {
           commit(`auth/${SET_NAME}`, name, { root: true })
           dispatch(
             `message/${CREATE}`,
-            { flash: res.data.message },
+            { flash: res.data.message, duration: 4000 },
             { root: true }
           )
           router.push('/')
@@ -96,7 +96,7 @@ export default {
         commit(CLEAR)
         dispatch(
           `message/${CREATE}`,
-          { flash: res.data.message },
+          { flash: res.data.message, duration: 4000 },
           { root: true }
         )
         router.push('/login')

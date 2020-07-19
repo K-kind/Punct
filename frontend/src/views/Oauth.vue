@@ -11,14 +11,16 @@ export default {
   name: 'Oauth',
   created() {
     let message = 'ログインしました。'
+    let duration = 2500
     let path = '/'
     if (!this.$store.state.auth.userName) {
       message = '認証に失敗しました。'
+      duration = 4000
       path = '/login'
     }
     this.$store.dispatch(
       `message/${CREATE}`,
-      { flash: message }
+      { flash: message, duration }
     ).then(() => {
       this.$router.push(path)
     })

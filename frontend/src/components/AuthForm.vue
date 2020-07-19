@@ -26,19 +26,23 @@
       <li class="board__link">
         <slot name="reset-link"></slot>
       </li>
-      <slot name="links"></slot>
     </ul>
+    <div class="board__test-link">
+      <TestLogin />
+    </div>
   </div>
 </template>
 
 <script>
 import UserForm from '@/components/UserForm.vue'
+import TestLogin from '@/components/TestLogin.vue'
 import { CLEAR } from '@/store/mutation-types'
 
 export default {
   name: 'AuthForm',
   components: {
-    UserForm
+    UserForm,
+    TestLogin
   },
   props: {
     fields: Array,
@@ -100,6 +104,9 @@ export default {
       @include green-link;
       font-weight: bold;
     }
+  }
+  &__test-link {
+    text-align: center;
   }
 }
 </style>

@@ -31,11 +31,11 @@ describe('CREATE mutation', () => {
 
 describe('DESTROY mutation', () => {
   it('destroys a flash and errors', () => {
-    const state = { flash: 'flash message', errors: ['error1', 'error2'] }
+    const state = { flash: 'flash message', duration: 4000, errors: ['error1', 'error2'] }
 
     message.mutations[DESTROY](state)
 
-    expect(state).toEqual({ flash: '', errors: [] })
+    expect(state).toEqual({ flash: '', duration: 2500, errors: [] })
   })
 })
 

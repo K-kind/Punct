@@ -41,7 +41,7 @@ describe('CHECK_TOKEN action', () => {
     )
     expect(dispatch).toHaveBeenCalledWith(
       `message/${CREATE}`,
-      { flash: 'invalid token' },
+      { flash: 'invalid token', duration: 4000 },
       { root: true }
     )
     expect(router.push).toHaveBeenCalledWith('/login')
@@ -83,7 +83,7 @@ describe('CREATE action', () => {
     )
     expect(dispatch).toHaveBeenCalledWith(
       `message/${CREATE}`,
-      { flash: 'email was sent' },
+      { flash: 'email was sent', duration: 4000 },
       { root: true }
     )
   })
@@ -126,7 +126,7 @@ describe('UPDATE action', () => {
     )
     expect(dispatch).toHaveBeenCalledWith(
       `message/${CREATE}`,
-      { flash: 'password updated' },
+      { flash: 'password updated', duration: 4000 },
       { root: true }
     )
     expect(router.push).toHaveBeenCalledWith('/')
@@ -168,7 +168,7 @@ describe('UPDATE action', () => {
     expect(commit).not.toHaveBeenCalled()
     expect(dispatch).toHaveBeenCalledWith(
       `message/${CREATE}`,
-      { flash: 'invalid token' },
+      { flash: 'invalid token', duration: 4000 },
       { root: true }
     )
     expect(router.push).toHaveBeenCalledWith('/login')

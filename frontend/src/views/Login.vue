@@ -68,7 +68,7 @@ export default {
         {
           name: 'email',
           nameJa: 'メールアドレス',
-          first: false,
+          first: true,
           type: 'email',
           icon: 'el-icon-message',
           rules: 'required|email'
@@ -82,19 +82,21 @@ export default {
     },
     onResetSubmit(params) {
       this.$store.dispatch(`reset/${CREATE}`, params).then(() => {
-        let flash = this.$store.state.message.flash
+        const flash = this.$store.state.message.flash
+        const duration = this.$store.state.message.duration
         if (flash) {
           this.dialogVisible = false
-          this.$notify({ message: flash, duration: 3500, offset: 20 })
+          this.$notify({ message: flash, duration, offset: 20 })
           this.$store.dispatch(`message/${DESTROY}`)
         }
       })
     }
   },
   created() {
-    let flash = this.$store.state.message.flash
+    const flash = this.$store.state.message.flash
+    const duration = this.$store.state.message.duration
     if (flash) {
-      this.$notify({ message: flash, duration: 2500, offset: 20 })
+      this.$notify({ message: flash, duration, offset: 20 })
       // this.$store.dispatch(`message/${DESTROY}`) // 子コンポーネントで行われる
     }
   },

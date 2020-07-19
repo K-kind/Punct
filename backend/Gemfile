@@ -49,3 +49,5 @@ gem 'dotenv-rails'
 
 gem 'aws-sdk-rails'
 gem 'omniauth-google-oauth2'
+
+gem 'whenever'

@@ -62,9 +62,10 @@ export default {
     this.$store.dispatch(`weekly/${SET_START_DATE}`,{
       fromToday: 0, startDate: null, weekString: null
     })
-    let flash = this.$store.state.message.flash
+    const flash = this.$store.state.message.flash
+    const duration = this.$store.state.message.duration
     if (flash) {
-      this.$notify({ message: flash, duration: 2500, offset: 20 })
+      this.$notify({ message: flash, duration, offset: 20 })
       this.$store.dispatch(`message/${DESTROY}`)
     }
   },

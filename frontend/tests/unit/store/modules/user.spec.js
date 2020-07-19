@@ -67,7 +67,7 @@ describe('CREATE action', () => {
     )
     expect(dispatch).toHaveBeenCalledWith(
       `message/${CREATE}`,
-      { flash: 'signed up' },
+      { flash: 'signed up', duration: 4000 },
       { root: true }
     )
     expect(router.push).toHaveBeenCalledWith('/')
@@ -182,7 +182,7 @@ describe('DESTROY action', () => {
     expect(commit).toHaveBeenCalledWith(CLEAR)
     expect(dispatch).toHaveBeenCalledWith(
       `message/${CREATE}`,
-      { flash: 'Resigned' },
+      { flash: 'Resigned', duration: 4000 },
       { root: true }
     )
     expect(router.push).toHaveBeenCalledWith('/login')

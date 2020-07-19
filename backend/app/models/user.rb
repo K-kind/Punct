@@ -50,6 +50,19 @@ class User < ApplicationRecord
         user.password = SecureRandom.hex(9)
       end
     end
+
+    def create_test
+      user = create!(
+        name: '体験用ユーザー',
+        email: "test#{Time.zone.now.to_i}@punct.work",
+        password: SecureRandom.hex(9),
+        is_test: true
+      )
+      user.weekly_tasks.create_samples
+      user.monthly_tasks.create_samples
+      user.tasks.create_samples
+      user
+    end
   end
 
   def remember
@@ -79,6 +92,10 @@ class User < ApplicationRecord
 
   def password_reset_expired?
     reset_sent_at < 2.hours.ago
+  end
+
+  def mypage_json
+    { name: name, email: email, provider: provider, is_test: is_test }
   end
 
   private

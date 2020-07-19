@@ -21,5 +21,97 @@ class Task < ApplicationRecord
         where(date: [date_range, nil, today])
       end
     end
+
+    def create_samples
+      today = Time.zone.today
+      create!(
+        content: '読書をする',
+        expected_time: 60 * 60 * 1000,
+        order: 0,
+        date: today
+      )
+      create!(
+        content: '英単語を10個覚える',
+        expected_time: 30 * 60 * 1000,
+        order: 1,
+        date: today
+      )
+      create!(
+        content: 'リスニングをする',
+        expected_time: 20 * 60 * 1000,
+        order: 2,
+        date: today
+      )
+      create!(
+        content: '技術書を2章まで進める',
+        expected_time: 90 * 60 * 1000,
+        order: 0,
+        date: today + 1
+      )
+      create!(
+        content: '技術書を3章まで進める',
+        expected_time: 120 * 60 * 1000,
+        order: 0,
+        date: today + 2
+      )
+      create!(
+        content: '技術書を1章まで進める',
+        expected_time: 30 * 60 * 1000,
+        elapsed_time: 40 * 60 * 1000,
+        order: 0,
+        date: today,
+        is_completed: true
+      )
+      create!(
+        content: 'ビジネス書を読む',
+        expected_time: 30 * 60 * 1000,
+        elapsed_time: 20 * 60 * 1000,
+        order: 1,
+        date: today,
+        is_completed: true
+      )
+      create!(
+        content: '資格の勉強',
+        expected_time: 120 * 60 * 1000,
+        elapsed_time: 100 * 60 * 1000,
+        order: 0,
+        date: today - 1,
+        is_completed: true
+      )
+      create!(
+        content: '英単語を20個覚える',
+        expected_time: 60 * 60 * 1000,
+        elapsed_time: 90 * 60 * 1000,
+        order: 1,
+        date: today - 1,
+        is_completed: true
+      )
+      create!(
+        content: '筋トレをする',
+        expected_time: 60 * 60 * 1000,
+        elapsed_time: 90 * 60 * 1000,
+        order: 0,
+        date: today - 2,
+        is_completed: true
+      )
+      4.times do |n|
+        create!(
+          content: "テストタスク#{n}",
+          expected_time: (120 - n * 10) * 60 * 1000,
+          elapsed_time: (90 - n * 10) * 60 * 1000,
+          order: 0,
+          date: today - 3 - n,
+          is_completed: true
+        )
+      end
+      create!(
+        content: 'Punctを試してみる',
+        expected_time: 30 * 60 * 1000,
+        started_time: (Time.zone.now.to_f * 1000).to_i,
+        on_progress: true,
+        is_current: true,
+        order: 0
+      )
+    end
   end
 end

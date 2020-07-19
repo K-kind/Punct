@@ -76,6 +76,12 @@
         </span>
       </el-dialog>
     </div>
+    <div v-if="user.is_test" class="for-test-user">
+      <p>
+        ※ 体験用ユーザーは、初回ログインから7日後に全データが削除されます。<br>
+        正規ユーザーを作成される場合は、ログアウト後、新規登録にお進みください。
+      </p>
+    </div>
   </div>
 </template>
 
@@ -156,10 +162,11 @@ export default {
     },
     onSubmit(params) {
       this.$store.dispatch(`user/${UPDATE}`, params).then(() => {
-        let flash = this.$store.state.message.flash
+        const flash = this.$store.state.message.flash
+        const duration = this.$store.state.message.duration
         if (flash) {
           this.closeForm()
-          this.$notify({ message: flash, duration: 2500, offset: 20 })
+          this.$notify({ message: flash, duration, offset: 20 })
           this.$store.dispatch(`message/${DESTROY}`)
         }
       })
@@ -215,6 +222,12 @@ export default {
     a {
       @include gray-link;
     }
+  }
+}
+.for-test-user {
+  width: 520px;
+  p {
+    line-height: 1.5;
   }
 }
 </style>
