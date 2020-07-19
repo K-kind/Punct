@@ -179,8 +179,8 @@ export default {
 
       this.taskList = []
       if (!payload) {
-        let toDate = (new Date).toLocaleDateString()
-        let newIndex = this.completedTasks(new Date).length
+        let toDate = this.$dayjs().format('YYYY-MM-DD')
+        let newIndex = this.completedTasks(this.$dayjs()).length
         payload = {
           toDate,
           newIndex,
