@@ -4,6 +4,7 @@ import {
   CREATE,
   DESTROY,
   SET_NAME,
+  TEST_LOGIN,
   GET,
   POST,
   DELETE,
@@ -44,6 +45,24 @@ export default {
             { errors: res.data.errors },
             { root: true }
           )
+        }
+      }).catch(err => err)
+    },
+    [TEST_LOGIN]({ commit, dispatch }) {
+      dispatch(
+        `http/${POST}`,
+        { url: 'auth/test' },
+        { root: true }
+      ).then(res => { // res.data = { message, name }
+        let name = res.data.name
+        if (name) {
+          commit(SET_NAME, name)
+          dispatch(
+            `message/${CREATE}`,
+            { flash: res.data.message },
+            { root: true }
+          )
+          router.push('/')
         }
       }).catch(err => err)
     },

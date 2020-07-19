@@ -23,7 +23,7 @@ export function beforeEach(to, from, next) {
 }
 
 export function beforeResolve(to, from, next) {
-  let userName = Store.state.auth.userName
+  let userName = Store.state.auth.userName.name
   if (to.meta.forGuest && userName) {
     next('/') // ログイン済み
   } else if (to.meta.isPublic || userName) {
