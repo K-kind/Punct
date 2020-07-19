@@ -61,9 +61,12 @@ export default {
       if (!this.canvas) return 'silver';
 
       const gradient = this.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
-      gradient.addColorStop(0, 'rgba(0, 231, 255, 0.9)')
-      gradient.addColorStop(0.5, 'rgba(0, 231, 255, 0.25)');
-      gradient.addColorStop(1, 'rgba(0, 231, 255, 0)');
+      gradient.addColorStop(0, 'rgb(66, 185, 131, 0.9)')
+      gradient.addColorStop(0.5, 'rgb(66, 185, 131, 0.25)')
+      gradient.addColorStop(1, 'rgb(66, 185, 131, 0)')
+      // gradient.addColorStop(0, 'rgba(0, 231, 255, 0.9)')
+      // gradient.addColorStop(0.5, 'rgba(0, 231, 255, 0.25)')
+      // gradient.addColorStop(1, 'rgba(0, 231, 255, 0)')
       return gradient
     },
     chartData() {
@@ -86,8 +89,10 @@ export default {
             label: '予定時間 (h)',
             data: this.expectedSums,
             backgroundColor: this.gradient2,
-            borderColor: '#00e7ffe6',
-            pointBackgroundColor: '#00e7ffe6',
+            borderColor: '#42b983',
+            pointBackgroundColor: '#42b983',
+            // borderColor: '#00e7ffe6',
+            // pointBackgroundColor: '#00e7ffe6',
             borderWidth: 1,
             // pointBorderColor: 'white',
             // type: 'line',
