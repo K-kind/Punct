@@ -185,6 +185,6 @@ describe('DESTROY action', () => {
       { flash: 'Resigned', duration: 4000 },
       { root: true }
     )
-    expect(router.push).toHaveBeenCalledWith('/login')
+    expect(router.push).toHaveBeenCalledWith('/about')
   })
 })

@@ -1,10 +1,12 @@
 describe('Routing for guests', () => {
-  it('redirects to the login path', () => {
+  it('redirects to the about path', () => {
     cy.visit('/')
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq('/login')
+      expect(loc.pathname).to.eq('/about')
     })
+  })
 
+  it('redirects to the login path', () => {
     cy.visit('/archives')
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq('/login')

@@ -25,8 +25,10 @@ export function beforeResolve(to, from, next) {
     next('/') // ログイン済み
   } else if (to.meta.isPublic || userName) {
     next()
-  } else {
+  } else if (to.path === '/') {
     next('/about')
+  } else {
+    next('/login')
   }
 }
 
