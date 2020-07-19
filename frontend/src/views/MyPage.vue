@@ -76,6 +76,12 @@
         </span>
       </el-dialog>
     </div>
+    <div v-if="user.is_test" class="for-test-user">
+      <p>
+        ※ 体験用ユーザーは、初回ログインから7日後に全データが削除されます。<br>
+        正規ユーザーを作成される場合は、ログアウト後、新規登録にお進みください。
+      </p>
+    </div>
   </div>
 </template>
 
@@ -215,6 +221,12 @@ export default {
     a {
       @include gray-link;
     }
+  }
+}
+.for-test-user {
+  width: 520px;
+  p {
+    line-height: 1.5;
   }
 }
 </style>
