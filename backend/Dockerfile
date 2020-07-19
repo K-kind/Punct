@@ -4,6 +4,12 @@ FROM ruby:2.7.1 AS base
 RUN mkdir /myapp
 WORKDIR /myapp
 ENV TZ Asia/Tokyo
+
+RUN apt-get update -qq \
+    && apt-get install -y cron \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY Gemfile Gemfile.lock /myapp/
 
 RUN bundle config path ".cache/bundle"

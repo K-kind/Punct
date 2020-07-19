@@ -17,5 +17,5 @@ set :environment, rails_env
 
 every '0 4 * * *' do # 毎日4時
   command 'echo [CRONTAB LOGGER] `date`'
-  runner 'UpdateTestUser.new'
+  runner 'lib/tasks/clean_test_users.rb'
 end
