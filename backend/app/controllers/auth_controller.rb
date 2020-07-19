@@ -2,7 +2,7 @@ class AuthController < ApplicationController
   skip_before_action :require_login, except: [:destroy]
 
   def name
-    name = current_user&.auth_json
+    name = current_user&.name
     render json: { name: name }
   end
 
@@ -11,7 +11,7 @@ class AuthController < ApplicationController
     if user&.authenticate(params[:password])
       log_in user
       params[:remember] ? remember(user) : forget(user)
-      payload = { message: 'ログインしました。', name: user.auth_json }
+      payload = { message: 'ログインしました。', name: user.name }
     else
       payload = { errors: ['メールアドレスまたはパスワードが正しくありません。'] }
     end
@@ -37,6 +37,6 @@ class AuthController < ApplicationController
   def test
     user = User.create_test
     log_in user
-    render json: { message: 'テストログインしました。データは7日後に削除されます。', name: user.auth_json }
+    render json: { message: 'テストログインしました。データは7日後に削除されます。', name: user.name }
   end
 end

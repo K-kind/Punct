@@ -12,7 +12,7 @@ export default {
   created() {
     let message = 'ログインしました。'
     let path = '/'
-    if (!this.$store.state.auth.userName.name) {
+    if (!this.$store.state.auth.userName) {
       message = '認証に失敗しました。'
       path = '/login'
     }

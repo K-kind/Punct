@@ -90,12 +90,8 @@ class User < ApplicationRecord
     reset_sent_at < 2.hours.ago
   end
 
-  def auth_json
-    { name: name, is_test: is_test }
-  end
-
   def mypage_json
-    { name: name, email: email, provider: provider }
+    { name: name, email: email, provider: provider, is_test: is_test }
   end
 
   private

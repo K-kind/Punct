@@ -27,12 +27,12 @@ afterEach(() => {
 
 describe('SET_NAME mutation', () => {
   it('updates the userName state', () => {
-    const userName = { name: 'tester', is_test: false }
-    const state = { userName: {} }
+    const userName = 'tester'
+    const state = { userName: '' }
 
     auth.mutations[SET_NAME](state, userName)
 
-    expect(state).toEqual({ userName: userName })
+    expect(state).toEqual({ userName: 'tester' })
   })
 })
 

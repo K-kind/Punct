@@ -67,11 +67,11 @@ export default {
         `http/${PATCH}`,
         { url: 'user', data: { user: params } },
         { root: true }
-      ).then(res => { // res.data = { message, user, name } or { errors }
+      ).then(res => { // res.data = { message, user } or { errors }
         let user = res.data.user
         if (user) {
           commit(GET, user)
-          commit(`auth/${SET_NAME}`, res.data.name, { root: true })
+          commit(`auth/${SET_NAME}`, user.name, { root: true })
           dispatch(
             `message/${CREATE}`,
             { flash: res.data.message },

@@ -13,11 +13,11 @@ import {
 export default {
   namespaced: true,
   state: {
-    userName: {},
+    userName: '',
   },
   mutations: {
-    [SET_NAME](state, { name, is_test }) {
-      state.userName = { name, is_test }
+    [SET_NAME](state, name) {
+      state.userName = name
     },
     [DESTROY](state) {
       state.userName = ''

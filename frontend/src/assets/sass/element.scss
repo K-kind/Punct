@@ -51,6 +51,12 @@
 }
 
 .el-notification {
-  background-color: $light-gray;
-  border: 1px solid $theme-gray;
+  background-color: $light-primary;
+  border: 1px solid $primary;
+  &__content {
+    margin-top: 4px;
+  }
+  p {
+    color: $thick-primary !important;
+  }
 }
