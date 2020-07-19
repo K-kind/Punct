@@ -11,9 +11,10 @@
     padding: 6px 10px;
   }
   &__body {
-    padding: 3px 4px 10px 11px;
+    padding: 0px 4px 10px 11px;
     ul {
       min-height: 24px;
+      padding-top: 4px;
       padding-bottom: 6px;
     }
   }
@@ -41,7 +42,7 @@
   &__li {
     position: relative;
     padding: 4px 0;
-    // width: 300px;
+    // display: inline-block;
   }
   &__task {
     cursor: pointer;

@@ -1,12 +1,15 @@
 <template>
-  <el-button
-    @click.prevent="onClick"
-    class="login-btn"
-    size="small"
-    native-type="submit"
-  >
-    テストユーザーで体験
-  </el-button>
+  <span>
+    <el-button
+      @click.prevent="onClick"
+      class="login-btn"
+      size="small"
+      native-type="submit"
+    >
+      <i v-if="nowLoading" class="el-icon-loading"></i>
+      テストユーザーで体験
+    </el-button>
+  </span>
 </template>
 
 <script>
@@ -14,8 +17,14 @@ import { TEST_LOGIN } from '@/store/mutation-types'
 
 export default {
   name: 'TestLogin',
+  data() {
+    return {
+      nowLoading: false
+    }
+  },
   methods: {
     onClick() {
+      this.nowLoading = true
       this.$store.dispatch(`auth/${TEST_LOGIN}`)
     }
   }

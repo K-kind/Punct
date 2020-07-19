@@ -110,7 +110,7 @@ class Task < ApplicationRecord
         started_time: (Time.zone.now.to_f * 1000).to_i,
         on_progress: true,
         is_current: true,
-        order: 0,
+        order: 0
       )
     end
   end
