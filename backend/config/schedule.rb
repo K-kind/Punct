@@ -17,6 +17,7 @@ set :environment, rails_env
 # end
 
 every '0 4,15 * * *' do # 毎日4, 15時
-  runner 'puts "[CRONTAB LOGGER] #{Time.zone.now}"'
+  command 'echo [CRONTAB LOGGER] `date`'
+  # runner 'puts "[CRONTAB LOGGER] #{Time.zone.now}"'
   runner 'lib/tasks/clean_test_users.rb'
 end
