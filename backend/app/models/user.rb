@@ -50,6 +50,15 @@ class User < ApplicationRecord
         user.password = SecureRandom.hex(9)
       end
     end
+
+    def create_test
+      user = create!(
+        name: '体験用ユーザー',
+        email: "test#{Time.zone.now.to_i}@punct.work",
+        password: SecureRandom.hex(9),
+        is_test: true
+      )
+    end
   end
 
   def remember
