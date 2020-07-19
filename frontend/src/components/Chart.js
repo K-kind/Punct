@@ -1,11 +1,14 @@
-import { Line, mixins } from 'vue-chartjs'
-const { reactiveProp } = mixins
+import { Line } from 'vue-chartjs'
 
 export default {
-  props: ['options'],
-  mixins: [reactiveProp],
+  props: ['chartData', 'options'],
   extends: Line,
-  mounted () {
-    this.renderChart(this.chartData, this.options)
+  mounted() {
+    this.$emit('set-canvas', this.$refs.canvas)
+  },
+  watch: {
+    chartData() {
+      this.renderChart(this.chartData, this.options)
+    }
   }
 }

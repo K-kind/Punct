@@ -1,6 +1,6 @@
 class Calendar < ApplicationRecord
   scope :with_tasks, ->(start_date, end_date, user_id) {
-    where('calendars.date >= ? AND calendars.date <= ?', start_date, end_date)
+    where('calendars.date > ? AND calendars.date <= ?', start_date, end_date)
       .joins(
         "LEFT OUTER JOIN tasks
         ON calendars.date = tasks.date
