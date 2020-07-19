@@ -7,15 +7,14 @@ export default {
   namespaced: true,
   state: {
     flash: '',
+    duration: 2500,
     errors: [],
   },
   mutations: {
-    [CREATE](state, data) {
-      if (data.flash) {
-        state.flash = data.flash
-      } else {
-        state.errors = data.errors
-      }
+    [CREATE](state, { flash, duration, errors }) {
+      state.flash = flash || state.flash
+      state.duration = duration || state.duration
+      state.errors = errors || state.errors
     },
     [DESTROY](state) {
       state.flash = ''

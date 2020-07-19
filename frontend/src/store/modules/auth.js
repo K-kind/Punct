@@ -59,7 +59,7 @@ export default {
           commit(SET_NAME, name)
           dispatch(
             `message/${CREATE}`,
-            { flash: res.data.message },
+            { flash: res.data.message, duration: 4000 },
             { root: true }
           )
           router.push('/')
