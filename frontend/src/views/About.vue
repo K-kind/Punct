@@ -24,13 +24,12 @@
       <p>
         体験用データを持つテストユーザーで、お試しいだだくことができます。
       </p>
-      <TestLogin />
+      <TestLogin :bigButton="true" />
     </div>
   </div>
 </template>
 
 <script>
-// import { CREATE } from '@/store/mutation-types'
 import TestLogin from '@/components/TestLogin.vue'
 
 export default {
@@ -38,22 +37,6 @@ export default {
   components: {
     TestLogin
   }
-  // created() {
-  //   let message = 'ログインしました。'
-  //   let duration = 2500
-  //   let path = '/'
-  //   if (!this.$store.state.auth.userName) {
-  //     message = '認証に失敗しました。'
-  //     duration = 4000
-  //     path = '/login'
-  //   }
-  //   this.$store.dispatch(
-  //     `message/${CREATE}`,
-  //     { flash: message, duration }
-  //   ).then(() => {
-  //     this.$router.push(path)
-  //   })
-  // }
 }
 </script>
 
@@ -95,7 +78,7 @@ p, li, a {
     }
   }
   &__bottom-links {
-    padding: 32px 0 24px;
+    padding: 32px 0;
     text-align: center;
     p {
       padding-bottom: 14px;

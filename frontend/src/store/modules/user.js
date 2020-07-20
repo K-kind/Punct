@@ -99,7 +99,7 @@ export default {
           { flash: res.data.message, duration: 4000 },
           { root: true }
         )
-        router.push('/about')
+        router.push('/login')
       }).catch(err => err)
     },
   }
