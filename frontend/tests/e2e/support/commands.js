@@ -17,6 +17,9 @@ Cypress.Commands.add('login', () => {
     body: {
       email: 'test@example.com',
       password: 'password'
+    },
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
     }
   })
 })

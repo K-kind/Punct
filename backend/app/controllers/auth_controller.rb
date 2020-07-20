@@ -1,4 +1,5 @@
 class AuthController < ApplicationController
+  skip_before_action :check_xhr_header, only: [:name]
   skip_before_action :require_login, except: [:destroy]
 
   def name

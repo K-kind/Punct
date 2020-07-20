@@ -96,14 +96,16 @@ export default {
   methods: {
     ...mapActions('daily', [DELETE_TASK_BY_ID]),
     formBlur(e) {
-      if (
-        this.taskContentData === this.taskContent &&
-        this.taskExpectedTimeData == this.taskExpectedTime &&
-        this.taskElapsedTimeData == this.taskElapsedTime &&
-        !e.relatedTarget
-      ) {
-        this.$emit('close-form')
-      }
+      setTimeout(() => { // number inputのcontrollはe.relatedTargetにならないため
+        if (
+          this.taskContentData === this.taskContent &&
+          this.taskExpectedTimeData == this.taskExpectedTime &&
+          this.taskElapsedTimeData == this.taskElapsedTime &&
+          !e.relatedTarget
+        ) {
+          this.$emit('close-form')
+        }
+      }, 100)
     },
     closeForm() {
       this.taskContentData = ''

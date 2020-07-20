@@ -1,4 +1,6 @@
 class WeeklyTasksController < ApplicationController
+  skip_before_action :check_xhr_header, only: [:index]
+
   def index
     from_today = params[:fromToday].to_i
 
