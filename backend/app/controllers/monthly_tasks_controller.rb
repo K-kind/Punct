@@ -1,4 +1,6 @@
 class MonthlyTasksController < ApplicationController
+  skip_before_action :check_xhr_header, only: [:index]
+
   def index
     from_today = params[:fromToday].to_i
     tasks = @current_user.monthly_tasks.from_this_day(from_today)

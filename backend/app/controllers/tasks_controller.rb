@@ -1,4 +1,6 @@
 class TasksController < ApplicationController
+  skip_before_action :check_xhr_header, only: [:index, :chart]
+
   def index
     daily = @current_user.tasks.from_this_day
     weekly = @current_user.weekly_tasks.from_this_day
