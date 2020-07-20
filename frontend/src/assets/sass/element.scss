@@ -37,14 +37,6 @@
   color: $theme-gray;
 }
 
-.el-divider {
-  background-color: #aaa;
-  &__text {
-    color: $theme-gray;
-    background-color: $light-gray;
-  }
-}
-
 .el-dialog {
   width: 30%;
   min-width: 320px;

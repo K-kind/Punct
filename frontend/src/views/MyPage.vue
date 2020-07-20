@@ -221,13 +221,14 @@ export default {
     line-height: 32px;
     a {
       @include gray-link;
+      text-decoration: underline;
     }
   }
 }
 .for-test-user {
   width: 520px;
   p {
-    line-height: 1.5;
+    line-height: 1.8;
   }
 }
 </style>
