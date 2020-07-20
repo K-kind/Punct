@@ -18,6 +18,11 @@ export default [
     component: () => import('@/views/MyPage.vue')
   },
   {
+    path: '/help',
+    name: 'Help',
+    component: () => import('@/views/Help.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login,

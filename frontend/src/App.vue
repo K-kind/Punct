@@ -29,7 +29,12 @@
           >
             マイページ
           </el-menu-item>
-          <el-menu-item>ヘルプ</el-menu-item>
+          <el-menu-item
+            index="/help"
+            :route="{ path: '/help' }"
+          >
+            ヘルプ
+          </el-menu-item>
           <el-menu-item><NavLeft /></el-menu-item>
         </el-submenu>
       </template>
