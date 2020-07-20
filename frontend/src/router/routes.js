@@ -18,6 +18,11 @@ export default [
     component: () => import('@/views/MyPage.vue')
   },
   {
+    path: '/help',
+    name: 'Help',
+    component: () => import('@/views/Help.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login,
@@ -47,6 +52,15 @@ export default [
     path: '/reset',
     name: 'Reset',
     component: () => import('@/views/Reset.vue'),
+    meta: {
+      isPublic: true,
+      forGuest: true
+    }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('@/views/About.vue'),
     meta: {
       isPublic: true,
       forGuest: true

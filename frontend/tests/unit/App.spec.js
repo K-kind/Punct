@@ -3,6 +3,11 @@ import App from '@/App.vue'
 
 describe('App.vue', () => {
   const wrapper = shallowMount(App, {
+    data() {
+      return {
+        navIsShown: true
+      }
+    },
     mocks: {
       $store: {
         state: { auth: { userName: '山田太郎' } }

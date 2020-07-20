@@ -3,7 +3,7 @@
     <el-button
       @click.prevent="onClick"
       class="login-btn"
-      :class="{ disabled: nowLoading }"
+      :class="{ disabled: nowLoading, big: bigButton }"
       size="small"
       native-type="submit"
     >
@@ -22,6 +22,9 @@ export default {
     return {
       nowLoading: false
     }
+  },
+  props: {
+    bigButton: Boolean
   },
   methods: {
     onClick() {
@@ -45,6 +48,9 @@ export default {
   }
   &.disabled {
     pointer-events: none;
+  }
+  &.big {
+    font-size: 1.6rem;
   }
 }
 </style>

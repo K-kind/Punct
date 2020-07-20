@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="chart">
-      <h2>毎日のタスク時間</h2>
+      <h2 class="chart__heading">日別のタスク時間</h2>
       <Chart :chartData="chartData" :options="options" @set-canvas="setCanvas" />
       <div class="chart__links">
         <a @click="fromBase -= 1" href="javascript:">
@@ -156,6 +156,9 @@ export default {
   margin: 0 auto;
   padding-top: 24px;
   padding-bottom: 16px;
+  &__heading {
+    text-align: center;
+  }
   &__links {
     display: flex;
     justify-content: space-between;

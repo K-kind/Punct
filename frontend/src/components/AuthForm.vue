@@ -109,4 +109,11 @@ export default {
     text-align: center;
   }
 }
+.el-divider {
+  background-color: #aaa;
+  &__text {
+    color: $theme-gray;
+    background-color: $light-gray;
+  }
+}
 </style>

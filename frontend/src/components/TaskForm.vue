@@ -95,20 +95,15 @@ export default {
   },
   methods: {
     ...mapActions('daily', [DELETE_TASK_BY_ID]),
-    formBlur() {
-      let self = this
-      setTimeout(() => {
-        let activeElement = document.activeElement
-        if (
-          self.taskContentData === self.taskContent &&
-          self.taskExpectedTimeData == self.taskExpectedTime &&
-          self.taskElapsedTimeData == self.taskElapsedTime &&
-          activeElement.className !== 'el-input__inner' &&
-          activeElement.className !== 'el-button'
-        ) {
-          self.$emit('close-form')
-        }
-      }, 100)
+    formBlur(e) {
+      if (
+        this.taskContentData === this.taskContent &&
+        this.taskExpectedTimeData == this.taskExpectedTime &&
+        this.taskElapsedTimeData == this.taskElapsedTime &&
+        !e.relatedTarget
+      ) {
+        this.$emit('close-form')
+      }
     },
     closeForm() {
       this.taskContentData = ''
