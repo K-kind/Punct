@@ -55,17 +55,13 @@ export default {
     },
   },
   methods: {
-    formBlur() {
-      let self = this
-      setTimeout(() => {
-        let activeElement = document.activeElement
-        if (
-          self.taskContentData === self.taskContent &&
-          activeElement.className !== 'el-button'
-          ) {
-          self.$emit('close-form')
-        }
-      }, 100)
+    formBlur(e) {
+      if (
+        this.taskContentData === this.taskContent &&
+        !e.relatedTarget
+      ) {
+        this.$emit('close-form')
+      }
     },
     closeForm() {
       this.taskContentData = ''

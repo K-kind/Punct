@@ -12,14 +12,11 @@ const router = new VueRouter({
   routes
 })
 
-export function beforeEach(to, from, next) {
+export async function beforeEach(to, from, next) {
   if (!from.name) {
-    Store.dispatch(`auth/${SET_NAME}`).then(() => {
-      next()
-    })
-  } else {
-    next()
+    await Store.dispatch(`auth/${SET_NAME}`)
   }
+  next()
 }
 
 export function beforeResolve(to, from, next) {
@@ -28,6 +25,8 @@ export function beforeResolve(to, from, next) {
     next('/') // ログイン済み
   } else if (to.meta.isPublic || userName) {
     next()
+  } else if (to.path === '/') {
+    next('/about')
   } else {
     next('/login')
   }

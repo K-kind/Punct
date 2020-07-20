@@ -26,6 +26,14 @@ describe('beforeResolve as a guest', () => {
     expect(next).toHaveBeenCalledWith()
   })
 
+  it('redirects to about path when the root path is visited', async () => {
+    const to = { meta: {}, path: '/' }
+
+    beforeResolve(to, undefined, next)
+
+    expect(next).toHaveBeenCalledWith('/about')
+  })
+
   it('redirects to login path when a not public path is visited', async () => {
     const to = { meta: {} }
 

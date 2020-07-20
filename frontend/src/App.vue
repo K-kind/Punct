@@ -1,49 +1,66 @@
 <template>
   <div id="app">
-    <el-menu :default-active="activeIndex" mode="horizontal" router>
-      <el-menu-item
-        v-show="userName"
-        index="/"
-        :route="{ path: '/' }"
-        class="el-menu-item__left"
-      >
-        ホーム
-      </el-menu-item>
-      <el-menu-item
-        v-show="userName"
-        index="/archives"
-        :route="{ path: '/archives' }"
-        class="el-menu-item__left"
-      >
-        アーカイブ
-      </el-menu-item>
-      <el-submenu v-show="userName" index="MyPage" :show-timeout="10">
-        <template slot="title">{{ userName }}</template>
+    <el-menu
+      v-if="navIsShown"
+      :default-active="activeIndex"
+      mode="horizontal"
+      router
+    >
+      <template v-if="userName">
         <el-menu-item
-          index="/mypage"
-          :route="{ path: '/mypage' }"
+          index="/"
+          :route="{ path: '/' }"
+          class="el-menu-item__left"
         >
-          マイページ
+          ホーム
         </el-menu-item>
-        <el-menu-item>ヘルプ</el-menu-item>
-        <el-menu-item><NavLeft /></el-menu-item>
-      </el-submenu>
-      <el-menu-item
-        v-show="!userName"
-        index="/login"
-        :route="{ path: '/login' }"
-        class="el-menu-item__left"
-      >
-        ログイン
-      </el-menu-item>
-      <el-menu-item
-        v-show="!userName"
-        index="/signup"
-        :route="{ path: '/signup' }"
-        class="el-menu-item__left"
-      >
-        新規登録
-      </el-menu-item>
+        <el-menu-item
+          index="/archives"
+          :route="{ path: '/archives' }"
+          class="el-menu-item__left"
+        >
+          アーカイブ
+        </el-menu-item>
+        <el-submenu index="rightMenu" :show-timeout="10">
+          <template slot="title">{{ userName }}</template>
+          <el-menu-item
+            index="/mypage"
+            :route="{ path: '/mypage' }"
+          >
+            マイページ
+          </el-menu-item>
+          <el-menu-item
+            index="/help"
+            :route="{ path: '/help' }"
+          >
+            ヘルプ
+          </el-menu-item>
+          <el-menu-item><NavLeft /></el-menu-item>
+        </el-submenu>
+      </template>
+      <template v-else>
+        <el-menu-item
+          index="/about"
+          :route="{ path: '/about' }"
+          class="el-menu-item__left"
+        >
+          Punct
+        </el-menu-item>
+        <el-menu-item
+          index="/login"
+          :route="{ path: '/login' }"
+          class="el-menu-item__left"
+        >
+          ログイン
+        </el-menu-item>
+        <el-menu-item
+          index="/signup"
+          :route="{ path: '/signup' }"
+          class="el-menu-item__left"
+        >
+          新規登録
+        </el-menu-item>
+      </template>
     </el-menu>
     <div class="body">
       <router-view/>
@@ -61,7 +78,8 @@ export default {
   },
   data() {
     return {
-      activeIndex: ''
+      activeIndex: '',
+      navIsShown: false
     }
   },
   computed: {
@@ -71,7 +89,12 @@ export default {
   },
   watch: {
     $route(to) {
-      this.activeIndex = to.path;
+      this.activeIndex = to.path
+    },
+    async userName() {
+      this.navIsShown = false
+      await this.$nextTick()
+      this.navIsShown = true
     }
   },
 }
@@ -173,4 +196,7 @@ export default {
   }
 }
 
+.el-menu.v-leave-to {
+  transition: none !important;
+}
 </style>
