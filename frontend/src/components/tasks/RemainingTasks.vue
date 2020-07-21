@@ -48,7 +48,7 @@
           ></TaskForm>
         </li>
       </draggable>
-      <a @click="cleanTasks" href="javascript:" class="task-board__add">
+      <a @click="clearTasks" href="javascript:" class="task-board__add">
         <i class="el-icon-delete"></i>
         全タスクを削除
       </a>
@@ -121,7 +121,7 @@ export default {
       this[UPDATE_TASK_CONTENT](payload)
       this.closeForm()
     },
-    claenTasks() {
+    clearTasks() {
       const taskIds = this.remainingTasks.map(task => task.id)
       this[CLEAR]({ taskIds })
     },

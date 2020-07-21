@@ -11,10 +11,15 @@ Rails.application.routes.draw do
     end
 
     resources :tasks, only: [:index, :create, :update, :destroy] do
-      get :chart, on: :collection
-      post :order, on: :collection
-      patch :start, on: :member
-      patch :stop, on: :member
+      collection do
+        get :chart
+        post :order
+        delete :clear
+      end
+      member do
+        patch :start
+        patch :stop
+      end
     end
 
     resources :weekly_tasks, only: [:index, :create, :update, :destroy] do
