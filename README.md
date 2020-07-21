@@ -1,8 +1,10 @@
 # Punct（パンクト）
 時間通り（Punctual）にタスクを管理するための、シンプルなSPAです。
+
 タスクを作成して、1つずつ取り組み、かかった時間を記録します。
 
 https://punct.work
+
 <img width="1200" alt="README 画像 Punct" src="https://user-images.githubusercontent.com/55728594/88036508-9dae8700-cb7e-11ea-906b-c49f519c28bc.gif">
 
 ## 工夫した点
@@ -36,7 +38,7 @@ https://punct.work
 
 ## gem
 - テスト、静的解析
-  - rspec | capybara | factory_bot_rails | shoulda-matcher
+  - rspec | factory_bot_rails | shoulda-matcher
   - rubocop
 - メール送信、SNSログイン
   - aws-sdk-rails
