@@ -1,7 +1,8 @@
 FROM nginx:1.19.0-alpine as develop
 RUN rm -f /etc/nginx/conf.d/*
 COPY nginx.dev.conf /etc/nginx/conf.d/myapp.conf
-CMD /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
+
+# ビルドコマンド docker buildx build -t punct_web --target develop nginx
 
 FROM node:12.18.0-alpine as build-stage
 WORKDIR /myapp
@@ -20,6 +21,5 @@ COPY --from=build-stage /myapp/dist /myapp/public
 
 RUN rm -f /etc/nginx/conf.d/*
 COPY nginx/nginx.conf /etc/nginx/conf.d/myapp.conf
-CMD /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
 
-# ビルドコマンド docker buildx build -t punct_web:production -f nginx/Dockerfile .
+# ビルドコマンド docker buildx build -t punct_web:production --target production -f nginx/Dockerfile .
