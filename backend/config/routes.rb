@@ -38,5 +38,7 @@ Rails.application.routes.draw do
 
     get '/statistics/users', to: 'statistics#users'
     get '/statistics/tasks', to: 'statistics#tasks'
+
+    post '/chores/contact', to: 'chores#contact'
   end
 end

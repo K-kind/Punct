@@ -1,5 +1,5 @@
 <template>
-  <form v-show="formIsOpen">
+  <form v-show="formIsOpen" ref="form">
     <div class="content-block">
       <el-input
         v-model="taskContentData"
@@ -56,9 +56,11 @@ export default {
   },
   methods: {
     formBlur(e) {
+      const form = this.$refs.form
+      const target = e.relatedTarget
       if (
         this.taskContentData === this.taskContent &&
-        !e.relatedTarget
+        !form.contains(target)
       ) {
         this.$emit('close-form')
       }

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="about-container">
     <AboutInfo />
     <div class="about__bottom-links">
       <router-link to="/signup" class="about__signup-link">
@@ -12,27 +12,35 @@
       </p>
       <TestLogin :bigButton="true" />
     </div>
+    <div class="about__footer">
+      <Footer />
+    </div>
   </div>
 </template>
 
 <script>
 import TestLogin from '@/components/TestLogin.vue'
 import AboutInfo from '@/components/AboutInfo.vue'
+import Footer from '@/components/Footer.vue'
 
 export default {
   name: 'About',
   components: {
     TestLogin,
-    AboutInfo
+    AboutInfo,
+    Footer
   }
 }
 </script>
 
 <style scoped lang="scss">
-.container {
+.about-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 18px;
+  overflow: scroll;
+  height: 100%;
 }
 p, li, a {
   font-size: 1.6rem;
@@ -49,6 +57,9 @@ p, li, a {
   &__signup-link {
     @include green-link;
     font-weight: bold;
+  }
+  &__footer {
+    padding: 24px 0;
   }
 }
 </style>

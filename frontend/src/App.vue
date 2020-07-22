@@ -35,7 +35,7 @@
           >
             ヘルプ
           </el-menu-item>
-          <el-menu-item><NavLeft /></el-menu-item>
+          <el-menu-item index="logout"><NavLeft /></el-menu-item>
         </el-submenu>
       </template>
       <template v-else>
@@ -106,9 +106,11 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: $theme-gray;
+  height: 100%;
 }
 .body {
-  padding: 50px 10px 16px;
+  padding-top: 35px;
+  height: 100%;
 }
 .el-menu {
   position: fixed!important;
