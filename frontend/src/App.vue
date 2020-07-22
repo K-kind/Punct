@@ -35,7 +35,7 @@
           >
             ヘルプ
           </el-menu-item>
-          <el-menu-item><NavLeft /></el-menu-item>
+          <el-menu-item index="logout"><NavLeft /></el-menu-item>
         </el-submenu>
       </template>
       <template v-else>
