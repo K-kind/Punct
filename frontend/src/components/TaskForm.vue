@@ -1,5 +1,5 @@
 <template>
-  <form v-show="formIsOpen">
+  <form v-show="formIsOpen" ref="form">
     <div>
       <el-input
         v-model="taskContentData"
@@ -96,12 +96,14 @@ export default {
   methods: {
     ...mapActions('daily', [DELETE_TASK_BY_ID]),
     formBlur(e) {
+      const form = this.$refs.form
+      const target = e.relatedTarget
       setTimeout(() => { // number inputのcontrollはe.relatedTargetにならないため
         if (
           this.taskContentData === this.taskContent &&
           this.taskExpectedTimeData == this.taskExpectedTime &&
           this.taskElapsedTimeData == this.taskElapsedTime &&
-          !e.relatedTarget
+          !form.contains(target)
         ) {
           this.$emit('close-form')
         }
