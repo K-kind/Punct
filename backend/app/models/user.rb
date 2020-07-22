@@ -24,6 +24,10 @@ class User < ApplicationRecord
   before_save :downcase_email
   attr_accessor :remember_token, :reset_token
 
+  scope :is_test, ->(is_test) {
+    where(is_test: is_test)
+  }
+
   class << self
     def digest(string)
       cost = if ActiveModel::SecurePassword.min_cost
