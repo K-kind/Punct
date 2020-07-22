@@ -11,6 +11,7 @@ import {
   MenuItem,
   Notification,
 } from 'element-ui'
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition'
 import lang from 'element-ui/lib/locale/lang/ja'
 import locale from 'element-ui/lib/locale'
 
@@ -26,4 +27,5 @@ Vue.use(Menu)
 Vue.use(Submenu)
 Vue.use(MenuItem)
 
+Vue.component(CollapseTransition.name, CollapseTransition)
 Vue.prototype.$notify = Notification;

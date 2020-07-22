@@ -63,7 +63,7 @@
       </template>
     </el-menu>
     <div class="body">
-      <router-view/>
+      <router-view />
     </div>
   </div>
 </template>

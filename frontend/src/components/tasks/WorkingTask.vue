@@ -154,9 +154,8 @@ export default {
         return false
       }
 
-      let self = this
       this.timerId = setInterval(() => {
-        self.computeElapsedTime()
+        this.computeElapsedTime()
       }, 1000)
     },
     start() {
@@ -247,6 +246,9 @@ export default {
         }
       }
     }
+  },
+  destroyed() {
+    clearInterval(this.timerId)
   }
 }
 </script>
