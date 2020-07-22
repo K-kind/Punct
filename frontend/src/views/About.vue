@@ -12,18 +12,23 @@
       </p>
       <TestLogin :bigButton="true" />
     </div>
+    <div class="about__footer">
+      <Footer />
+    </div>
   </div>
 </template>
 
 <script>
 import TestLogin from '@/components/TestLogin.vue'
 import AboutInfo from '@/components/AboutInfo.vue'
+import Footer from '@/components/Footer.vue'
 
 export default {
   name: 'About',
   components: {
     TestLogin,
-    AboutInfo
+    AboutInfo,
+    Footer
   }
 }
 </script>
@@ -52,6 +57,9 @@ p, li, a {
   &__signup-link {
     @include green-link;
     font-weight: bold;
+  }
+  &__footer {
+    padding: 24px 0;
   }
 }
 </style>

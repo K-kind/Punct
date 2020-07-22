@@ -49,6 +49,14 @@ export default [
     }
   },
   {
+    path: '/contact',
+    name: 'Contact',
+    component: () => import('@/views/Contact.vue'),
+    meta: {
+      isPublic: true
+    }
+  },
+  {
     path: '/reset',
     name: 'Reset',
     component: () => import('@/views/Reset.vue'),
