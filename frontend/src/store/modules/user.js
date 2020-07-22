@@ -6,6 +6,7 @@ import {
   SET_NAME,
   CLEAR,
   UPDATE,
+  CONTACT,
   GET,
   POST,
   PATCH,
@@ -102,5 +103,18 @@ export default {
         router.push('/login')
       }).catch(err => err)
     },
+    [CONTACT]({ dispatch }, params) { // params = { email, contacct }
+      return dispatch(
+        `http/${POST}`,
+        { url: 'chores/contact', data: params },
+        { root: true }
+      ).then(res => { // res.data = { message }
+        dispatch(
+          `message/${CREATE}`,
+          { flash: res.data.message, duration: 4000 },
+          { root: true }
+        )
+      }).catch(err => err)
+    }
   }
 }

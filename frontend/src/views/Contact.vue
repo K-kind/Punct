@@ -39,7 +39,7 @@
             <validation-provider
               v-slot="{ errors }"
               rules="required"
-              mode="eager"
+              mode="passive"
               name="お問い合わせ内容"
             >
               <el-input
@@ -74,7 +74,7 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { GET, CONTACT } from '@/store/mutation-types'
+import { GET, DESTROY, CONTACT } from '@/store/mutation-types'
 
 export default {
   name: 'Contact',
@@ -98,6 +98,12 @@ export default {
       this.$store.dispatch(`user/${CONTACT}`, {
         email: this.email,
         contact: this.contact
+      }).then(() => {
+        this.contact = ''
+        const flash = this.$store.state.message.flash
+        const duration = this.$store.state.message.duration
+        this.$notify({ message: flash, duration, offset: 20 })
+        this.$store.dispatch(`message/${DESTROY}`)
       })
     }
   },
