@@ -44,6 +44,17 @@ class TasksController < ApplicationController
     render json: { tasks: tasks }
   end
 
+  def clear
+    @current_user
+      .tasks
+      .where(id: params[:taskIds])
+      .destroy_all
+
+    from_today = params[:fromToday].to_i
+    tasks = @current_user.tasks.from_this_day(from_today)
+    render json: { tasks: tasks }
+  end
+
   def order
     old_index = params[:oldIndex]
     new_index = params[:newIndex]

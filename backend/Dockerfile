@@ -6,7 +6,7 @@ WORKDIR /myapp
 ENV TZ Asia/Tokyo
 
 RUN apt-get update -qq \
-    && apt-get install -y cron \
+    && apt-get install -y --no-install-recommends cron \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

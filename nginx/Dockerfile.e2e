@@ -15,6 +15,5 @@ COPY --from=e2e-build-stage /myapp/dist /myapp/public
 
 RUN rm -f /etc/nginx/conf.d/*
 COPY nginx/nginx.conf /etc/nginx/conf.d/myapp.conf
-CMD /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
 
 # コマンド docker buildx build -t punct_web:e2e --target e2e -f nginx/Dockerfile .

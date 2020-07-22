@@ -7,6 +7,7 @@ import {
   UPDATE_TASK_ORDER,
   START_TASK,
   STOP_TASK,
+  CLEAR,
   POST,
   PATCH,
   DELETE
@@ -158,5 +159,15 @@ export default {
         commit(SET_UPDATED_TASK, { task: res.data.task })
       }).catch(err => err)
     },
+    [CLEAR]({ commit, dispatch, rootState }, { taskIds }) {
+      const fromToday = rootState.weekly.fromToday
+      return dispatch(
+        `http/${DELETE}`,
+        { url: 'tasks/clear', data: { taskIds, fromToday } },
+        { root: true }
+      ).then(res => {
+        commit(SET_TASKS, res.data.tasks)
+      }).catch(err => err)
+    }
   },
 }

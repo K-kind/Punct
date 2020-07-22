@@ -48,6 +48,10 @@
           ></TaskForm>
         </li>
       </draggable>
+      <a @click="clearTasks" href="javascript:" class="task-board__add">
+        <i class="el-icon-delete"></i>
+        全タスクを削除
+      </a>
     </div>
   </div>
 </template>
@@ -59,7 +63,8 @@ import TaskForm from '@/components/TaskForm.vue'
 import {
   UPDATE_TASK_CONTENT,
   UPDATE_TASK_ORDER,
-  START_TASK
+  START_TASK,
+  CLEAR
 } from '@/store/mutation-types'
 
 export default {
@@ -93,7 +98,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, START_TASK]),
+    ...mapActions('daily', [UPDATE_TASK_CONTENT, UPDATE_TASK_ORDER, START_TASK, CLEAR]),
     toMinutes(time) {
       return Math.ceil(time / (1000 * 60))
     },
@@ -115,6 +120,10 @@ export default {
       let payload = { id: task_id, task: e }
       this[UPDATE_TASK_CONTENT](payload)
       this.closeForm()
+    },
+    clearTasks() {
+      const taskIds = this.remainingTasks.map(task => task.id)
+      this[CLEAR]({ taskIds })
     },
     onDragEnd(e) {
       this.disableDrag(true)
@@ -176,4 +185,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.task-board__add {
+  &:hover {
+    color: #fff;
+    font-weight: bold;
+    background-color: $danger;
+  }
+}
 </style>

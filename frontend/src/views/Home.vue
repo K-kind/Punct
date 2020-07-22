@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <ReloadNotify />
     <div class="working">
       <WorkingTask />
     </div>
@@ -31,6 +32,7 @@
 </template>
 
 <script>
+import ReloadNotify from '@/components/ReloadNotify.vue'
 import WorkingTask from '@/components/tasks/WorkingTask.vue'
 import CompletedColumn from '@/components/homeColumns/CompletedColumn.vue'
 import TodayColumn from '@/components/homeColumns/TodayColumn.vue'
@@ -43,6 +45,7 @@ import { SET_TASKS, SET_START_DATE, DESTROY } from '@/store/mutation-types'
 export default {
   name: 'Home',
   components: {
+    ReloadNotify,
     WorkingTask,
     CompletedColumn,
     TodayColumn,
