@@ -1,5 +1,6 @@
 <template>
   <div class="archives">
+    <ReloadNotify />
     <div class="chart">
       <TasksChart />
     </div>
@@ -21,6 +22,7 @@
 </template>
 
 <script>
+import ReloadNotify from '@/components/ReloadNotify.vue'
 import TasksChart from '@/components/archives/TasksChart.vue'
 import ThisWeekColumn from '@/components/archives/ThisWeekColumn.vue'
 import WeeklyColumn from '@/components/archives/WeeklyColumn.vue'
@@ -31,6 +33,7 @@ import { SET_TASKS, SET_START_DATE } from '@/store/mutation-types'
 export default {
   name: 'Archives',
   components: {
+    ReloadNotify,
     TasksChart,
     ThisWeekColumn,
     WeeklyColumn,
