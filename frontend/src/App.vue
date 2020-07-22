@@ -65,6 +65,11 @@
     <div class="body">
       <router-view />
     </div>
+    <!-- <div class="footer">
+      <div class="footer__links">
+        お問い合わせ
+      </div>
+    </div> -->
   </div>
 </template>
 
@@ -106,10 +111,24 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: $theme-gray;
+  height: 100%;
 }
 .body {
-  padding: 50px 10px 16px;
+  // padding: 50px 10px 3.2rem;
+  // padding: 50px 10px 0;
+  padding-top: 35px;
+  height: 100%;
 }
+// .footer {
+//   background-color: aquamarine;
+//   min-height: 60px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   &__links {
+
+//   }
+// }
 .el-menu {
   position: fixed!important;
   z-index: 10;

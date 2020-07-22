@@ -76,13 +76,23 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.home {
+  padding: 18px 10px 0;
+  overflow: scroll;
+  height: 100%;
+}
 .working {
   display: flex;
   justify-content: center;
+  // background-color: pink;
+  // position: absolute;
+  // width: 400px;
+  // margin: 0 auto;
 }
 .columns {
   display: flex;
   margin-top: 16px;
+  // overflow-x: scroll;
 }
 .monthly-column {
   padding-right: 8px;
