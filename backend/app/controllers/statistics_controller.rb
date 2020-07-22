@@ -16,6 +16,16 @@ class StatisticsController < ApplicationController
   end
 
   def tasks
+    all_tasks = Task.all
+    regular_user_tasks = Task.joins(:user).where('users.is_test = false')
+    new_regular_user_tasks = regular_user_tasks.where('tasks.created_at > ?', Time.zone.today - 7)
 
+    render json: {
+      all_tasks: all_tasks.count,
+      regular_user_tasks: {
+        all: regular_user_tasks.count,
+        this_week: new_regular_user_tasks.count
+      }
+    }
   end
 end
