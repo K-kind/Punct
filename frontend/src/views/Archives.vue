@@ -58,6 +58,12 @@ export default {
 <style scoped>
 .columns {
   display: flex;
-  justify-content: center;
+  width: 978px;
+  margin: 0 auto;
+}
+.archives {
+  padding: 18px 10px 0;
+  overflow: scroll;
+  height: 100%;
 }
 </style>

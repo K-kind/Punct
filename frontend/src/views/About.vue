@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="about-container">
     <AboutInfo />
     <div class="about__bottom-links">
       <router-link to="/signup" class="about__signup-link">
@@ -29,10 +29,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.container {
+.about-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 18px;
+  overflow: scroll;
+  height: 100%;
 }
 p, li, a {
   font-size: 1.6rem;

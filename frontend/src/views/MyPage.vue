@@ -190,7 +190,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 32px;
+  padding-top: 40px;
 }
 .board {
   width: 340px;
