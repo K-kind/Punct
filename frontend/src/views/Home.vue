@@ -76,6 +76,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.home {
+  padding: 18px 10px 0;
+  overflow: scroll;
+  height: 100%;
+}
 .working {
   display: flex;
   justify-content: center;

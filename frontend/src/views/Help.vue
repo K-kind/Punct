@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="help-container">
     <AboutInfo />
     <div class="help">
       <el-divider><h2>使い方</h2></el-divider>
@@ -73,12 +73,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.container {
+.help-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 841px;
-  margin: 0 auto;
+  padding-top: 18px;
+  overflow: scroll;
+  height: 100%;
 }
 p, li {
   font-size: 1.6rem;
@@ -86,6 +87,7 @@ p, li {
 }
 .help {
   padding: 40px 0 32px;
+  width: 841px;
   &__body {
     &--top {
       padding-top: 24px;

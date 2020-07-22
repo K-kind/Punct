@@ -84,6 +84,6 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 32px;
+  padding-top: 4.0rem;
 }
 </style>
