@@ -35,5 +35,8 @@ Rails.application.routes.draw do
     resource :password_reset, only: [:create, :update] do
       get :check
     end
+
+    get '/statistics/users', to: 'statistics#users'
+    get '/statistics/tasks', to: 'statistics#tasks'
   end
 end
