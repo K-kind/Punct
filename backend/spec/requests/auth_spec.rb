@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe 'Auth', type: :request do
-  let(:xhr_header) { {
-    'X-Requested-With': 'XMLHttpRequest'
-  } }
+  let(:xhr_header) {
+    {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  }
   let(:user) { create(:user) }
 
   before do
