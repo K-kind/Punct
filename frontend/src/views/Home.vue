@@ -77,7 +77,7 @@ export default {
 
 <style scoped lang="scss">
 .home {
-  padding: 18px 10px 0;
+  padding: 18px 10px 16px;
   overflow: scroll;
   height: 100%;
 }

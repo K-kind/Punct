@@ -231,7 +231,7 @@ export default {
   }
 }
 .for-test-user {
-  width: 520px;
+  padding-bottom: 24px;
   p {
     line-height: 1.8;
   }
