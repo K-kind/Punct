@@ -13,7 +13,7 @@
       </ul>
     </div>
     <div class="about__video">
-      <video src="@/assets/capture.mp4" controls width="841"></video>
+      <video src="@/assets/capture.mp4" controls></video>
     </div>
   </div>
 </template>
@@ -54,11 +54,14 @@ p, li, a {
     }
   }
   &__video {
-    // width: 60%;
+    text-align: center;
     video {
-      // width: 100%;
+      width: 60%;
       border: 1px solid $theme-gray;
       border-bottom-width: 2px;
+      @include mq {
+        width: 100%;
+      }
     }
   }
 }
