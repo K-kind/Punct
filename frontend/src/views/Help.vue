@@ -1,6 +1,6 @@
 <template>
-  <div class="help-main-container">
-    <div class="help-container">
+  <div class="help-container">
+    <div class="help-sub-container">
       <AboutInfo />
       <div class="help">
         <el-divider><h2>使い方</h2></el-divider>
@@ -83,7 +83,7 @@ export default {
   overflow: scroll;
   height: 100%;
 }
-.help-main-container {
+.help-sub-container {
   padding: 0 16px;
 }
 p, li {
@@ -92,6 +92,11 @@ p, li {
 }
 .help {
   padding: 40px 0 32px;
+  margin: 0 auto;
+  width: 60%;
+  @include mq {
+    width: 100%;
+  }
   &__body {
     &--top {
       padding-top: 24px;

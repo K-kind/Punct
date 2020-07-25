@@ -120,9 +120,12 @@ export default {
 
 <style scoped lang="scss">
 .contact {
-  padding-top: 32px;
+  padding: 32px 0 16px;
   &__container {
     width: 60%;
+    @include mq {
+      width: 90%;
+    }
     margin: 0 auto;
   }
   &__text {

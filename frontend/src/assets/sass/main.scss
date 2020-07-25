@@ -4,6 +4,9 @@
 
 html {
   font-size: 62.5%;
+  @include mq(sm) {
+    font-size: 50%;
+  }
   height: 100%;
 }
 body {

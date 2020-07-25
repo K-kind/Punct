@@ -113,61 +113,71 @@ export default {
   height: 100%;
 }
 .el-menu {
-  position: fixed!important;
+  position: fixed !important;
   z-index: 10;
-  border: none!important;
+  border: none !important;
   width: 100%;
   padding-left: 8px !important;
   padding-right: 8px !important;
-  background-color: $theme-gray!important;
-  font-weight: bold!important;
+  background-color: $theme-gray !important;
+  font-weight: bold !important;
   box-shadow: 0 0 3px 1px rgba(9, 30, 66, .25);
+  li, div {
+    font-size: 1.4rem !important;
+  }
   &--popup {
     min-width: 110px !important;
     width: 110px !important;
+    @include mq(sm) {
+      min-width: 95px;
+      width: 95px;
+    }
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 }
 .el-menu-item {
-  height: 35px!important;
-  line-height: 35px!important;
-  color: #fff!important;
+  height: 35px !important;
+  line-height: 35px !important;
+  color: #fff !important;
   &:hover {
-    color: $theme-green!important;
+    color: $theme-green !important;
   }
   &__left {
     width: 110px;
+    @include mq(sm) {
+      width: 95px;
+    }
     text-align: center;
   }
   &.is-active {
-    background-color: #fff!important;
-    color: $theme-gray!important;
-    border-bottom-color: $theme-green!important;
+    background-color: #fff !important;
+    color: $theme-gray !important;
+    border-bottom-color: $theme-green !important;
     pointer-events: none;
     cursor: default;
     &:hover {
-      color: $theme-gray!important;
+      color: $theme-gray !important;
     }
   }
 }
 .el-submenu {
-  float: right!important;
+  float: right !important;
   i {
-    color: #fff!important;
+    color: #fff !important;
   }
   &.is-opened {
     i {
-      color: $theme-gray!important;
+      color: $theme-gray !important;
     }
   }
   &.is-active {
     .el-submenu__title {
-      border-bottom-color: $theme-green!important;
-      background-color: #fff!important;
-      color: $theme-gray!important;
+      border-bottom-color: $theme-green !important;
+      background-color: #fff !important;
+      color: $theme-gray !important;
       &:hover {
-        color: $theme-gray!important;
+        color: $theme-gray !important;
       }
       i {
         color: $theme-gray !important;
@@ -177,21 +187,24 @@ export default {
 }
 
 .el-submenu__title {
-  height: 35px!important;
-  line-height: 35px!important;
-  color: #fff!important;
-  min-width: 110px;
+  height: 35px !important;
+  line-height: 35px !important;
+  color: #fff !important;
   padding: 0 16px !important;
   text-align: center;
   cursor: default !important;
+  min-width: 110px;
+  @include mq(sm) {
+    min-width: 95px;
+  }
   &:hover {
-    color: $theme-green!important;
+    color: $theme-green !important;
   }
 }
 .el-menu--popup .el-menu-item {
-  color: $theme-gray!important;
+  color: $theme-gray !important;
   &:hover {
-    color: $theme-green!important;
+    color: $theme-green !important;
   }
   &.is-active {
     color: $theme-green !important;
