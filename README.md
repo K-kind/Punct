@@ -48,6 +48,8 @@ https://punct.work
   - whenever
 
 ## JSライブラリ
+- Vue.Draggable（ドラッグ&ドロップ）
+- vee-validate（バリデーション）
 - element-ui（コンポーネントライブラリ）
 - dayjs（日付操作）
 - chart.js（グラフ描画）

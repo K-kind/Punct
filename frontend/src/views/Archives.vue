@@ -62,7 +62,7 @@ export default {
   margin: 0 auto;
 }
 .archives {
-  padding: 18px 10px 0;
+  padding: 18px 10px 16px;
   overflow: scroll;
   height: 100%;
 }

@@ -8,7 +8,7 @@
           ご不明点やご意見がございましたら、フォームよりご連絡ください。
         </p>
         <p>
-          ※ 返信が不要な場合は、メールアドレスはご記入頂かなくても構いません。
+          ※ 返信がご不要な場合は、メールアドレスは省略していただいて構いません。
         </p>
       </div>
       <validation-observer v-slot="{ handleSubmit }" tag="div">
@@ -120,9 +120,12 @@ export default {
 
 <style scoped lang="scss">
 .contact {
-  padding-top: 32px;
+  padding: 32px 0 16px;
   &__container {
     width: 60%;
+    @include mq {
+      width: 90%;
+    }
     margin: 0 auto;
   }
   &__text {
