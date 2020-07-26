@@ -81,7 +81,7 @@ export default {
   data() {
     return {
       newFormIsOpen: false,
-      onUpdatedTaskId: '',
+      onUpdatedTaskId: null,
       draggingId: null,
       taskList: []
     }
@@ -126,10 +126,12 @@ export default {
       let elapsedString = (elapsed ? `${this.toMinutes(elapsed)}/` : '')
       return `${elapsedString}${this.toMinutes(task.expected_time)}`
     },
-    closeForm() {
-      this.newFormIsOpen = false
-      let self = this
-      setTimeout(() => self.onUpdatedTaskId = '')
+    closeForm(e) { // e = isNewForm
+      if (e) {
+        this.newFormIsOpen = false
+      } else {
+        this.onUpdatedTaskId = null
+      }
     },
     openForm() {
       this.newFormIsOpen = true
