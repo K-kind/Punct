@@ -98,14 +98,18 @@ export default {
     formBlur(e) {
       const form = this.$refs.form
       const target = e.relatedTarget
+      const foxTarget = e.explicitOriginalTarget
+      const foxTargetClass = foxTarget ? foxTarget.className : ''
       setTimeout(() => { // number inputのcontrollはe.relatedTargetにならないため
         if (
           this.taskContentData === this.taskContent &&
           this.taskExpectedTimeData == this.taskExpectedTime &&
           this.taskElapsedTimeData == this.taskElapsedTime &&
-          !form.contains(target)
+          !form.contains(target) &&
+          foxTargetClass !== 'el-button' &&
+          foxTargetClass !== 'el-icon-delete'
         ) {
-          this.$emit('close-form')
+          this.$emit('close-form', this.isNewTask)
         }
       }, 100)
     },
@@ -113,7 +117,7 @@ export default {
       this.taskContentData = ''
       this.taskExpectedTimeData = 0
       this.taskElapsedTimeData = 0
-      this.$emit('close-form')
+      this.$emit('close-form', this.isNewTask)
     },
     focusForm() {
       this.$refs.contentForm.focus()

@@ -74,7 +74,7 @@ export default {
   },
   data() {
     return {
-      onUpdatedTaskId: '',
+      onUpdatedTaskId: null,
       dragGroup: 'REMAINING',
       draggingId: null,
       taskList: []
@@ -108,8 +108,7 @@ export default {
       return `${elapsedString}${this.toMinutes(task.expected_time)}`
     },
     closeForm() {
-      let self = this
-      setTimeout(() => self.onUpdatedTaskId = '')
+      this.onUpdatedTaskId = null
     },
     openUpdateForm(taskId) {
       this.onUpdatedTaskId = taskId

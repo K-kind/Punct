@@ -58,16 +58,20 @@ export default {
     formBlur(e) {
       const form = this.$refs.form
       const target = e.relatedTarget
+      const foxTarget = e.explicitOriginalTarget
+      const foxTargetClass = foxTarget ? foxTarget.className : ''
       if (
         this.taskContentData === this.taskContent &&
-        !form.contains(target)
+        !form.contains(target) &&
+        foxTargetClass !== 'el-button' &&
+        foxTargetClass !== 'el-icon-delete'
       ) {
-        this.$emit('close-form')
+        this.$emit('close-form', this.isNewTask)
       }
     },
     closeForm() {
       this.taskContentData = ''
-      this.$emit('close-form')
+      this.$emit('close-form', this.isNewTask)
     },
     focusForm() {
       this.$refs.contentForm.focus()
