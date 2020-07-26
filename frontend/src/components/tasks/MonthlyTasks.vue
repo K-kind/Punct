@@ -130,10 +130,12 @@ UPDATE_TASK_CONTENT, DELETE_TASK_BY_ID, UPDATE_TASK_ORDER, SET_TASKS]),
         this.monthsFromToday--
       }
     },
-    closeForm() {
-      this.newFormIsOpen = false
-      let self = this
-      setTimeout(() => self.onUpdatedTaskId = null)
+    closeForm(e) { // e = isNewForm
+      if (e) {
+        this.newFormIsOpen = false
+      } else {
+        this.onUpdatedTaskId = null
+      }
     },
     openForm() {
       this.newFormIsOpen = true
