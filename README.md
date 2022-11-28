@@ -3,8 +3,6 @@
 
 タスクを作成して、1つずつ取り組み、かかった時間を記録します。
 
-https://punct.work
-
 <img width="1200" alt="README 画像 Punct" src="https://user-images.githubusercontent.com/55728594/88036508-9dae8700-cb7e-11ea-906b-c49f519c28bc.gif">
 
 ## 工夫した点
